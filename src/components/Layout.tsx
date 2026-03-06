@@ -100,42 +100,64 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-1 pt-18 md:pt-24">{children}</main>
 
       {/* Footer */}
-      <footer className="bg-foreground text-background/70">
-        <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
-            {/* Brand */}
-            <div className="md:col-span-1">
-              <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-80 mb-5" />
-              <p className="text-sm font-light leading-[1.8] text-background/50 max-w-xs">
-                Премиальный бренд, объединяющий студию декора и шоурум одежды. Создаём красоту в каждой детали.
-              </p>
-            </div>
+      <footer className="bg-foreground text-background/60">
+        {/* Top decorative line */}
+        <div className="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-            {/* Divisions */}
+        <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
+          {/* Logo & tagline centered */}
+          <div className="text-center mb-20">
+            <img src={logoImg} alt="KiKi" className="h-14 w-auto brightness-0 invert opacity-70 mx-auto mb-6" />
+            <p className="font-cormorant text-lg md:text-xl italic font-light text-background/35 tracking-wide">
+              Красота в каждой детали
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14 lg:gap-10">
+            {/* Decor Studio */}
             <div>
-              <h4 className="overline text-background/30 mb-6">Brand Worlds</h4>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Decor Studio</h4>
               <div className="flex flex-col gap-3.5">
-                <Link to="/decor" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
-                  KiKi Decor Studio
+                <Link to="/decor" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Услуги декора
                 </Link>
-                <Link to="/showroom" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
-                  KiKi Showroom
+                <Link to="/portfolio" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Портфолио
                 </Link>
-                <Link to="/portfolio" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
-                  Portfolio
+                <Link to="/packages" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Пакеты
+                </Link>
+                <Link to="/booking" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Бронирование
                 </Link>
               </div>
             </div>
 
-            {/* Navigation */}
+            {/* Showroom */}
             <div>
-              <h4 className="overline text-background/30 mb-6">Навигация</h4>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Showroom</h4>
+              <div className="flex flex-col gap-3.5">
+                <Link to="/showroom" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Коллекция
+                </Link>
+                <Link to="/services" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Стилист
+                </Link>
+                <Link to="/calculator" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
+                  Калькулятор
+                </Link>
+              </div>
+            </div>
+
+            {/* Quick Nav */}
+            <div>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Навигация</h4>
               <div className="flex flex-col gap-3.5">
                 {navLinks.map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300"
+                    className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500"
                   >
                     {link.name}
                   </Link>
@@ -145,27 +167,68 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Contact */}
             <div>
-              <h4 className="overline text-background/30 mb-6">Связаться</h4>
-              <div className="flex flex-col gap-4 text-sm font-light text-background/50">
-                <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-300">
-                  <Mail size={14} strokeWidth={1.5} /> info@kikidecor.ru
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Контакты</h4>
+              <div className="flex flex-col gap-4 text-sm font-light text-background/45">
+                <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
+                  <Mail size={14} strokeWidth={1.5} className="opacity-60" /> info@kikidecor.ru
                 </a>
-                <a href="tel:+79001234567" className="flex items-center gap-3 hover:text-primary transition-colors duration-300">
-                  <Phone size={14} strokeWidth={1.5} /> +7 (900) 123-45-67
-                </a>
-                <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-primary transition-colors duration-300">
-                  <Instagram size={14} strokeWidth={1.5} /> @ki_ki_decor
+                <a href="tel:+79001234567" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
+                  <Phone size={14} strokeWidth={1.5} className="opacity-60" /> +7 (900) 123-45-67
                 </a>
                 <span className="flex items-center gap-3">
-                  <MapPin size={14} strokeWidth={1.5} /> Ростов-на-Дону · Геленджик
+                  <MapPin size={14} strokeWidth={1.5} className="opacity-60" /> Ростов-на-Дону · Геленджик
                 </span>
+              </div>
+
+              {/* Social icons */}
+              <div className="flex items-center gap-5 mt-8">
+                <a
+                  href="https://instagram.com/ki_ki_decor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full border border-background/15 flex items-center justify-center text-background/40 hover:text-primary hover:border-primary/50 transition-all duration-500"
+                >
+                  <Instagram size={15} strokeWidth={1.5} />
+                </a>
+                <a
+                  href="https://t.me/kikidecor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-full border border-background/15 flex items-center justify-center text-background/40 hover:text-primary hover:border-primary/50 transition-all duration-500"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-[15px] h-[15px]">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
+                </a>
+                <a
+                  href="mailto:info@kikidecor.ru"
+                  className="w-9 h-9 rounded-full border border-background/15 flex items-center justify-center text-background/40 hover:text-primary hover:border-primary/50 transition-all duration-500"
+                >
+                  <Mail size={15} strokeWidth={1.5} />
+                </a>
               </div>
             </div>
           </div>
-          <div className="border-t border-background/8 mt-16 pt-10 text-center">
-            <p className="overline text-background/25">
+
+          {/* Bottom bar */}
+          <div className="border-t border-background/6 mt-20 pt-10 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="overline text-background/20 tracking-[0.15em]">
               © {new Date().getFullYear()} KiKi. Все права защищены.
             </p>
+            <div className="flex items-center gap-6">
+              <Link to="/contact" className="overline text-background/20 hover:text-primary/60 transition-colors duration-500 tracking-[0.15em]">
+                Связаться
+              </Link>
+              <span className="w-px h-3 bg-background/10" />
+              <a
+                href="https://instagram.com/ki_ki_decor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="overline text-background/20 hover:text-primary/60 transition-colors duration-500 tracking-[0.15em]"
+              >
+                Instagram
+              </a>
+            </div>
           </div>
         </div>
       </footer>
