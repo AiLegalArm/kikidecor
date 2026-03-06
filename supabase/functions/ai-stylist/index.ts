@@ -10,7 +10,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { occasion, style, colors, lang } = await req.json();
+    const { occasion, style, colors, budget, lang } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -19,7 +19,6 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Fetch published products
     const { data: products, error } = await supabase
       .from("products")
       .select("id, name, name_en, description, description_en, price, category, colors, sizes, images, compare_at_price")
@@ -35,26 +34,33 @@ serve(async (req) => {
       category: p.category,
       colors: p.colors,
       sizes: p.sizes,
-      image: p.images?.[0] || null,
     }));
 
     const isRu = lang === "ru";
 
     const systemPrompt = isRu
-      ? `Ты — AI-стилист бренда KiKi. Ты рекомендуешь образы из каталога бренда.
-Тебе дан каталог товаров в JSON. На основе запроса пользователя (повод, стиль, цвета) подбери 1-3 образа.
-Каждый образ — это комбинация товаров из каталога.
-Ответь СТРОГО в JSON формате (без markdown):
-{"outfits": [{"title": "Название образа", "description": "Описание почему подходит", "product_ids": ["id1","id2"], "styling_tips": "Советы по стилю"}]}`
-      : `You are KiKi brand's AI stylist. You recommend outfits from the brand catalog.
-You are given a product catalog in JSON. Based on user preferences (occasion, style, colors), suggest 1-3 outfits.
-Each outfit is a combination of catalog products.
-Respond STRICTLY in JSON format (no markdown):
-{"outfits": [{"title": "Outfit name", "description": "Why it works", "product_ids": ["id1","id2"], "styling_tips": "Styling tips"}]}`;
+      ? `Ты — AI-стилист люксового бренда KiKi Showroom. Подбираешь образы ТОЛЬКО из предоставленного каталога.
 
-    const userPrompt = isRu
-      ? `Каталог: ${JSON.stringify(catalogSummary)}\n\nПовод: ${occasion}\nСтиль: ${style}\nЦвета: ${colors}`
-      : `Catalog: ${JSON.stringify(catalogSummary)}\n\nOccasion: ${occasion}\nStyle: ${style}\nColors: ${colors}`;
+Каталог товаров: ${JSON.stringify(catalogSummary)}
+
+Запрос клиента:
+- Повод: ${occasion}
+- Стиль: ${style}
+- Цветовая гамма: ${colors}
+- Бюджет: ${budget || "не указан"}
+
+Подбери 1-3 комплексных образа. Каждый образ — это комбинация реальных товаров из каталога (используй точные id). Дай профессиональные советы по стилю. Используй ТОЛЬКО tool call для ответа.`
+      : `You are KiKi Showroom's luxury AI stylist. Recommend outfits ONLY from the provided catalog.
+
+Product catalog: ${JSON.stringify(catalogSummary)}
+
+Client request:
+- Occasion: ${occasion}
+- Style: ${style}
+- Color palette: ${colors}
+- Budget: ${budget || "not specified"}
+
+Create 1-3 complete outfit recommendations using real product IDs from the catalog. Provide professional styling tips. Use ONLY the tool call to respond.`;
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -66,20 +72,49 @@ Respond STRICTLY in JSON format (no markdown):
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
+          { role: "user", content: isRu ? "Подбери мне образы по указанным параметрам." : "Find me outfits based on the given preferences." },
         ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "recommend_outfits",
+            description: "Return outfit recommendations from the catalog",
+            parameters: {
+              type: "object",
+              properties: {
+                outfits: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      title: { type: "string", description: "Outfit name" },
+                      description: { type: "string", description: "Why this outfit works for the occasion" },
+                      product_ids: { type: "array", items: { type: "string" }, description: "Product IDs from catalog" },
+                      styling_tips: { type: "string", description: "Professional styling advice" },
+                      total_price: { type: "number", description: "Total outfit price" },
+                      mood: { type: "string", description: "One-word mood descriptor (e.g. Refined, Playful, Bold)" },
+                    },
+                    required: ["title", "description", "product_ids", "styling_tips"],
+                  },
+                },
+              },
+              required: ["outfits"],
+            },
+          },
+        }],
+        tool_choice: { type: "function", function: { name: "recommend_outfits" } },
       }),
     });
 
     if (!aiResponse.ok) {
       const status = aiResponse.status;
       if (status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
+        return new Response(JSON.stringify({ error: isRu ? "Слишком много запросов. Подождите." : "Rate limit exceeded." }), {
           status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (status === 402) {
-        return new Response(JSON.stringify({ error: "Payment required." }), {
+        return new Response(JSON.stringify({ error: isRu ? "Необходимо пополнить баланс." : "Payment required." }), {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -89,18 +124,19 @@ Respond STRICTLY in JSON format (no markdown):
     }
 
     const aiData = await aiResponse.json();
-    const content = aiData.choices?.[0]?.message?.content || "{}";
 
-    // Parse JSON from AI response (strip markdown fences if any)
-    let parsed;
-    try {
+    let parsed: any;
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (toolCall?.function?.arguments) {
+      parsed = JSON.parse(toolCall.function.arguments);
+    } else {
+      // Fallback
+      const content = aiData.choices?.[0]?.message?.content || "{}";
       const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
       parsed = JSON.parse(cleaned);
-    } catch {
-      parsed = { outfits: [], raw: content };
     }
 
-    // Enrich outfits with full product data
+    // Enrich with full product data
     const enrichedOutfits = (parsed.outfits || []).map((outfit: any) => ({
       ...outfit,
       products: (outfit.product_ids || [])
