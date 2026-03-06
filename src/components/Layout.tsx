@@ -256,17 +256,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           {/* Bottom */}
-          <div className="border-t border-background/6 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-background/15 font-body">
+          <div className="border-t border-background/15 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-background/40 font-body">
               © {new Date().getFullYear()} KiKi. {t.footer.rights[lang]}
             </p>
             <div className="flex items-center gap-6">
-              <Link to="/contact" className="text-[10px] uppercase tracking-[0.15em] text-background/15 hover:text-primary/50 transition-colors duration-500 font-body">
+              <Link to="/contact" className="text-[10px] uppercase tracking-[0.15em] text-background/40 hover:text-primary transition-colors duration-500 font-body">
                 {t.footer.getInTouch[lang]}
               </Link>
-              <span className="w-px h-3 bg-background/8" />
+              <span className="w-px h-3 bg-background/20" />
               <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer"
-                className="text-[10px] uppercase tracking-[0.15em] text-background/15 hover:text-primary/50 transition-colors duration-500 font-body">
+                className="text-[10px] uppercase tracking-[0.15em] text-background/40 hover:text-primary transition-colors duration-500 font-body">
                 Instagram
               </a>
             </div>
