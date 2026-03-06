@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoImg from "@/assets/logo.png";
 
