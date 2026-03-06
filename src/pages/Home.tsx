@@ -83,7 +83,6 @@ const Home = () => {
             >
               {t.home.storyOverline[lang]}
             </button>
-            </button>
           </div>
         </div>
 
