@@ -135,20 +135,7 @@ const Admin = () => {
 
   const openDetail = (lead: Lead) => { setSelectedLead(lead); setEditNotes(lead.notes || ""); };
 
-  const triggerInstagramSync = async (importAll: boolean) => {
-    const setter = importAll ? setIgImporting : setIgSyncing;
-    setter(true); setIgResult(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("sync-instagram", { body: { import_all: importAll } });
-      if (error) throw error;
-      setIgResult(data);
-      if (data?.success) { toast.success(`${importAll ? "Импорт" : "Синхронизация"}: ${data.synced} постов`); fetchIgCount(); }
-      else toast.error(data?.error || "Ошибка");
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Ошибка";
-      setIgResult({ success: false, error: msg }); toast.error(msg);
-    } finally { setter(false); }
-  };
+
 
   const navigateTo = (s: Section) => { setSection(s); setSidebarOpen(false); };
 
