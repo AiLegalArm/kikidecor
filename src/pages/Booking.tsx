@@ -52,6 +52,22 @@ const Booking = () => {
     },
   });
 
+  const { data: blockedDatesData } = useQuery({
+    queryKey: ["blocked-dates"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blocked_dates")
+        .select("blocked_date");
+      if (error) throw error;
+      return data?.map((d) => d.blocked_date) as string[];
+    },
+  });
+
+  const blockedDateSet = useMemo(
+    () => new Set(blockedDatesData || []),
+    [blockedDatesData]
+  );
+
   const { disabledDates, limitedDates } = useMemo(() => {
     if (!bookedDates) return { disabledDates: [], limitedDates: [] };
     const counts: Record<string, number> = {};
@@ -64,6 +80,8 @@ const Booking = () => {
 
   const isDateDisabled = (date: Date) => {
     if (date < new Date(new Date().setHours(0, 0, 0, 0))) return true;
+    const dateStr = format(date, "yyyy-MM-dd");
+    if (blockedDateSet.has(dateStr)) return true;
     return disabledDates.some(
       (d) => d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate()
     );
