@@ -15,11 +15,11 @@ import dessertImg from "@/assets/portfolio-dessert.jpg";
 import themedImg from "@/assets/portfolio-themed.jpg";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 25 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay: i * 0.18, ease: "easeOut" as const },
+    transition: { duration: 1.2, delay: 0.4 + i * 0.22, ease: "easeOut" as const },
   }),
 };
 
