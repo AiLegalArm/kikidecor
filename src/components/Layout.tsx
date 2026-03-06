@@ -193,15 +193,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </p>
               <div className="flex items-center gap-4">
                 <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full border border-background/10 flex items-center justify-center text-background/30 hover:text-primary hover:border-primary/40 transition-all duration-500">
+                  className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center text-background/60 hover:text-primary hover:border-primary/40 transition-all duration-500">
                   <Instagram size={16} strokeWidth={1.5} />
                 </a>
                 <a href="https://t.me/kikidecor" target="_blank" rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full border border-background/10 flex items-center justify-center text-background/30 hover:text-primary hover:border-primary/40 transition-all duration-500">
+                  className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center text-background/60 hover:text-primary hover:border-primary/40 transition-all duration-500">
                   <Send size={16} strokeWidth={1.5} />
                 </a>
                 <a href="mailto:info@kikidecor.ru"
-                  className="w-10 h-10 rounded-full border border-background/10 flex items-center justify-center text-background/30 hover:text-primary hover:border-primary/40 transition-all duration-500">
+                  className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center text-background/60 hover:text-primary hover:border-primary/40 transition-all duration-500">
                   <Mail size={16} strokeWidth={1.5} />
                 </a>
               </div>
