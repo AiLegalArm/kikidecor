@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
-  CalendarDays, Ban, CheckCircle2, Edit, Trash2, User, Phone, Mail, MapPin, Users, X,
+  CalendarDays, Ban, CheckCircle2, Edit, Trash2, User, Phone, Mail, MapPin, Users, X, MessageCircle,
 } from "lucide-react";
 
 type Lead = {
@@ -279,6 +279,19 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
                         {lead.location && <span className="flex items-center gap-1"><MapPin size={11} />{lead.location}</span>}
                         {lead.guests && <span className="flex items-center gap-1"><Users size={11} />{lead.guests} гостей</span>}
                       </div>
+
+                      {/* WhatsApp quick link */}
+                      {lead.phone && (
+                        <a
+                          href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Здравствуйте, ${lead.name}! Спасибо за заявку на ${lead.event_type}${lead.event_date ? ` (${format(new Date(lead.event_date + "T00:00:00"), "d MMMM yyyy", { locale: ru })})` : ""}. Давайте обсудим детали! — Ki Ki Decor`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-[11px] text-green-700 hover:text-green-900 bg-green-50 border border-green-200 px-2.5 py-1 transition-colors w-fit"
+                        >
+                          <MessageCircle size={12} />
+                          Написать в WhatsApp
+                        </a>
+                      )}
 
                       {lead.message && (
                         <p className="text-xs text-muted-foreground/70 bg-muted/50 p-2 border border-border/50">{lead.message}</p>

@@ -14,14 +14,15 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { name, email, phone, eventType, date, guests, budget, message, subject, source } = body;
+    const { name, email, phone, eventType, date, guests, message, subject, source, location } = body;
 
-    let emailSubject: string;
-    let emailBody: string;
+    // ── 1. Admin notification email ──
+    let adminSubject: string;
+    let adminBody: string;
 
     if (source === "booking") {
-      emailSubject = `🎉 Новая заявка на декор от ${name}`;
-      emailBody = `
+      adminSubject = `🎉 Новая заявка на декор от ${name}`;
+      adminBody = `
 Новая заявка на декор мероприятия!
 
 Имя: ${name}
@@ -30,7 +31,7 @@ Email: ${email}
 Тип мероприятия: ${eventType}
 Дата: ${date || "—"}
 Гостей: ${guests || "—"}
-Бюджет: ${budget || "—"}
+Локация: ${location || "—"}
 
 Сообщение:
 ${message || "—"}
@@ -39,8 +40,8 @@ ${message || "—"}
 Источник: Форма заявки (booking)
       `.trim();
     } else {
-      emailSubject = `📩 Новое сообщение с сайта от ${name}`;
-      emailBody = `
+      adminSubject = `📩 Новое сообщение с сайта от ${name}`;
+      adminBody = `
 Новое сообщение через форму обратной связи!
 
 Имя: ${name}
@@ -55,16 +56,13 @@ ${message || "—"}
       `.trim();
     }
 
-    // Log the lead for monitoring
     console.log(`New ${source} lead from ${name} (${email})`);
-    console.log(`Subject: ${emailSubject}`);
-    console.log(`Body: ${emailBody}`);
 
-    // Check if Resend API key is configured for actual email sending
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
+    // Send admin notification
     if (RESEND_API_KEY) {
-      const emailResponse = await fetch("https://api.resend.com/emails", {
+      const adminEmailRes = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${RESEND_API_KEY}`,
@@ -74,20 +72,103 @@ ${message || "—"}
           from: "Ki Ki Decor <noreply@kikidecor.ru>",
           to: [ADMIN_EMAIL],
           reply_to: email,
-          subject: emailSubject,
-          text: emailBody,
+          subject: adminSubject,
+          text: adminBody,
         }),
       });
 
-      if (!emailResponse.ok) {
-        const errData = await emailResponse.text();
-        console.error(`Resend API error [${emailResponse.status}]: ${errData}`);
-        throw new Error(`Email sending failed: ${emailResponse.status}`);
+      if (!adminEmailRes.ok) {
+        console.error(`Admin email error [${adminEmailRes.status}]: ${await adminEmailRes.text()}`);
+      } else {
+        console.log("Admin email sent via Resend");
       }
 
-      console.log("Email sent successfully via Resend");
+      // ── 2. Client confirmation email ──
+      if (source === "booking" && email) {
+        const clientSubject = "✨ Ваша заявка принята — Ki Ki Decor";
+        const clientBody = `
+Здравствуйте, ${name}!
+
+Спасибо за вашу заявку на оформление мероприятия!
+
+Детали вашей заявки:
+• Тип мероприятия: ${eventType}
+• Дата: ${date || "уточняется"}
+• Количество гостей: ${guests || "уточняется"}
+• Локация: ${location || "уточняется"}
+
+Мы свяжемся с вами в течение 24 часов для обсуждения деталей и подготовки индивидуального предложения.
+
+Если у вас есть вопросы, вы можете ответить на это письмо или связаться с нами:
+📞 Телефон: +7 (XXX) XXX-XX-XX
+📧 Email: info@kikidecor.ru
+
+С теплом,
+Команда Ki Ki Decor
+        `.trim();
+
+        const clientEmailRes = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Ki Ki Decor <noreply@kikidecor.ru>",
+            to: [email],
+            subject: clientSubject,
+            text: clientBody,
+          }),
+        });
+
+        if (!clientEmailRes.ok) {
+          console.error(`Client email error [${clientEmailRes.status}]: ${await clientEmailRes.text()}`);
+        } else {
+          console.log("Client confirmation email sent");
+        }
+      }
     } else {
-      console.log("RESEND_API_KEY not configured — email logged but not sent. Lead is saved in database.");
+      console.log("RESEND_API_KEY not configured — emails logged but not sent.");
+    }
+
+    // ── 3. WhatsApp notification to admin ──
+    const WHATSAPP_API_TOKEN = Deno.env.get("WHATSAPP_API_TOKEN");
+    const WHATSAPP_PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
+    const WHATSAPP_ADMIN_PHONE = Deno.env.get("WHATSAPP_ADMIN_PHONE");
+
+    if (WHATSAPP_API_TOKEN && WHATSAPP_PHONE_NUMBER_ID && WHATSAPP_ADMIN_PHONE) {
+      const waMessage = source === "booking"
+        ? `🎉 *Новая заявка*\n\n👤 ${name}\n📞 ${phone || "—"}\n📧 ${email}\n🎪 ${eventType}\n📅 ${date || "—"}\n👥 ${guests || "—"} гостей\n📍 ${location || "—"}`
+        : `📩 *Новое сообщение*\n\n👤 ${name}\n📧 ${email}\n\n${message || "—"}`;
+
+      try {
+        const waRes = await fetch(
+          `https://graph.facebook.com/v21.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${WHATSAPP_API_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: WHATSAPP_ADMIN_PHONE,
+              type: "text",
+              text: { body: waMessage },
+            }),
+          }
+        );
+
+        if (!waRes.ok) {
+          console.error(`WhatsApp API error [${waRes.status}]: ${await waRes.text()}`);
+        } else {
+          console.log("WhatsApp notification sent");
+        }
+      } catch (waErr) {
+        console.error("WhatsApp send failed:", waErr);
+      }
+    } else {
+      console.log("WhatsApp not configured — skipping.");
     }
 
     return new Response(
