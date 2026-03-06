@@ -41,6 +41,8 @@ const getStatusBadge = (status: string) => {
 };
 
 const Admin = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -55,6 +57,36 @@ const Admin = () => {
   const [igSyncing, setIgSyncing] = useState(false);
   const [igResult, setIgResult] = useState<{ success: boolean; synced?: number; error?: string } | null>(null);
   const [igPostCount, setIgPostCount] = useState<number | null>(null);
+
+  // Auth listener
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+  };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <AdminLogin onLogin={() => {}} />;
+  }
 
   const fetchLeads = async () => {
     setLoading(true);
