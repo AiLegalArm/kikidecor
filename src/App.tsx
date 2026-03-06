@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { usePageTracking } from "@/hooks/usePageTracking";
 import { AnimatePresence } from "framer-motion";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import Layout from "./components/Layout";
@@ -30,6 +31,7 @@ const queryClient = new QueryClient();
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  usePageTracking();
   return (
     <Layout>
       <AnimatePresence mode="wait">
