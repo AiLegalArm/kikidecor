@@ -76,18 +76,6 @@ const Admin = () => {
     setSession(null);
   };
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
-      </div>
-    );
-  }
-
-  if (!session) {
-    return <AdminLogin onLogin={() => {}} />;
-  }
-
   const fetchLeads = async () => {
     setLoading(true);
     let query = supabase
@@ -122,9 +110,23 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    fetchLeads();
-    fetchIgCount();
-  }, [filterStatus, page]);
+    if (session) {
+      fetchLeads();
+      fetchIgCount();
+    }
+  }, [filterStatus, page, session]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <AdminLogin onLogin={() => {}} />;
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
