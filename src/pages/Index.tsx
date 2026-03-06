@@ -53,8 +53,11 @@ const instaImages = [
 const Index = () => {
   return (
     <>
-      <title>Ki Ki Decor — Студия декора | Фасады, свадьбы, фотозоны</title>
-      <meta name="description" content="Ki Ki Decor — студия декора. Оформление фасадов, входных групп, свадеб, праздников и фотозон. Работаем по всей России." />
+      <title>Ki Ki Decor — Декор мероприятий, свадеб и праздников</title>
+      <meta name="description" content="Ki Ki Decor — профессиональный декор мероприятий: свадьбы, дни рождения, предложения, корпоративы, декор фасадов. По всей России." />
+      <meta property="og:title" content="Ki Ki Decor — Декор мероприятий, свадеб и праздников" />
+      <meta property="og:description" content="Event decoration, wedding decoration, birthday decor, proposal decor, event styling — по всей России." />
+      <meta property="og:type" content="website" />
 
       {/* Hero */}
       <section className="relative h-screen overflow-hidden">

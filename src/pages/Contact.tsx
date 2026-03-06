@@ -56,8 +56,11 @@ const Contact = () => {
 
   return (
     <>
-      <title>Контакты | Ki Ki Decor</title>
-      <meta name="description" content="Свяжитесь со студией Ki Ki Decor — телефон, WhatsApp, Instagram, email. Мы на связи!" />
+      <title>Контакты Ki Ki Decor — телефон, WhatsApp, email</title>
+      <meta name="description" content="Свяжитесь с Ki Ki Decor: телефон, WhatsApp, Instagram, email. Event decoration, wedding decoration консультация бесплатно." />
+      <meta property="og:title" content="Контакты Ki Ki Decor" />
+      <meta property="og:description" content="Телефон, WhatsApp, Instagram, email — свяжитесь для бесплатной консультации по декору." />
+      <meta property="og:type" content="website" />
 
       {/* Header */}
       <section className="section-padding pb-8 md:pb-12">

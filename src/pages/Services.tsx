@@ -50,8 +50,11 @@ const services = [
 
 const Services = () => (
   <>
-    <title>Услуги | Ki Ki Decor — Студия декора</title>
-    <meta name="description" content="Услуги студии Ki Ki Decor — декор фасадов, свадеб, праздников, фотозон и входных групп. Работаем по всей России." />
+    <title>Услуги декора — свадьбы, фасады, праздники</title>
+    <meta name="description" content="Услуги Ki Ki Decor: event decoration, wedding decoration, birthday decor, event styling. Декор фасадов, свадеб, фотозон по всей России." />
+    <meta property="og:title" content="Услуги Ki Ki Decor — декор мероприятий" />
+    <meta property="og:description" content="Профессиональный event styling: свадьбы, дни рождения, корпоративы, декор фасадов." />
+    <meta property="og:type" content="website" />
 
     <section className="section-padding pb-8 md:pb-12">
       <div className="container mx-auto max-w-3xl text-center">
