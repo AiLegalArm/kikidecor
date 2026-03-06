@@ -77,11 +77,6 @@ const Admin = () => {
   const pipelineRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 20;
 
-  // Instagram state
-  const [igImporting, setIgImporting] = useState(false);
-  const [igSyncing, setIgSyncing] = useState(false);
-  const [igResult, setIgResult] = useState<{ success: boolean; synced?: number; error?: string } | null>(null);
-  const [igPostCount, setIgPostCount] = useState<number | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
