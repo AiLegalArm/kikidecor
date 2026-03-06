@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { trackAIInteraction } from "@/hooks/useAITracking";
 
 type Detected = {
   clothing_type: string;
