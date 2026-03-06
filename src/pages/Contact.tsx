@@ -7,11 +7,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const contactInfo = [
-  { icon: Mail, label: "Email", value: "hello@elaraevents.com", href: "mailto:hello@elaraevents.com" },
-  { icon: Phone, label: "Phone", value: "+1 (234) 567-890", href: "tel:+1234567890" },
-  { icon: MapPin, label: "Studio", value: "Los Angeles, California" },
-  { icon: Instagram, label: "Instagram", value: "@elaraevents", href: "#" },
-  { icon: Clock, label: "Hours", value: "Mon–Sat, 9am–6pm" },
+  { icon: Mail, label: "Email", value: "info@kikidecor.ru", href: "mailto:info@kikidecor.ru" },
+  { icon: Phone, label: "Телефон", value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
+  { icon: MapPin, label: "География", value: "Вся Россия (Ростов, Геленджик и др.)" },
+  { icon: Instagram, label: "Instagram", value: "@ki_ki_decor", href: "https://instagram.com/ki_ki_decor" },
+  { icon: Clock, label: "Режим работы", value: "Пн–Сб, 9:00–18:00" },
 ];
 
 const Contact = () => {
@@ -19,7 +19,7 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! We'll get back to you soon.");
+    toast.success("Сообщение отправлено! Мы свяжемся с вами в ближайшее время.");
     setForm({ name: "", email: "", subject: "", message: "" });
   };
 
@@ -28,23 +28,22 @@ const Contact = () => {
 
   return (
     <>
-      <title>Contact | Élara Events</title>
-      <meta name="description" content="Get in touch with Élara Events. We'd love to hear from you about your next celebration." />
+      <title>Контакты | Ki Ki Decor</title>
+      <meta name="description" content="Свяжитесь со студией Ki Ki Decor — мы будем рады обсудить ваш проект декора." />
 
       <section className="section-padding">
         <div className="container mx-auto max-w-5xl">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Say Hello</p>
-            <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">Contact Us</h1>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Напишите нам</p>
+            <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">Контакты</h1>
             <div className="gold-divider" />
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-16">
-            {/* Info */}
             <ScrollReveal>
               <div className="space-y-8">
                 <p className="text-muted-foreground font-light text-sm leading-relaxed">
-                  Whether you have a question, want to discuss an upcoming event, or simply want to say hello — we'd love to hear from you.
+                  Хотите обсудить проект, задать вопрос или просто поздороваться — мы всегда на связи. Пишите в директ Instagram или заполните форму.
                 </p>
                 {contactInfo.map(({ icon: Icon, label, value, href }) => (
                   <div key={label} className="flex items-start gap-4">
@@ -52,7 +51,7 @@ const Contact = () => {
                     <div>
                       <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1">{label}</p>
                       {href ? (
-                        <a href={href} className="text-sm text-foreground hover:text-primary transition-colors">{value}</a>
+                        <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-sm text-foreground hover:text-primary transition-colors">{value}</a>
                       ) : (
                         <p className="text-sm text-foreground">{value}</p>
                       )}
@@ -62,12 +61,11 @@ const Contact = () => {
               </div>
             </ScrollReveal>
 
-            {/* Form */}
             <ScrollReveal delay={200}>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Name *</label>
+                    <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Имя *</label>
                     <Input value={form.name} onChange={update("name")} required className="rounded-none border-border bg-transparent focus:border-primary" />
                   </div>
                   <div>
@@ -76,15 +74,15 @@ const Contact = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Subject</label>
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Тема</label>
                   <Input value={form.subject} onChange={update("subject")} className="rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Message *</label>
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Сообщение *</label>
                   <Textarea value={form.message} onChange={update("message")} required rows={5} className="rounded-none border-border bg-transparent focus:border-primary resize-none" />
                 </div>
                 <Button type="submit" className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Send Message
+                  Отправить
                 </Button>
               </form>
             </ScrollReveal>
