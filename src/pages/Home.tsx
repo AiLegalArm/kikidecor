@@ -319,7 +319,10 @@ const Home = () => {
       {/* ═══ 4. SIGNATURE DECOR ═══ */}
       <SignatureDecor />
 
-      {/* ═══ 5. LIFESTYLE GALLERY ═══ */}
+      {/* ═══ 5. SHOWROOM COLLECTION ═══ */}
+      <ShowroomCollection />
+
+      {/* ═══ 6. LIFESTYLE GALLERY ═══ */}
       <LifestyleGallery />
 
       {/* ═══ 5. TESTIMONIALS ═══ */}
