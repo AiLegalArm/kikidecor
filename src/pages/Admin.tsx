@@ -31,9 +31,12 @@ type Lead = {
 const STATUSES = [
   { value: "new", label: "Новая", color: "bg-blue-100 text-blue-800 border-blue-200" },
   { value: "contacted", label: "Связались", color: "bg-yellow-100 text-yellow-800 border-yellow-200" },
+  { value: "consultation", label: "Консультация", color: "bg-cyan-100 text-cyan-800 border-cyan-200" },
+  { value: "proposal", label: "КП отправлено", color: "bg-indigo-100 text-indigo-800 border-indigo-200" },
   { value: "booked", label: "Забронировано", color: "bg-green-100 text-green-800 border-green-200" },
+  { value: "order", label: "Заказ оформлен", color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
   { value: "completed", label: "Завершено", color: "bg-purple-100 text-purple-800 border-purple-200" },
-  { value: "cancelled", label: "Отменено", color: "bg-red-100 text-red-800 border-red-200" },
+  { value: "lost", label: "Потеряно", color: "bg-red-100 text-red-800 border-red-200" },
 ];
 
 const getStatusBadge = (status: string) => {
