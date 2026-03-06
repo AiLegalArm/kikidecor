@@ -37,12 +37,14 @@ const Home = () => {
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-4xl">
             <div className="w-px h-16 bg-background/15 mx-auto mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
-            <img
-              src={logoHero}
-              alt="KiKi"
-              className="w-56 md:w-72 lg:w-80 h-auto mx-auto mb-12 animate-reveal drop-shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
-              style={{ animationDelay: "0.5s" }}
-            />
+            <div className="relative w-56 md:w-72 lg:w-80 mx-auto mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
+              <div className="absolute inset-0 bg-foreground/60 rounded-2xl blur-2xl scale-110" />
+              <img
+                src={logoHero}
+                alt="KiKi"
+                className="relative w-full h-auto drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
+              />
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-reveal" style={{ animationDelay: "1s" }}>
               <Link to="/decor" className="group inline-flex items-center gap-3 px-10 py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
                 {t.home.exploreDecor[lang]}
@@ -124,17 +126,17 @@ const Home = () => {
                 <div className="p-8 md:p-12 lg:p-16 flex items-center">
                   <div>
                     <p className="overline text-primary mb-5">{t.home.storyOverline[lang]}</p>
-                    <h2 className="font-display text-3xl md:text-4xl font-light mb-6 leading-[1.1]">
+                    <h2 className="font-display text-3xl md:text-4xl font-light mb-6 leading-[1.1] text-foreground">
                       {t.home.storyTitle1[lang]} <span className="italic">{t.home.storyTitle2[lang]}</span> KiKi
                     </h2>
                     <div className="w-12 h-px bg-primary/40 mb-6" />
-                    <p className="text-foreground/65 font-light leading-[2] text-sm mb-5">
+                    <p className="text-foreground/85 font-light leading-[1.9] text-[15px] mb-5">
                       {t.home.storyParagraph1[lang]}
                     </p>
-                    <p className="text-foreground/65 font-light leading-[2] text-sm mb-6">
+                    <p className="text-foreground/85 font-light leading-[1.9] text-[15px] mb-6">
                       {t.home.storyParagraph2[lang]}
                     </p>
-                    <p className="font-display text-base italic text-primary/70 leading-relaxed">
+                    <p className="font-display text-base italic text-primary leading-relaxed">
                       {t.home.storyPhilosophy[lang]}
                     </p>
                   </div>

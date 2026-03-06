@@ -67,8 +67,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             ))}
           </div>
 
-          {/* Center logo */}
-          <Link to="/" className="transition-opacity hover:opacity-80 lg:absolute lg:left-1/2 lg:-translate-x-1/2">
+          {/* Center logo — hidden on homepage hero */}
+          <Link to="/" className={cn(
+            "transition-all duration-500 hover:opacity-80 lg:absolute lg:left-1/2 lg:-translate-x-1/2",
+            location.pathname === "/" && !scrolled ? "opacity-0 pointer-events-none" : "opacity-100"
+          )}>
             <img src={logoImg} alt="KiKi" className={cn("w-auto transition-all duration-500", scrolled ? "h-8 md:h-10" : "h-10 md:h-14")} />
           </Link>
 
