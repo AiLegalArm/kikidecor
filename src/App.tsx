@@ -14,6 +14,7 @@ import Calculator from "./pages/Calculator";
 import About from "./pages/About";
 import Booking from "./pages/Booking";
 import Contact from "./pages/Contact";
+import InstagramPage from "./pages/Instagram";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
