@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Instagram, Mail, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logoImg from "@/assets/logo.png";
 
 const navLinks = [
   { name: "Главная", path: "/" },
@@ -40,11 +41,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
       >
         <nav className="container mx-auto flex items-center justify-between h-18 md:h-24 px-6 md:px-10">
-          <Link
-            to="/"
-            className="font-display text-2xl md:text-3xl font-light tracking-subtle text-foreground transition-colors"
-          >
-            Ki Ki<span className="text-gold-gradient font-medium">.</span>
+          <Link to="/" className="transition-opacity hover:opacity-80">
+            <img src={logoImg} alt="Ki Ki Decor" className="h-10 md:h-14 w-auto" />
           </Link>
 
           {/* Desktop nav */}
@@ -110,9 +108,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
             <div>
-              <h3 className="font-display text-4xl font-light text-background mb-5">
-                Ki Ki<span className="text-primary">.</span>
-              </h3>
+              <img src={logoImg} alt="Ki Ki Decor" className="h-12 w-auto brightness-0 invert opacity-80" />
               <p className="text-sm font-light leading-[1.8] text-background/50 max-w-xs">
                 Студия декора — творим волшебство. Оформление фасадов, входных групп, свадеб, праздников и фотозон по всей России.
               </p>
