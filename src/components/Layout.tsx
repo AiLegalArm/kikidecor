@@ -108,9 +108,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
             <div>
-              <h3 className="font-display text-4xl font-light text-background mb-5">
-                Ki Ki<span className="text-primary">.</span>
-              </h3>
+              <img src={logoImg} alt="Ki Ki Decor" className="h-12 w-auto brightness-0 invert opacity-80" />
               <p className="text-sm font-light leading-[1.8] text-background/50 max-w-xs">
                 Студия декора — творим волшебство. Оформление фасадов, входных групп, свадеб, праздников и фотозон по всей России.
               </p>
