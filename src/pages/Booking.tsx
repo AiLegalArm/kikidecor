@@ -137,6 +137,7 @@ const Booking = () => {
           eventType: result.data.eventType,
           date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
           guests: result.data.guests,
+          location: result.data.location,
           message: result.data.message,
           source: "booking",
         },
