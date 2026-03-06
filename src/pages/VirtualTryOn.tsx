@@ -118,14 +118,100 @@ const VirtualTryOn = () => {
           </h1>
           <p className="text-muted-foreground font-light text-xs sm:text-sm leading-relaxed max-w-lg mx-auto">
             {isRu
-              ? "Загрузите своё фото и выберите товар — AI покажет, как вещь будет смотреться на вас"
-              : "Upload your photo and select a product — AI will show how it looks on you"}
+              ? "Загрузите фото для AI-примерки или используйте 3D-модель для интерактивного просмотра"
+              : "Upload a photo for AI try-on or use a 3D mannequin for interactive fitting"}
           </p>
+
+          {/* Mode toggle */}
+          <div className="flex items-center justify-center gap-1 mt-6 border border-border/50 w-fit mx-auto p-1">
+            <button
+              onClick={() => setMode("photo")}
+              className={cn(
+                "px-5 py-2 text-[10px] uppercase tracking-wider transition-all duration-300",
+                mode === "photo" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Camera size={12} className="inline mr-1.5 -mt-0.5" />
+              {isRu ? "По фото" : "Photo AI"}
+            </button>
+            <button
+              onClick={() => setMode("3d")}
+              className={cn(
+                "px-5 py-2 text-[10px] uppercase tracking-wider transition-all duration-300",
+                mode === "3d" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Box size={12} className="inline mr-1.5 -mt-0.5" />
+              {isRu ? "3D модель" : "3D Model"}
+            </button>
+          </div>
         </motion.div>
       </section>
 
       <section className="py-10 sm:py-16 px-5 sm:px-6">
         <div className="max-w-5xl mx-auto">
+
+          {/* 3D Mode */}
+          {mode === "3d" && (
+            <div className="max-w-3xl mx-auto">
+              {(() => {
+                const mannequinProd = products?.find(p => p.id === mannequinProduct);
+                if (mannequinProd) {
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-6">
+                      <Mannequin3DViewer product={mannequinProd as any} />
+                      <div>
+                        <p className="overline text-primary mb-3">{isRu ? "Каталог" : "Catalog"}</p>
+                        <div className="grid grid-cols-2 gap-2 max-h-[500px] overflow-y-auto">
+                          {(products || []).filter(p => p.images?.length).map(p => (
+                            <button
+                              key={p.id}
+                              onClick={() => setMannequinProduct(p.id)}
+                              className={cn(
+                                "text-left border transition-colors",
+                                p.id === mannequinProduct ? "border-primary" : "border-border/30 hover:border-primary/50"
+                              )}
+                            >
+                              <div className="aspect-square bg-secondary/40 overflow-hidden">
+                                <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover" />
+                              </div>
+                              <div className="p-1.5">
+                                <p className="text-[9px] truncate">{isRu ? p.name : (p.name_en || p.name)}</p>
+                                <p className="text-[9px] text-muted-foreground">{p.price.toLocaleString()} ₽</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+                return (
+                  <div>
+                    <p className="overline text-primary mb-4 text-center">{isRu ? "Выберите товар для примерки" : "Select a product to try on"}</p>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                      {(products || []).filter(p => p.images?.length).map(p => (
+                        <button
+                          key={p.id}
+                          onClick={() => setMannequinProduct(p.id)}
+                          className="group text-left"
+                        >
+                          <div className="aspect-[3/4] bg-secondary/40 overflow-hidden border border-border/30 group-hover:border-primary/50 transition-colors">
+                            <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          </div>
+                          <p className="text-[10px] mt-1 truncate font-medium">{isRu ? p.name : (p.name_en || p.name)}</p>
+                          <p className="text-[10px] text-muted-foreground">{p.price.toLocaleString()} ₽</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Photo AI Mode */}
+          {mode === "photo" && (<>
 
           {/* Result view */}
           <AnimatePresence mode="wait">
