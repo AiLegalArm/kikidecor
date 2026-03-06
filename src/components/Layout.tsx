@@ -180,15 +180,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       {/* ── Footer (hidden on homepage) ── */}
       {location.pathname !== "/" && (
-      <footer className="bg-foreground text-background/60">
+      <footer className="bg-foreground text-background/80">
         <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
         <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
             {/* Brand */}
             <div className="lg:col-span-4">
-              <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-60 mb-6" />
-              <p className="font-display text-lg italic font-light text-background/30 leading-relaxed mb-8">
+              <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-80 mb-6" />
+              <p className="font-display text-lg italic font-light text-background/60 leading-relaxed mb-8">
                 {t.footer.tagline[lang]}
               </p>
               <div className="flex items-center gap-4">
