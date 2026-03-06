@@ -100,9 +100,81 @@ export type Database = {
           },
         ]
       }
+      communication_log: {
+        Row: {
+          created_at: string
+          customer_id: string
+          id: string
+          summary: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          id?: string
+          summary: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          id?: string
+          summary?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_log_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string
+          preferences: Json | null
+          source: string | null
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone: string
+          preferences?: Json | null
+          source?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string
+          preferences?: Json | null
+          source?: string | null
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_leads: {
         Row: {
           created_at: string
+          customer_id: string | null
           email: string
           event_date: string | null
           event_type: string
@@ -117,6 +189,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          customer_id?: string | null
           email: string
           event_date?: string | null
           event_type: string
@@ -131,6 +204,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          customer_id?: string | null
           email?: string
           event_date?: string | null
           event_type?: string
@@ -143,7 +217,15 @@ export type Database = {
           phone?: string
           status?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "event_leads_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       instagram_posts: {
         Row: {

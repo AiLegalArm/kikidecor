@@ -19,6 +19,7 @@ import AdminLogin from "@/components/AdminLogin";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
+import AdminCustomers from "@/components/admin/AdminCustomers";
 import type { Session } from "@supabase/supabase-js";
 
 type Lead = {
@@ -43,10 +44,11 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "products" | "calendar" | "orders" | "instagram" | "ai" | "analytics";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ai" | "analytics";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "leads", label: "Лиды", icon: Users },
+  { key: "customers", label: "Клиенты", icon: Users },
   { key: "products", label: "Товары", icon: ShoppingBag },
   { key: "orders", label: "Заказы", icon: ShoppingBag },
   { key: "calendar", label: "Календарь", icon: CalendarDays },
@@ -306,6 +308,9 @@ const Admin = () => {
               )}
             </>
           )}
+
+          {/* ═══ CUSTOMERS ═══ */}
+          {section === "customers" && <AdminCustomers />}
 
           {/* ═══ PRODUCTS ═══ */}
           {section === "products" && <AdminProducts />}
