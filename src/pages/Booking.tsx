@@ -128,6 +128,7 @@ const Booking = () => {
       guests: result.data.guests ? parseInt(result.data.guests) : null,
       message: fullMessage || null,
       status: "new",
+      booking_type: "decor",
     });
 
     try {

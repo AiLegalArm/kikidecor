@@ -173,6 +173,7 @@ export type Database = {
       }
       event_leads: {
         Row: {
+          booking_type: string
           created_at: string
           customer_id: string | null
           email: string
@@ -188,6 +189,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          booking_type?: string
           created_at?: string
           customer_id?: string | null
           email: string
@@ -203,6 +205,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          booking_type?: string
           created_at?: string
           customer_id?: string | null
           email?: string

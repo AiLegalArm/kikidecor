@@ -1,0 +1,1 @@
+ALTER TABLE public.event_leads ADD COLUMN IF NOT EXISTS booking_type text NOT NULL DEFAULT 'decor';

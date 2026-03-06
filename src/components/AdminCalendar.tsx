@@ -28,6 +28,7 @@ type Lead = {
   status: string;
   notes: string | null;
   created_at: string;
+  booking_type: string;
 };
 
 type BlockedDate = {
@@ -59,6 +60,7 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
   const [editForm, setEditForm] = useState({ name: "", phone: "", email: "", event_type: "", location: "", guests: "", notes: "" });
   const [blockReason, setBlockReason] = useState("");
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState<"all" | "decor" | "showroom">("all");
 
   const fetchData = async () => {
     setLoading(true);
@@ -73,17 +75,22 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
 
   useEffect(() => { fetchData(); }, []);
 
-  // Group leads by date
+  // Group leads by date (filtered by type)
+  const filteredLeads = useMemo(() =>
+    typeFilter === "all" ? leads : leads.filter((l) => l.booking_type === typeFilter),
+    [leads, typeFilter]
+  );
+
   const leadsByDate = useMemo(() => {
     const map: Record<string, Lead[]> = {};
-    leads.forEach((l) => {
+    filteredLeads.forEach((l) => {
       if (l.event_date) {
         if (!map[l.event_date]) map[l.event_date] = [];
         map[l.event_date].push(l);
       }
     });
     return map;
-  }, [leads]);
+  }, [filteredLeads]);
 
   const blockedDateSet = useMemo(
     () => new Set(blockedDates.map((b) => b.blocked_date)),
@@ -215,9 +222,31 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
 
   return (
     <div className="bg-background border border-border p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <CalendarDays size={22} strokeWidth={1.5} className="text-primary" />
-        <h2 className="font-display text-xl font-light">Календарь мероприятий</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <CalendarDays size={22} strokeWidth={1.5} className="text-primary" />
+          <h2 className="font-display text-xl font-light">Календарь мероприятий</h2>
+        </div>
+        <div className="flex items-center gap-0 border border-border">
+          {([
+            { value: "all", label: "Все" },
+            { value: "decor", label: "Декор" },
+            { value: "showroom", label: "Showroom" },
+          ] as const).map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setTypeFilter(f.value)}
+              className={cn(
+                "px-3 py-1.5 text-[10px] uppercase tracking-wider transition-colors",
+                typeFilter === f.value
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -317,7 +346,17 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="font-medium text-sm">{lead.name}</p>
-                          <p className="text-xs text-muted-foreground">{lead.event_type}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs text-muted-foreground">{lead.event_type}</p>
+                            <span className={cn(
+                              "text-[9px] uppercase tracking-wider px-1.5 py-0 border rounded-full font-medium",
+                              lead.booking_type === "showroom"
+                                ? "border-accent text-accent-foreground bg-accent/30"
+                                : "border-primary/30 text-primary bg-primary/10"
+                            )}>
+                              {lead.booking_type === "showroom" ? "Showroom" : "Декор"}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1">
                           <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusColor(lead.status)}`}>
