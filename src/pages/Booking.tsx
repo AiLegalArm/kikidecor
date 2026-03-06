@@ -13,10 +13,30 @@ const Booking = () => {
     name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Спасибо! Мы свяжемся с вами в течение 24 часов.");
-    setFormData({ name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "" });
+    setSubmitting(true);
+    const { error } = await supabase.from("event_leads").insert({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      event_type: formData.eventType,
+      event_date: formData.date || null,
+      location: null,
+      guests: formData.guests ? parseInt(formData.guests) : null,
+      message: formData.message || null,
+      status: "new",
+    });
+    setSubmitting(false);
+    if (error) {
+      console.error(error);
+      toast.error("Ошибка отправки. Попробуйте позже.");
+    } else {
+      toast.success("Спасибо! Мы свяжемся с вами в течение 24 часов.");
+      setFormData({ name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "" });
+    }
   };
 
   const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
