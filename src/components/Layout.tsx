@@ -41,11 +41,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
       >
         <nav className="container mx-auto flex items-center justify-between h-18 md:h-24 px-6 md:px-10">
-          <Link
-            to="/"
-            className="font-display text-2xl md:text-3xl font-light tracking-subtle text-foreground transition-colors"
-          >
-            Ki Ki<span className="text-gold-gradient font-medium">.</span>
+          <Link to="/" className="transition-opacity hover:opacity-80">
+            <img src={logoImg} alt="Ki Ki Decor" className="h-10 md:h-14 w-auto" />
           </Link>
 
           {/* Desktop nav */}
