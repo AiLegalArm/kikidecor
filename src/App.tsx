@@ -31,6 +31,7 @@ const queryClient = new QueryClient();
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  usePageTracking();
   return (
     <Layout>
       <AnimatePresence mode="wait">
