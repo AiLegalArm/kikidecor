@@ -22,6 +22,7 @@ import Shop from "./pages/Shop";
 import ProductPage from "./pages/ProductPage";
 import CheckoutPage from "./pages/Checkout";
 import Lookbook from "./pages/Lookbook";
+import Stylist from "./pages/Stylist";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
