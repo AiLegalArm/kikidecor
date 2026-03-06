@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone } from "lucide-react";
+import { Menu, X, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoImg from "@/assets/logo.png";
 
 const navLinks = [
   { name: "Главная", path: "/" },
+  { name: "Decor Studio", path: "/decor" },
+  { name: "Showroom", path: "/showroom" },
   { name: "Портфолио", path: "/portfolio" },
-  { name: "Услуги", path: "/services" },
-  { name: "Пакеты", path: "/packages" },
+  { name: "Shop", path: "/shop" },
   { name: "О нас", path: "/about" },
-  { name: "Заявка", path: "/booking" },
-  { name: "Instagram", path: "/instagram" },
   { name: "Контакты", path: "/contact" },
 ];
 
@@ -26,7 +25,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close menu on route change
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   return (
@@ -36,13 +34,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
           scrolled
-            ? "bg-background/95 backdrop-blur-xl border-b border-border/30 shadow-[0_1px_20px_-8px_hsl(var(--foreground)/0.06)]"
+            ? "bg-background/95 backdrop-blur-xl border-b border-border/30 shadow-[0_1px_20px_-8px_hsl(0_0%_8%/0.06)]"
             : "bg-transparent border-b border-transparent"
         )}
       >
         <nav className="container mx-auto flex items-center justify-between h-18 md:h-24 px-6 md:px-10">
           <Link to="/" className="transition-opacity hover:opacity-80">
-            <img src={logoImg} alt="Ki Ki Decor" className="h-10 md:h-14 w-auto" />
+            <img src={logoImg} alt="KiKi" className="h-10 md:h-14 w-auto" />
           </Link>
 
           {/* Desktop nav */}
@@ -106,13 +104,35 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       {/* Footer */}
       <footer className="bg-foreground text-background/70">
         <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            <div>
-              <img src={logoImg} alt="Ki Ki Decor" className="h-12 w-auto brightness-0 invert opacity-80" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-80 mb-5" />
               <p className="text-sm font-light leading-[1.8] text-background/50 max-w-xs">
-                Студия декора — творим волшебство. Оформление фасадов, входных групп, свадеб, праздников и фотозон по всей России.
+                Премиальный бренд, объединяющий студию декора и шоурум одежды. Создаём красоту в каждой детали.
               </p>
             </div>
+
+            {/* Divisions */}
+            <div>
+              <h4 className="overline text-background/30 mb-6">Направления</h4>
+              <div className="flex flex-col gap-3.5">
+                <Link to="/decor" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
+                  KiKi Decor Studio
+                </Link>
+                <Link to="/showroom" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
+                  KiKi Showroom
+                </Link>
+                <Link to="/portfolio" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
+                  Портфолио
+                </Link>
+                <Link to="/shop" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
+                  Shop
+                </Link>
+              </div>
+            </div>
+
+            {/* Navigation */}
             <div>
               <h4 className="overline text-background/30 mb-6">Навигация</h4>
               <div className="flex flex-col gap-3.5">
@@ -127,8 +147,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 ))}
               </div>
             </div>
+
+            {/* Contact */}
             <div>
-              <h4 className="overline text-background/30 mb-6">Свяжитесь с нами</h4>
+              <h4 className="overline text-background/30 mb-6">Связаться</h4>
               <div className="flex flex-col gap-4 text-sm font-light text-background/50">
                 <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-300">
                   <Mail size={14} strokeWidth={1.5} /> info@kikidecor.ru
@@ -139,12 +161,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-primary transition-colors duration-300">
                   <Instagram size={14} strokeWidth={1.5} /> @ki_ki_decor
                 </a>
+                <span className="flex items-center gap-3">
+                  <MapPin size={14} strokeWidth={1.5} /> Ростов-на-Дону · Геленджик
+                </span>
               </div>
             </div>
           </div>
           <div className="border-t border-background/8 mt-16 pt-10 text-center">
             <p className="overline text-background/25">
-              © {new Date().getFullYear()} Ki Ki Decor. Все права защищены.
+              © {new Date().getFullYear()} KiKi. Все права защищены.
             </p>
           </div>
         </div>
