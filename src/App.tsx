@@ -14,6 +14,7 @@ import Calculator from "./pages/Calculator";
 import About from "./pages/About";
 import Booking from "./pages/Booking";
 import Contact from "./pages/Contact";
+import InstagramPage from "./pages/Instagram";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const AnimatedRoutes = () => {
           <Route path="/about" element={<PageTransition><About /></PageTransition>} />
           <Route path="/booking" element={<PageTransition><Booking /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          <Route path="/instagram" element={<PageTransition><InstagramPage /></PageTransition>} />
           <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>

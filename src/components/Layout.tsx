@@ -10,6 +10,7 @@ const navLinks = [
   { name: "Пакеты", path: "/packages" },
   { name: "О нас", path: "/about" },
   { name: "Заявка", path: "/booking" },
+  { name: "Instagram", path: "/instagram" },
   { name: "Контакты", path: "/contact" },
 ];
 
