@@ -9,6 +9,7 @@ import heroShowroom from "@/assets/hero-showroom.jpg";
 import logoImg from "@/assets/logo.png";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
 import LifestyleGallery from "@/components/LifestyleGallery";
+import SignatureDecor from "@/components/SignatureDecor";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 25 },
