@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight, Loader2, Shirt, ShoppingBag, Plus, Heart } from "lucide-react";
+import { Sparkles, ArrowRight, Loader2, Shirt, ShoppingBag, Plus, Heart, Camera } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import StylePhotoAnalyzer from "@/components/StylePhotoAnalyzer";
 
 const occasions = {
   ru: ["Свидание", "Деловая встреча", "Свадьба", "Вечеринка", "На каждый день", "Путешествие"],
@@ -47,6 +48,7 @@ const AIStylist = () => {
   const { addItem } = useCart();
   const isRu = lang === "ru";
 
+  const [mode, setMode] = useState<"preferences" | "photo">("preferences");
   const [occasion, setOccasion] = useState("");
   const [style, setStyle] = useState("");
   const [colors, setColors] = useState("");
@@ -135,38 +137,66 @@ const AIStylist = () => {
           </h1>
           <p className="text-muted-foreground font-light text-xs sm:text-sm leading-relaxed max-w-md mx-auto">
             {isRu
-              ? "Расскажите о событии — и наш AI подберёт идеальный образ из коллекции KiKi Showroom"
-              : "Tell us about your event — our AI will curate the perfect look from KiKi Showroom"}
+              ? "Расскажите о событии или загрузите фото — и наш AI подберёт идеальный образ из коллекции KiKi Showroom"
+              : "Tell us about your event or upload a photo — our AI will curate the perfect look from KiKi Showroom"}
           </p>
+
+          {/* Mode toggle */}
+          <div className="flex items-center justify-center gap-1 mt-6 border border-border/50 w-fit mx-auto p-1">
+            <button
+              onClick={() => setMode("preferences")}
+              className={cn(
+                "px-5 py-2 text-[10px] uppercase tracking-wider transition-all duration-300",
+                mode === "preferences" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Sparkles size={12} className="inline mr-1.5 -mt-0.5" />
+              {isRu ? "По параметрам" : "By preferences"}
+            </button>
+            <button
+              onClick={() => setMode("photo")}
+              className={cn(
+                "px-5 py-2 text-[10px] uppercase tracking-wider transition-all duration-300",
+                mode === "photo" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Camera size={12} className="inline mr-1.5 -mt-0.5" />
+              {isRu ? "По фото" : "By photo"}
+            </button>
+          </div>
         </motion.div>
       </section>
 
-      {/* Input */}
+      {/* Content */}
       <section className="py-10 sm:py-16 px-5 sm:px-6">
-        <div className="max-w-2xl mx-auto">
-          <ChipSelector label={isRu ? "Повод" : "Occasion"} options={isRu ? occasions.ru : occasions.en} value={occasion} onChange={setOccasion} />
-          <ChipSelector label={isRu ? "Стиль" : "Style"} options={isRu ? styles.ru : styles.en} value={style} onChange={setStyle} />
-          <ChipSelector label={isRu ? "Цветовая гамма" : "Color palette"} options={isRu ? colorPalettes.ru : colorPalettes.en} value={colors} onChange={setColors} />
-          <ChipSelector label={isRu ? "Бюджет" : "Budget"} options={isRu ? budgetRanges.ru : budgetRanges.en} value={budget} onChange={setBudget} />
+        {mode === "photo" ? (
+          <StylePhotoAnalyzer />
+        ) : (
+          <div className="max-w-2xl mx-auto">
+            <ChipSelector label={isRu ? "Повод" : "Occasion"} options={isRu ? occasions.ru : occasions.en} value={occasion} onChange={setOccasion} />
+            <ChipSelector label={isRu ? "Стиль" : "Style"} options={isRu ? styles.ru : styles.en} value={style} onChange={setStyle} />
+            <ChipSelector label={isRu ? "Цветовая гамма" : "Color palette"} options={isRu ? colorPalettes.ru : colorPalettes.en} value={colors} onChange={setColors} />
+            <ChipSelector label={isRu ? "Бюджет" : "Budget"} options={isRu ? budgetRanges.ru : budgetRanges.en} value={budget} onChange={setBudget} />
 
-          <motion.button
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            whileTap={{ scale: 0.97 }}
-            className="w-full mt-4 py-3.5 sm:py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.3em] font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-primary hover:text-primary-foreground transition-all duration-500 flex items-center justify-center gap-3"
-          >
-            {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <><Sparkles size={14} /> {isRu ? "Подобрать образ" : "Find my look"}</>
-            )}
-          </motion.button>
-        </div>
+            <motion.button
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              whileTap={{ scale: 0.97 }}
+              className="w-full mt-4 py-3.5 sm:py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.3em] font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-primary hover:text-primary-foreground transition-all duration-500 flex items-center justify-center gap-3"
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <><Sparkles size={14} /> {isRu ? "Подобрать образ" : "Find my look"}</>
+              )}
+            </motion.button>
+          </div>
+        )}
       </section>
 
-      {/* Results */}
+      {/* Preferences mode results */}
       <AnimatePresence>
-        {hasResult && (
+        {mode === "preferences" && hasResult && (
           <motion.section
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
