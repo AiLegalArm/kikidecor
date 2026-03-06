@@ -239,8 +239,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Contact */}
             <div className="lg:col-span-4">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/20 mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
-              <div className="flex flex-col gap-4 text-sm font-light text-background/35">
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
+              <div className="flex flex-col gap-4 text-sm font-light text-background/70">
                 <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
                   <Mail size={14} strokeWidth={1.5} className="opacity-50" /> info@kikidecor.ru
                 </a>
