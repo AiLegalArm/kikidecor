@@ -256,4 +256,11 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+export default function ProductPageWithPopup() {
+  return (
+    <>
+      <ProductPage />
+      <ExitIntentPopup offer="showroom" />
+    </>
+  );
+}

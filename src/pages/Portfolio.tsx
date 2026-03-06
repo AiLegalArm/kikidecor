@@ -424,4 +424,11 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
   );
 };
 
-export default Portfolio;
+export default function PortfolioWithPopup() {
+  return (
+    <>
+      <Portfolio />
+      <ExitIntentPopup offer="decor" />
+    </>
+  );
+}
