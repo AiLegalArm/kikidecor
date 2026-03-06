@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.analyze-venue]
 verify_jwt = false
+
+[functions.generate-decor-concept]
+verify_jwt = false
