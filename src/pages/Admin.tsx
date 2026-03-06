@@ -195,11 +195,17 @@ const Admin = () => {
       <title>CRM — Ki Ki Decor</title>
 
       {/* Header */}
-      <div className="bg-background border-b border-border px-6 py-5">
-        <h1 className="font-display text-2xl md:text-3xl font-light">
-          CRM <span className="text-primary">Панель</span>
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">Управление заявками Ki Ki Decor</p>
+      <div className="bg-background border-b border-border px-6 py-5 flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl md:text-3xl font-light">
+            CRM <span className="text-primary">Панель</span>
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Управление заявками Ki Ki Decor</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-none gap-2 text-xs uppercase tracking-wider">
+          <LogOut size={14} />
+          Выйти
+        </Button>
       </div>
 
       {/* Instagram Import Section */}
