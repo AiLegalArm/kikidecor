@@ -14,6 +14,7 @@ const serviceImages = [themedImg, weddingImg, birthdayImg, detailImg, proposalIm
 const Services = () => {
   const { lang, t } = useLanguage();
   const s = t.services;
+  const a = t.about;
 
   return (
     <>
@@ -31,21 +32,38 @@ const Services = () => {
         </div>
       </section>
 
+      {/* About KiKi Decor intro */}
+      <section className="px-6 md:px-10 pb-16 md:pb-24">
+        <div className="container mx-auto max-w-3xl text-center">
+          <ScrollReveal>
+            <p className="text-foreground/80 font-light text-sm md:text-base leading-[1.9] mb-4">
+              {a.heroParagraph1[lang]}
+            </p>
+            <p className="text-foreground/60 font-light text-sm leading-[1.9]">
+              {a.heroParagraph2[lang]}
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* Services grid */}
       <section className="px-6 md:px-10 pb-24 md:pb-36">
         <div className="container mx-auto max-w-6xl">
+          <ScrollReveal>
+            <h2 className="font-display text-3xl md:text-4xl font-light text-center mb-12">{a.ourServices[lang]}</h2>
+          </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {s.items.map((service, i) => (
               <ScrollReveal key={i} delay={i * 80}>
                 <div className="group relative overflow-hidden aspect-[4/5] cursor-pointer">
                   <img src={serviceImages[i]} alt={service.title[lang]} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.05]" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/40 to-foreground/10 transition-all duration-700 group-hover:from-foreground/90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-all duration-700 group-hover:from-black/95" />
                   <div className="absolute bottom-0 left-0 right-0 p-7 md:p-8">
-                    <h2 className="font-display text-2xl md:text-3xl font-light text-background mb-2">{service.title[lang]}</h2>
-                    <p className="text-xs text-background/40 font-light leading-relaxed mb-4 max-w-xs opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">{service.desc[lang]}</p>
+                    <h2 className="font-display text-2xl md:text-3xl font-light text-white mb-2">{service.title[lang]}</h2>
+                    <p className="text-sm text-white/70 font-light leading-relaxed mb-4 max-w-xs">{service.desc[lang]}</p>
                     <div className="flex items-center justify-between">
                       <p className="font-display text-xl text-primary">{service.price[lang]}</p>
-                      <Link to="/booking" className="text-[9px] uppercase tracking-[0.25em] text-background/60 hover:text-background transition-colors duration-300 font-body">
+                      <Link to="/booking" className="text-[9px] uppercase tracking-[0.25em] text-white/80 hover:text-white transition-colors duration-300 font-body">
                         {s.order[lang]} →
                       </Link>
                     </div>
