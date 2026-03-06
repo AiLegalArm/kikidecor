@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2, LogOut } from "lucide-react";
+import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2, LogOut, LayoutGrid, List, Phone as PhoneIcon, MessageSquare, Mail as MailIcon, GripVertical } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminLogin from "@/components/AdminLogin";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
@@ -31,9 +31,12 @@ type Lead = {
 const STATUSES = [
   { value: "new", label: "Новая", color: "bg-blue-100 text-blue-800 border-blue-200" },
   { value: "contacted", label: "Связались", color: "bg-yellow-100 text-yellow-800 border-yellow-200" },
+  { value: "consultation", label: "Консультация", color: "bg-cyan-100 text-cyan-800 border-cyan-200" },
+  { value: "proposal", label: "КП отправлено", color: "bg-indigo-100 text-indigo-800 border-indigo-200" },
   { value: "booked", label: "Забронировано", color: "bg-green-100 text-green-800 border-green-200" },
+  { value: "order", label: "Заказ оформлен", color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
   { value: "completed", label: "Завершено", color: "bg-purple-100 text-purple-800 border-purple-200" },
-  { value: "cancelled", label: "Отменено", color: "bg-red-100 text-red-800 border-red-200" },
+  { value: "lost", label: "Потеряно", color: "bg-red-100 text-red-800 border-red-200" },
 ];
 
 const getStatusBadge = (status: string) => {
@@ -50,7 +53,10 @@ const Admin = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [editNotes, setEditNotes] = useState("");
+  const [viewMode, setViewMode] = useState<"pipeline" | "table">("pipeline");
+  const [allLeads, setAllLeads] = useState<Lead[]>([]);
   const [page, setPage] = useState(0);
+  const pipelineRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 20;
 
   // Instagram import state
@@ -79,6 +85,14 @@ const Admin = () => {
 
   const fetchLeads = async () => {
     setLoading(true);
+    // For pipeline: fetch all leads (up to 1000)
+    const { data: all, error: allErr } = await supabase
+      .from("event_leads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!allErr) setAllLeads(all || []);
+
+    // For table view with filters
     let query = supabase
       .from("event_leads")
       .select("*")
@@ -288,93 +302,122 @@ const Admin = () => {
         <AdminCalendar onLeadUpdated={fetchLeads} />
       </div>
 
-      {/* Toolbar */}
+      {/* View Toggle + Toolbar */}
       <div className="px-6 py-4 flex flex-col md:flex-row gap-3 items-start md:items-center">
+        <div className="flex items-center gap-0 border border-border">
+          <button onClick={() => setViewMode("pipeline")} className={`px-3 py-2 text-xs transition-colors ${viewMode === "pipeline" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}>
+            <LayoutGrid size={14} />
+          </button>
+          <button onClick={() => setViewMode("table")} className={`px-3 py-2 text-xs transition-colors ${viewMode === "table" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}>
+            <List size={14} />
+          </button>
+        </div>
+
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Поиск по имени, email, телефону..."
-              className="pl-9 rounded-none border-border"
-            />
+            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Поиск по имени, email, телефону..." className="pl-9 rounded-none border-border" />
           </div>
-          <Button type="submit" variant="outline" className="rounded-none">
-            <Search size={16} />
-          </Button>
+          <Button type="submit" variant="outline" className="rounded-none"><Search size={16} /></Button>
         </form>
 
-        <div className="flex items-center gap-2">
-          <Filter size={16} className="text-muted-foreground" />
-          <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(0); }}>
-            <SelectTrigger className="w-[180px] rounded-none border-border">
-              <SelectValue placeholder="Все статусы" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Все статусы</SelectItem>
-              {STATUSES.map((s) => (
-                <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {viewMode === "table" && (
+          <div className="flex items-center gap-2">
+            <Filter size={16} className="text-muted-foreground" />
+            <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(0); }}>
+              <SelectTrigger className="w-[180px] rounded-none border-border"><SelectValue placeholder="Все статусы" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все статусы</SelectItem>
+                {STATUSES.map((s) => (<SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
-      {/* Table */}
-      <div className="px-6">
-        <div className="bg-background border border-border overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Имя</th>
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden md:table-cell">Телефон</th>
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden lg:table-cell">Email</th>
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Тип</th>
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden md:table-cell">Дата</th>
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Статус</th>
-                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Действия</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Загрузка...</td></tr>
-              ) : leads.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Заявок не найдено</td></tr>
-              ) : (
-                leads.map((lead) => (
-                  <tr key={lead.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3 font-medium">{lead.name}</td>
-                    <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{lead.phone}</td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{lead.email}</td>
-                    <td className="px-4 py-3">{lead.event_type}</td>
-                    <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">
-                      {lead.event_date ? new Date(lead.event_date).toLocaleDateString("ru-RU") : "—"}
-                    </td>
-                    <td className="px-4 py-3">{getStatusBadge(lead.status)}</td>
-                    <td className="px-4 py-3">
-                      <Button variant="ghost" size="sm" onClick={() => openDetail(lead)}>
-                        <Eye size={16} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Pipeline View */}
+      {viewMode === "pipeline" && (
+        <div className="px-6 pb-6">
+          <div ref={pipelineRef} className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: "thin" }}>
+            {STATUSES.map((stage) => {
+              const stageLeads = allLeads.filter((l) => l.status === stage.value);
+              return (
+                <div key={stage.value} className="min-w-[260px] w-[260px] flex-shrink-0 bg-background border border-border flex flex-col max-h-[70vh]">
+                  <div className="px-3 py-3 border-b border-border flex items-center justify-between">
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${stage.color}`}>{stage.label}</span>
+                    <span className="text-[10px] text-muted-foreground font-medium bg-muted px-1.5 py-0.5">{stageLeads.length}</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                    {loading && stageLeads.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground text-xs">Загрузка...</div>
+                    ) : stageLeads.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground/40 text-[10px] uppercase tracking-wider">Пусто</div>
+                    ) : (
+                      stageLeads.map((lead) => (
+                        <button key={lead.id} onClick={() => openDetail(lead)} className="w-full text-left p-3 border border-border/60 bg-card hover:border-primary/40 transition-colors group">
+                          <p className="text-sm font-medium truncate">{lead.name}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">{lead.event_type}</p>
+                          {lead.event_date && <p className="text-[10px] text-muted-foreground mt-1.5">{new Date(lead.event_date).toLocaleDateString("ru-RU")}</p>}
+                          <div className="flex gap-1.5 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href={`tel:${lead.phone}`} onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-primary hover:text-primary transition-colors rounded-sm"><PhoneIcon size={11} /></a>
+                            <a href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Здравствуйте, ${lead.name}! Это KiKi.`)}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-green-500 hover:text-green-600 transition-colors rounded-sm"><MessageSquare size={11} /></a>
+                            <a href={`mailto:${lead.email}`} onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-primary hover:text-primary transition-colors rounded-sm"><MailIcon size={11} /></a>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
+      )}
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between py-4">
-          <Button variant="outline" size="sm" className="rounded-none" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
-            <ChevronLeft size={16} /> Назад
-          </Button>
-          <span className="text-sm text-muted-foreground">Страница {page + 1}</span>
-          <Button variant="outline" size="sm" className="rounded-none" disabled={leads.length < PAGE_SIZE} onClick={() => setPage((p) => p + 1)}>
-            Вперёд <ChevronRight size={16} />
-          </Button>
+      {/* Table View */}
+      {viewMode === "table" && (
+        <div className="px-6">
+          <div className="bg-background border border-border overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Имя</th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden md:table-cell">Телефон</th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden lg:table-cell">Email</th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Тип</th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden md:table-cell">Дата</th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Статус</th>
+                  <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Загрузка...</td></tr>
+                ) : leads.length === 0 ? (
+                  <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Заявок не найдено</td></tr>
+                ) : (
+                  leads.map((lead) => (
+                    <tr key={lead.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3 font-medium">{lead.name}</td>
+                      <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{lead.phone}</td>
+                      <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{lead.email}</td>
+                      <td className="px-4 py-3">{lead.event_type}</td>
+                      <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{lead.event_date ? new Date(lead.event_date).toLocaleDateString("ru-RU") : "—"}</td>
+                      <td className="px-4 py-3">{getStatusBadge(lead.status)}</td>
+                      <td className="px-4 py-3"><Button variant="ghost" size="sm" onClick={() => openDetail(lead)}><Eye size={16} /></Button></td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-between py-4">
+            <Button variant="outline" size="sm" className="rounded-none" disabled={page === 0} onClick={() => setPage((p) => p - 1)}><ChevronLeft size={16} /> Назад</Button>
+            <span className="text-sm text-muted-foreground">Страница {page + 1}</span>
+            <Button variant="outline" size="sm" className="rounded-none" disabled={leads.length < PAGE_SIZE} onClick={() => setPage((p) => p + 1)}>Вперёд <ChevronRight size={16} /></Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Detail Dialog */}
       <Dialog open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>
