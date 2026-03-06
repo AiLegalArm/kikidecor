@@ -279,6 +279,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       >
         <ArrowUp size={16} strokeWidth={1.5} />
       </button>
+
+      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   );
 };
