@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import StylePhotoAnalyzer from "@/components/StylePhotoAnalyzer";
+import { trackAIInteraction } from "@/hooks/useAITracking";
 
 const occasions = {
   ru: ["Свидание", "Деловая встреча", "Свадьба", "Вечеринка", "На каждый день", "Путешествие"],
@@ -75,6 +76,15 @@ const AIStylist = () => {
 
       setOutfits(data?.outfits || []);
       setHasResult(true);
+
+      // Track AI interaction
+      const productIds = (data?.outfits || []).flatMap((o: any) => (o.products || []).map((p: any) => p.id));
+      trackAIInteraction({
+        type: "stylist_preferences",
+        inputData: { occasion, style, colors, budget },
+        outputData: { outfitCount: data?.outfits?.length || 0 },
+        selectedProductIds: productIds,
+      });
     } catch (e: any) {
       console.error(e);
       toast.error(isRu ? "Ошибка. Попробуйте ещё раз." : "Error. Please try again.");
