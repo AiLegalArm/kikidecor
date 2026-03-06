@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
