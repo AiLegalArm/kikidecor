@@ -72,7 +72,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             "transition-all duration-500 hover:opacity-80 lg:absolute lg:left-1/2 lg:-translate-x-1/2",
             location.pathname === "/" && !scrolled ? "opacity-0 pointer-events-none" : "opacity-100"
           )}>
-            <img src={logoImg} alt="KiKi" className={cn("w-auto transition-all duration-500", scrolled ? "h-8 md:h-10" : "h-10 md:h-14")} />
+            <img src={logoImg} alt="KiKi" className={cn("w-auto transition-all duration-500", scrolled ? "h-12 md:h-14" : "h-14 md:h-18")} />
           </Link>
 
           {/* Right nav */}
