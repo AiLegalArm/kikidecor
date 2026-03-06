@@ -221,7 +221,7 @@ const Booking = () => {
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
             <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{b.overline[lang]}</p>
-            <h1 className="font-display text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{b.title[lang]}</h1>
+            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{b.title[lang]}</h1>
             <div className="gold-divider" />
             <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{b.subtitle[lang]}</p>
           </ScrollReveal>
