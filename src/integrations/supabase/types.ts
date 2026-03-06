@@ -35,6 +35,33 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_leads: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          interest: string
+          name: string
+          phone: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          interest: string
+          name: string
+          phone: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          interest?: string
+          name?: string
+          phone?: string
+        }
+        Relationships: []
+      }
       event_leads: {
         Row: {
           created_at: string
