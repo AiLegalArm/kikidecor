@@ -64,6 +64,14 @@ const OutfitGenerator = () => {
 
       setOutfits(data?.outfits || []);
       setGenerated(true);
+
+      const productIds = (data?.outfits || []).flatMap((o: any) => (o.items || []).map((i: any) => i.product?.id).filter(Boolean));
+      trackAIInteraction({
+        type: "outfit_generator",
+        inputData: { count: 4 },
+        outputData: { outfitCount: data?.outfits?.length || 0 },
+        selectedProductIds: productIds,
+      });
     } catch (e: any) {
       console.error(e);
       toast.error(isRu ? "Ошибка генерации. Попробуйте ещё раз." : "Generation failed. Please try again.");

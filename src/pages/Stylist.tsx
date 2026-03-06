@@ -76,6 +76,15 @@ const AIStylist = () => {
 
       setOutfits(data?.outfits || []);
       setHasResult(true);
+
+      // Track AI interaction
+      const productIds = (data?.outfits || []).flatMap((o: any) => (o.products || []).map((p: any) => p.id));
+      trackAIInteraction({
+        type: "stylist_preferences",
+        inputData: { occasion, style, colors, budget },
+        outputData: { outfitCount: data?.outfits?.length || 0 },
+        selectedProductIds: productIds,
+      });
     } catch (e: any) {
       console.error(e);
       toast.error(isRu ? "Ошибка. Попробуйте ещё раз." : "Error. Please try again.");

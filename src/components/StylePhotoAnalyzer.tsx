@@ -99,6 +99,15 @@ const StylePhotoAnalyzer = () => {
       setAnalysis(data?.analysis || null);
       setOutfits(data?.outfits || []);
       setHasResult(true);
+
+      const productIds = (data?.outfits || []).flatMap((o: any) => (o.products || []).map((p: any) => p.id));
+      trackAIInteraction({
+        type: "stylist_photo",
+        inputData: { analysis: data?.analysis },
+        outputData: { outfitCount: data?.outfits?.length || 0 },
+        selectedProductIds: productIds,
+        photoUrl: urlData.publicUrl,
+      });
     } catch (e: any) {
       console.error(e);
       toast.error(isRu ? "Ошибка анализа. Попробуйте ещё раз." : "Analysis failed. Please try again.");

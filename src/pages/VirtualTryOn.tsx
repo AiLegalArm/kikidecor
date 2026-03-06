@@ -85,6 +85,15 @@ const VirtualTryOn = () => {
 
       setResultUrl(data?.resultUrl || null);
       if (!data?.resultUrl) toast.error(isRu ? "Не удалось сгенерировать." : "Generation failed.");
+      else {
+        trackAIInteraction({
+          type: "virtual_tryon",
+          inputData: { productName: isRu ? product.name : (product.name_en || product.name) },
+          outputData: { resultUrl: data.resultUrl },
+          selectedProductIds: [product.id],
+          photoUrl: urlData.publicUrl,
+        });
+      }
     } catch (e: any) {
       console.error(e);
       toast.error(isRu ? "Ошибка. Попробуйте ещё раз." : "Error. Please try again.");
