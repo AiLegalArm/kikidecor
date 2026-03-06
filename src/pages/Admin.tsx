@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2, LogOut } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminLogin from "@/components/AdminLogin";
+import AdminAIGenerator from "@/components/AdminAIGenerator";
 import type { Session } from "@supabase/supabase-js";
 
 type Lead = {
