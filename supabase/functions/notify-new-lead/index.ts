@@ -180,6 +180,21 @@ ${message || "—"}
         ? `🎉 <b>Новая заявка на декор</b>\n\n👤 ${name}\n📞 ${phone || "—"}\n📧 ${email}\n🎪 ${eventType}\n📅 ${date || "—"}\n👥 ${guests || "—"} гостей\n📍 ${location || "—"}\n\n💬 ${message || "—"}`
         : `📩 <b>Новое сообщение с сайта</b>\n\n👤 ${name}\n📧 ${email}\n📝 ${subject || "—"}\n\n💬 ${message || "—"}`;
 
+      const cleanPhone = (phone || "").replace(/[^0-9]/g, "");
+      const inlineKeyboard: { text: string; url: string }[][] = [];
+
+      if (cleanPhone) {
+        inlineKeyboard.push([
+          { text: "📞 Позвонить", url: `tel:+${cleanPhone}` },
+          { text: "💬 WhatsApp", url: `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Здравствуйте, ${name}! Спасибо за заявку на ${eventType}. Давайте обсудим детали! — Ki Ki Decor`)}` },
+        ]);
+      }
+      if (email) {
+        inlineKeyboard.push([
+          { text: "✉️ Написать email", url: `mailto:${email}` },
+        ]);
+      }
+
       try {
         const tgRes = await fetch(
           `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -190,6 +205,9 @@ ${message || "—"}
               chat_id: TELEGRAM_CHAT_ID,
               text: tgMessage,
               parse_mode: "HTML",
+              reply_markup: inlineKeyboard.length > 0
+                ? { inline_keyboard: inlineKeyboard }
+                : undefined,
             }),
           }
         );
