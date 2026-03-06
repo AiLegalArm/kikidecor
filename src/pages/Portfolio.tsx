@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
