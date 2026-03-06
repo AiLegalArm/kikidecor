@@ -5,13 +5,11 @@ import { cn } from "@/lib/utils";
 import logoImg from "@/assets/logo.png";
 
 const navLinks = [
-  { name: "Главная", path: "/" },
+  { name: "Home", path: "/" },
   { name: "Decor Studio", path: "/decor" },
   { name: "Showroom", path: "/showroom" },
-  { name: "Портфолио", path: "/portfolio" },
-  { name: "Shop", path: "/shop" },
-  { name: "О нас", path: "/about" },
-  { name: "Контакты", path: "/contact" },
+  { name: "About", path: "/about" },
+  { name: "Contact", path: "/contact" },
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
