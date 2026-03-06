@@ -20,6 +20,7 @@ import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInstagramCommerce from "@/components/admin/AdminInstagramCommerce";
 import AdminInstagramAnalytics from "@/components/admin/AdminInstagramAnalytics";
 import AdminVenueAnalyzer from "@/components/admin/AdminVenueAnalyzer";
+import AdminAIInsights from "@/components/admin/AdminAIInsights";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCustomers from "@/components/admin/AdminCustomers";
