@@ -315,7 +315,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══ 4. LIFESTYLE GALLERY ═══ */}
+      {/* ═══ 4. SIGNATURE DECOR ═══ */}
+      <SignatureDecor />
+
+      {/* ═══ 5. LIFESTYLE GALLERY ═══ */}
       <LifestyleGallery />
 
       {/* ═══ 5. TESTIMONIALS ═══ */}
