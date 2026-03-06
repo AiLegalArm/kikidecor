@@ -15,6 +15,7 @@ const navLinks = [
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showTop, setShowTop] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
