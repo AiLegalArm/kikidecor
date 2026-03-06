@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactInfo = [
   { icon: Phone, label: "Телефон", value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
@@ -45,10 +46,44 @@ const quickButtons = [
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Сообщение отправлено! Мы свяжемся с вами в ближайшее время.");
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setSubmitting(true);
+
+    const { error } = await supabase.from("event_leads").insert({
+      name: form.name,
+      email: form.email,
+      phone: "",
+      event_type: "Обратная связь",
+      message: `${form.subject ? `[${form.subject}] ` : ""}${form.message}`,
+      status: "new",
+    });
+
+    // Trigger email notification
+    try {
+      await supabase.functions.invoke("notify-new-lead", {
+        body: {
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          source: "contact",
+        },
+      });
+    } catch (err) {
+      console.warn("Email notification failed:", err);
+    }
+
+    setSubmitting(false);
+    if (error) {
+      console.error(error);
+      toast.error("Ошибка отправки. Попробуйте позже.");
+    } else {
+      toast.success("Сообщение отправлено! Мы свяжемся с вами в ближайшее время.");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    }
   };
 
   const update = (f: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -154,8 +189,8 @@ const Contact = () => {
                   <label className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Сообщение *</label>
                   <Textarea value={form.message} onChange={update("message")} required rows={5} className="rounded-xl border-border bg-transparent focus:border-primary resize-none" />
                 </div>
-                <Button type="submit" className="w-full rounded-xl text-xs uppercase tracking-[0.12em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Отправить <ArrowRight size={14} className="ml-2" />
+                <Button type="submit" disabled={submitting} className="w-full rounded-xl text-xs uppercase tracking-[0.12em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
+                  {submitting ? "Отправка..." : "Отправить"} {!submitting && <ArrowRight size={14} className="ml-2" />}
                 </Button>
               </form>
             </ScrollReveal>
