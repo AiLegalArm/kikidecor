@@ -56,7 +56,7 @@ const Home = () => {
             >
               Роскошь в каждой детали
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-reveal px-4 sm:px-0" style={{ animationDelay: "1s" }}>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-reveal px-4 sm:px-0" style={{ animationDelay: "1.2s" }}>
               <Link to="/decor" className="group inline-flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
                 {t.home.exploreDecor[lang]}
                 <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
