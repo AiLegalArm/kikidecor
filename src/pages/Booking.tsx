@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
-const eventTypes = ["Wedding", "Birthday", "Proposal", "Themed Party", "Corporate", "Other"];
+const eventTypes = ["Свадьба", "День рождения", "Декор фасада", "Фотозона", "Входная группа", "Корпоратив", "Другое"];
 
 const Booking = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ const Booking = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll be in touch within 24 hours.");
+    toast.success("Спасибо! Мы свяжемся с вами в течение 24 часов.");
     setFormData({ name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "" });
   };
 
@@ -23,17 +23,17 @@ const Booking = () => {
 
   return (
     <>
-      <title>Book a Consultation | Élara Events</title>
-      <meta name="description" content="Book a consultation with Élara Events. Tell us about your dream event and let's create something beautiful together." />
+      <title>Заявка на декор | Ki Ki Decor</title>
+      <meta name="description" content="Оставьте заявку на декор — расскажите о вашем мероприятии и мы свяжемся для бесплатной консультации." />
 
       <section className="section-padding">
         <div className="container mx-auto max-w-2xl">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Get Started</p>
-            <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">Book a Consultation</h1>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Начнём</p>
+            <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">Заявка на декор</h1>
             <div className="gold-divider" />
             <p className="text-center text-muted-foreground font-light text-sm max-w-lg mx-auto mt-6 mb-12">
-              Tell us about your event and we'll reach out within 24 hours to schedule your complimentary consultation.
+              Расскажите о вашем мероприятии — мы свяжемся в течение 24 часов для бесплатной консультации.
             </p>
           </ScrollReveal>
 
@@ -41,7 +41,7 @@ const Booking = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Full Name *</label>
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Ваше имя *</label>
                   <Input value={formData.name} onChange={update("name")} required className="rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
                 <div>
@@ -49,40 +49,40 @@ const Booking = () => {
                   <Input type="email" value={formData.email} onChange={update("email")} required className="rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Phone</label>
-                  <Input value={formData.phone} onChange={update("phone")} className="rounded-none border-border bg-transparent focus:border-primary" />
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Телефон</label>
+                  <Input value={formData.phone} onChange={update("phone")} placeholder="+7 (___) ___-__-__" className="rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Event Type *</label>
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Тип мероприятия *</label>
                   <select
                     value={formData.eventType}
                     onChange={update("eventType")}
                     required
                     className="w-full h-10 px-3 border border-border bg-transparent text-sm font-body focus:outline-none focus:border-primary"
                   >
-                    <option value="">Select...</option>
+                    <option value="">Выберите...</option>
                     {eventTypes.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Event Date</label>
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Дата мероприятия</label>
                   <Input type="date" value={formData.date} onChange={update("date")} className="rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
                 <div>
-                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Estimated Guests</label>
-                  <Input value={formData.guests} onChange={update("guests")} placeholder="e.g. 50-100" className="rounded-none border-border bg-transparent focus:border-primary" />
+                  <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Количество гостей</label>
+                  <Input value={formData.guests} onChange={update("guests")} placeholder="например, 50-100" className="rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
               </div>
               <div>
-                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Budget Range</label>
-                <Input value={formData.budget} onChange={update("budget")} placeholder="e.g. $3,000 - $5,000" className="rounded-none border-border bg-transparent focus:border-primary" />
+                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Бюджет</label>
+                <Input value={formData.budget} onChange={update("budget")} placeholder="например, 30 000 - 50 000 ₽" className="rounded-none border-border bg-transparent focus:border-primary" />
               </div>
               <div>
-                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Tell Us About Your Vision *</label>
-                <Textarea value={formData.message} onChange={update("message")} required rows={5} placeholder="Describe your dream event..." className="rounded-none border-border bg-transparent focus:border-primary resize-none" />
+                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Расскажите о вашей идее *</label>
+                <Textarea value={formData.message} onChange={update("message")} required rows={5} placeholder="Опишите ваше мероприятие, пожелания по стилю и декору..." className="rounded-none border-border bg-transparent focus:border-primary resize-none" />
               </div>
               <Button type="submit" className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                Send Inquiry
+                Отправить заявку
               </Button>
             </form>
           </ScrollReveal>

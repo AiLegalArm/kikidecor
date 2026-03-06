@@ -4,13 +4,13 @@ import { Menu, X, Instagram, Mail, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Portfolio", path: "/portfolio" },
-  { name: "Services", path: "/services" },
-  { name: "Packages", path: "/packages" },
-  { name: "About", path: "/about" },
-  { name: "Booking", path: "/booking" },
-  { name: "Contact", path: "/contact" },
+  { name: "Главная", path: "/" },
+  { name: "Портфолио", path: "/portfolio" },
+  { name: "Услуги", path: "/services" },
+  { name: "Пакеты", path: "/packages" },
+  { name: "О нас", path: "/about" },
+  { name: "Заявка", path: "/booking" },
+  { name: "Контакты", path: "/contact" },
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -23,7 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border/50">
         <nav className="container mx-auto flex items-center justify-between h-16 md:h-20 px-5 md:px-8">
           <Link to="/" className="font-display text-2xl md:text-3xl font-semibold tracking-wide text-foreground">
-            Élara<span className="text-primary">.</span>
+            Ki Ki<span className="text-primary">.</span>
           </Link>
 
           {/* Desktop nav */}
@@ -46,7 +46,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="lg:hidden text-foreground p-2"
-            aria-label="Toggle menu"
+            aria-label="Меню"
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -83,14 +83,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div>
               <h3 className="font-display text-3xl font-semibold text-background mb-4">
-                Élara<span className="text-primary">.</span>
+                Ki Ki<span className="text-primary">.</span>
               </h3>
               <p className="text-sm font-light leading-relaxed text-background/60">
-                Crafting unforgettable moments through exquisite event decoration and styling.
+                Студия декора — творим волшебство. Оформление фасадов, входных групп, свадеб, праздников и фотозон по всей России.
               </p>
             </div>
             <div>
-              <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-background/40 mb-5">Quick Links</h4>
+              <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-background/40 mb-5">Навигация</h4>
               <div className="flex flex-col gap-3">
                 {navLinks.map((link) => (
                   <Link
@@ -104,22 +104,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </div>
             </div>
             <div>
-              <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-background/40 mb-5">Get in Touch</h4>
+              <h4 className="text-xs uppercase tracking-[0.2em] font-medium text-background/40 mb-5">Свяжитесь с нами</h4>
               <div className="flex flex-col gap-3 text-sm text-background/60">
-                <a href="mailto:hello@elaraevents.com" className="flex items-center gap-2 hover:text-primary transition-colors">
-                  <Mail size={14} /> hello@elaraevents.com
+                <a href="mailto:info@kikidecor.ru" className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <Mail size={14} /> info@kikidecor.ru
                 </a>
-                <a href="tel:+1234567890" className="flex items-center gap-2 hover:text-primary transition-colors">
-                  <Phone size={14} /> +1 (234) 567-890
+                <a href="tel:+79001234567" className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <Phone size={14} /> +7 (900) 123-45-67
                 </a>
-                <a href="#" className="flex items-center gap-2 hover:text-primary transition-colors">
-                  <Instagram size={14} /> @elaraevents
+                <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <Instagram size={14} /> @ki_ki_decor
                 </a>
               </div>
             </div>
           </div>
           <div className="border-t border-background/10 mt-12 pt-8 text-center text-xs text-background/30">
-            © {new Date().getFullYear()} Élara Events. All rights reserved.
+            © {new Date().getFullYear()} Ki Ki Decor. Все права защищены.
           </div>
         </div>
       </footer>
