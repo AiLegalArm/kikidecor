@@ -10,7 +10,7 @@ import { toast } from "sonner";
 const CheckoutPage = () => {
   const { lang } = useLanguage();
   const { items, total, updateQuantity, removeItem, clearCart } = useCart();
-  const [step, setStep] = useState<"cart" | "info" | "done">("cart");
+  const [step, setStep] = useState<string>("cart");
   const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", comment: "" });
   const [submitting, setSubmitting] = useState(false);
 
