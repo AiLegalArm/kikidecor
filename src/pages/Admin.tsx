@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, Filter, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 type Lead = {
   id: string;
@@ -47,6 +47,12 @@ const Admin = () => {
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 20;
 
+  // Instagram import state
+  const [igImporting, setIgImporting] = useState(false);
+  const [igSyncing, setIgSyncing] = useState(false);
+  const [igResult, setIgResult] = useState<{ success: boolean; synced?: number; error?: string } | null>(null);
+  const [igPostCount, setIgPostCount] = useState<number | null>(null);
+
   const fetchLeads = async () => {
     setLoading(true);
     let query = supabase
@@ -73,8 +79,16 @@ const Admin = () => {
     setLoading(false);
   };
 
+  const fetchIgCount = async () => {
+    const { count, error } = await supabase
+      .from("instagram_posts")
+      .select("*", { count: "exact", head: true });
+    if (!error && count !== null) setIgPostCount(count);
+  };
+
   useEffect(() => {
     fetchLeads();
+    fetchIgCount();
   }, [filterStatus, page]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -111,6 +125,34 @@ const Admin = () => {
     setEditNotes(lead.notes || "");
   };
 
+  const triggerInstagramSync = async (importAll: boolean) => {
+    const setter = importAll ? setIgImporting : setIgSyncing;
+    setter(true);
+    setIgResult(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("sync-instagram", {
+        body: { import_all: importAll },
+      });
+
+      if (error) throw error;
+
+      setIgResult(data);
+      if (data?.success) {
+        toast.success(`${importAll ? "Импорт" : "Синхронизация"} завершена: ${data.synced} постов`);
+        fetchIgCount();
+      } else {
+        toast.error(data?.error || "Ошибка синхронизации");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Ошибка подключения";
+      setIgResult({ success: false, error: msg });
+      toast.error(msg);
+    } finally {
+      setter(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-muted/30">
       <title>CRM — Ki Ki Decor</title>
@@ -121,6 +163,75 @@ const Admin = () => {
           CRM <span className="text-primary">Панель</span>
         </h1>
         <p className="text-sm text-muted-foreground mt-1">Управление заявками Ki Ki Decor</p>
+      </div>
+
+      {/* Instagram Import Section */}
+      <div className="px-6 py-6">
+        <div className="bg-background border border-border p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <Instagram size={22} strokeWidth={1.5} className="text-primary" />
+            <h2 className="font-display text-xl font-light">Instagram Контент</h2>
+            {igPostCount !== null && (
+              <span className="text-xs text-muted-foreground border border-border px-2 py-0.5">
+                {igPostCount} постов в базе
+              </span>
+            )}
+          </div>
+
+          <p className="text-sm text-muted-foreground mb-5 max-w-xl">
+            Импортируйте все исторические посты из Instagram или запустите быструю синхронизацию последних публикаций. Посты автоматически появятся в галерее.
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={() => triggerInstagramSync(true)}
+              disabled={igImporting || igSyncing}
+              className="rounded-none gap-2 btn-glow"
+            >
+              {igImporting ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Download size={16} />
+              )}
+              {igImporting ? "Импорт..." : "Импортировать весь контент"}
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => triggerInstagramSync(false)}
+              disabled={igImporting || igSyncing}
+              className="rounded-none gap-2"
+            >
+              {igSyncing ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <RefreshCw size={16} />
+              )}
+              {igSyncing ? "Синхронизация..." : "Быстрая синхронизация"}
+            </Button>
+          </div>
+
+          {/* Result feedback */}
+          {igResult && (
+            <div className={`mt-4 flex items-start gap-2 text-sm p-3 border ${
+              igResult.success
+                ? "bg-green-50 border-green-200 text-green-800"
+                : "bg-red-50 border-red-200 text-red-800"
+            }`}>
+              {igResult.success ? (
+                <CheckCircle2 size={16} className="mt-0.5 shrink-0" />
+              ) : (
+                <AlertCircle size={16} className="mt-0.5 shrink-0" />
+              )}
+              <span>
+                {igResult.success
+                  ? `Успешно синхронизировано ${igResult.synced} постов`
+                  : `Ошибка: ${igResult.error}`
+                }
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Toolbar */}

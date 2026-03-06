@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const INSTAGRAM_GRAPH_URL = "https://graph.instagram.com";
@@ -17,6 +17,18 @@ interface InstagramPost {
   permalink: string;
   like_count?: number;
   timestamp: string;
+}
+
+interface PagingCursors {
+  after?: string;
+}
+
+interface IGResponse {
+  data: InstagramPost[];
+  paging?: {
+    cursors?: PagingCursors;
+    next?: string;
+  };
 }
 
 Deno.serve(async (req) => {
@@ -34,22 +46,41 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Fetch latest posts from Instagram Graph API
-    const fields = "id,media_type,media_url,thumbnail_url,caption,permalink,like_count,timestamp";
-    const limit = 25;
-    const igResponse = await fetch(
-      `${INSTAGRAM_GRAPH_URL}/me/media?fields=${fields}&limit=${limit}&access_token=${INSTAGRAM_ACCESS_TOKEN}`
-    );
-
-    if (!igResponse.ok) {
-      const errorData = await igResponse.text();
-      throw new Error(`Instagram API error [${igResponse.status}]: ${errorData}`);
+    // Check if this is a full historical import or regular sync
+    let importAll = false;
+    try {
+      const body = await req.json();
+      importAll = body?.import_all === true;
+    } catch {
+      // No body or invalid JSON — default sync
     }
 
-    const igData = await igResponse.json();
-    const posts: InstagramPost[] = igData.data || [];
+    const fields = "id,media_type,media_url,thumbnail_url,caption,permalink,like_count,timestamp";
+    const perPage = 25;
+    let allPosts: InstagramPost[] = [];
+    let nextUrl: string | null =
+      `${INSTAGRAM_GRAPH_URL}/me/media?fields=${fields}&limit=${perPage}&access_token=${INSTAGRAM_ACCESS_TOKEN}`;
 
-    if (posts.length === 0) {
+    // Fetch pages — single page for regular sync, all pages for import
+    const maxPages = importAll ? 50 : 1; // up to ~1250 posts for full import
+    let pageCount = 0;
+
+    while (nextUrl && pageCount < maxPages) {
+      const igResponse = await fetch(nextUrl);
+      if (!igResponse.ok) {
+        const errorData = await igResponse.text();
+        throw new Error(`Instagram API error [${igResponse.status}]: ${errorData}`);
+      }
+
+      const igData: IGResponse = await igResponse.json();
+      const posts = igData.data || [];
+      allPosts = allPosts.concat(posts);
+      pageCount++;
+
+      nextUrl = igData.paging?.next || null;
+    }
+
+    if (allPosts.length === 0) {
       return new Response(
         JSON.stringify({ success: true, synced: 0, message: "No posts found" }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -57,42 +88,52 @@ Deno.serve(async (req) => {
     }
 
     // Include IMAGE, CAROUSEL_ALBUM, and VIDEO (Reels)
-    const imagePosts = posts.filter(
+    const validPosts = allPosts.filter(
       (p) => p.media_type === "IMAGE" || p.media_type === "CAROUSEL_ALBUM" || p.media_type === "VIDEO"
     );
 
-    // Upsert posts — uses instagram_id UNIQUE constraint to avoid duplicates
-    const upsertData = imagePosts.map((post) => ({
-      instagram_id: post.id,
-      media_type: post.media_type,
-      media_url: post.media_url,
-      thumbnail_url: post.thumbnail_url || null,
-      caption: post.caption || null,
-      permalink: post.permalink,
-      like_count: post.like_count || 0,
-      timestamp: post.timestamp,
-      cached_image_url: post.media_url, // Instagram CDN URL serves as cache
-      updated_at: new Date().toISOString(),
-    }));
+    // Upsert in batches of 50 to avoid payload limits
+    const batchSize = 50;
+    let totalSynced = 0;
 
-    const { error: upsertError, count } = await supabase
-      .from("instagram_posts")
-      .upsert(upsertData, {
-        onConflict: "instagram_id",
-        ignoreDuplicates: false,
-      });
+    for (let i = 0; i < validPosts.length; i += batchSize) {
+      const batch = validPosts.slice(i, i + batchSize);
+      const upsertData = batch.map((post) => ({
+        instagram_id: post.id,
+        media_type: post.media_type,
+        media_url: post.media_url,
+        thumbnail_url: post.thumbnail_url || null,
+        caption: post.caption || null,
+        permalink: post.permalink,
+        like_count: post.like_count || 0,
+        timestamp: post.timestamp,
+        cached_image_url: post.media_url,
+        updated_at: new Date().toISOString(),
+      }));
 
-    if (upsertError) {
-      throw new Error(`Database upsert error: ${upsertError.message}`);
+      const { error: upsertError } = await supabase
+        .from("instagram_posts")
+        .upsert(upsertData, {
+          onConflict: "instagram_id",
+          ignoreDuplicates: false,
+        });
+
+      if (upsertError) {
+        throw new Error(`Database upsert error: ${upsertError.message}`);
+      }
+
+      totalSynced += batch.length;
     }
 
-    console.log(`Synced ${imagePosts.length} Instagram posts`);
+    console.log(`Synced ${totalSynced} Instagram posts (import_all=${importAll}, pages=${pageCount})`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        synced: imagePosts.length,
-        total_fetched: posts.length,
+        synced: totalSynced,
+        total_fetched: allPosts.length,
+        pages_fetched: pageCount,
+        import_all: importAll,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
