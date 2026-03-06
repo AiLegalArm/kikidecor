@@ -96,6 +96,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <Globe size={13} strokeWidth={1.5} />
               {lang === "ru" ? "EN" : "RU"}
             </button>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative text-muted-foreground hover:text-primary transition-colors duration-300 ml-2"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={18} strokeWidth={1.5} />
+              {count > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Mobile */}
