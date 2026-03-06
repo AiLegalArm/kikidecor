@@ -329,6 +329,9 @@ const Admin = () => {
           {/* ═══ VENUE ANALYZER ═══ */}
           {section === "venue" && <AdminVenueAnalyzer />}
 
+          {/* ═══ AI INSIGHTS ═══ */}
+          {section === "ai-insights" && <AdminAIInsights />}
+
           {/* ═══ ANALYTICS ═══ */}
           {section === "analytics" && <AdminAnalytics />}
         </div>
