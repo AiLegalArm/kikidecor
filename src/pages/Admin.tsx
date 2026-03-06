@@ -85,6 +85,14 @@ const Admin = () => {
 
   const fetchLeads = async () => {
     setLoading(true);
+    // For pipeline: fetch all leads (up to 1000)
+    const { data: all, error: allErr } = await supabase
+      .from("event_leads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!allErr) setAllLeads(all || []);
+
+    // For table view with filters
     let query = supabase
       .from("event_leads")
       .select("*")
