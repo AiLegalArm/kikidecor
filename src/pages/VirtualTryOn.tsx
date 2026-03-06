@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Camera, Loader2, Sparkles, X, ShoppingBag, Shirt, ArrowRight, ChevronDown } from "lucide-react";
+import { Camera, Loader2, Sparkles, X, ShoppingBag, Shirt, ArrowRight, ChevronDown, Box } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,6 +9,7 @@ import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Mannequin3DViewer from "@/components/Mannequin3DViewer";
 
 const VirtualTryOn = () => {
   const { lang } = useLanguage();
