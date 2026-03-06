@@ -87,8 +87,11 @@ const comparisonFeatures = [
 
 const Packages = () => (
   <>
-    <title>Пакеты декора | Ki Ki Decor</title>
-    <meta name="description" content="Пакеты декора Ki Ki Decor — Базовый, Стандарт и Премиум. Шары, цветы, задники, монтаж и многое другое." />
+    <title>Пакеты и цены на event decoration | Ki Ki Decor</title>
+    <meta name="description" content="Пакеты декора Ki Ki Decor: Базовый, Стандарт, Премиум. Wedding decoration, birthday decor, event styling от 15 000 ₽." />
+    <meta property="og:title" content="Пакеты декора — Ki Ki Decor" />
+    <meta property="og:description" content="Выберите пакет оформления: шары, цветы, задники, монтаж. От 15 000 ₽." />
+    <meta property="og:type" content="website" />
 
     <section className="section-padding pb-8 md:pb-12">
       <div className="container mx-auto max-w-3xl text-center">
