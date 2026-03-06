@@ -8,10 +8,10 @@ import heroDecor from "@/assets/hero-decor.jpg";
 import heroShowroom from "@/assets/hero-showroom.jpg";
 import logoImg from "@/assets/logo.png";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
-import LifestyleGallery from "@/components/LifestyleGallery";
-import SignatureDecor from "@/components/SignatureDecor";
-import ShowroomCollection from "@/components/ShowroomCollection";
-import LeadCapture from "@/components/LeadCapture";
+const LifestyleGallery = lazy(() => import("@/components/LifestyleGallery"));
+const SignatureDecor = lazy(() => import("@/components/SignatureDecor"));
+const ShowroomCollection = lazy(() => import("@/components/ShowroomCollection"));
+const LeadCapture = lazy(() => import("@/components/LeadCapture"));
 
 const fadeUp = {
   hidden: { opacity: 0, y: 25 },
