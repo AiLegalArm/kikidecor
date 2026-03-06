@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Star, Quote, Instagram, Mail, Phone } from "lucide-react";
-import { useRef } from "react";
+import { useRef, lazy, Suspense } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
 
