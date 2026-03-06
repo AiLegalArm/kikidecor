@@ -324,6 +324,9 @@ const Admin = () => {
             </>
           )}
 
+          {/* ═══ VENUE ANALYZER ═══ */}
+          {section === "venue" && <AdminVenueAnalyzer />}
+
           {/* ═══ ANALYTICS ═══ */}
           {section === "analytics" && <AdminAnalytics />}
         </div>
