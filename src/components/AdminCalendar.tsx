@@ -346,7 +346,17 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="font-medium text-sm">{lead.name}</p>
-                          <p className="text-xs text-muted-foreground">{lead.event_type}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-xs text-muted-foreground">{lead.event_type}</p>
+                            <span className={cn(
+                              "text-[9px] uppercase tracking-wider px-1.5 py-0 border rounded-full font-medium",
+                              lead.booking_type === "showroom"
+                                ? "border-accent text-accent-foreground bg-accent/30"
+                                : "border-primary/30 text-primary bg-primary/10"
+                            )}>
+                              {lead.booking_type === "showroom" ? "Showroom" : "Декор"}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1">
                           <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusColor(lead.status)}`}>
