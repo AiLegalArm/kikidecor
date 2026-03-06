@@ -19,6 +19,7 @@ import AdminLogin from "@/components/AdminLogin";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
+import AdminCustomers from "@/components/admin/AdminCustomers";
 import type { Session } from "@supabase/supabase-js";
 
 type Lead = {
