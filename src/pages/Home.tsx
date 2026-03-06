@@ -56,14 +56,26 @@ const Home = () => {
             >
               Роскошь в каждой детали
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-reveal px-4 sm:px-0" style={{ animationDelay: "1.2s" }}>
-              <Link to="/decor" className="group inline-flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
-                {t.home.exploreDecor[lang]}
-                <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center animate-reveal px-6 sm:px-0" style={{ animationDelay: "1.2s" }}>
+              <Link
+                to="/decor"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 sm:px-12 py-4 sm:py-5 text-[10px] uppercase tracking-[0.35em] font-medium overflow-hidden transition-all duration-700 min-w-[220px]"
+              >
+                {/* Glassmorphism background */}
+                <span className="absolute inset-0 bg-background/90 backdrop-blur-sm border border-background/20 transition-all duration-700 group-hover:bg-primary group-hover:border-primary/60" />
+                {/* Shine sweep */}
+                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <span className="relative z-10 text-foreground group-hover:text-primary-foreground transition-colors duration-500">{t.home.exploreDecor[lang]}</span>
+                <ArrowRight size={13} className="relative z-10 text-foreground group-hover:text-primary-foreground transition-all duration-500 group-hover:translate-x-1.5" />
               </Link>
-              <Link to="/showroom" className="group inline-flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 border border-background/20 text-background text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-background hover:text-foreground transition-all duration-700">
-                {t.home.visitShowroom[lang]}
-                <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
+              <Link
+                to="/showroom"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 sm:px-12 py-4 sm:py-5 text-[10px] uppercase tracking-[0.35em] font-medium overflow-hidden transition-all duration-700 min-w-[220px]"
+              >
+                {/* Border glow */}
+                <span className="absolute inset-0 border border-background/25 transition-all duration-700 group-hover:border-primary/50 group-hover:shadow-[inset_0_0_30px_rgba(255,255,255,0.05),0_0_20px_hsl(var(--primary)/0.15)]" />
+                <span className="relative z-10 text-background/90 group-hover:text-primary transition-colors duration-500">{t.home.visitShowroom[lang]}</span>
+                <ArrowRight size={13} className="relative z-10 text-background/90 group-hover:text-primary transition-all duration-500 group-hover:translate-x-1.5" />
               </Link>
             </div>
 
