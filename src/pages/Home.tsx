@@ -314,50 +314,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══ 4. INSTAGRAM LIFESTYLE FEED ═══ */}
-      <section className="section-padding bg-secondary/40">
-        <div className="container mx-auto">
-          <ScrollReveal>
-            <div className="flex items-center justify-center gap-3 mb-5">
-              <Instagram size={16} className="text-primary" strokeWidth={1.5} />
-              <p className="overline text-primary">Follow Our World</p>
-            </div>
-            <h2 className="font-display text-4xl md:text-5xl font-light text-center mb-4">
-              @ki_ki_decor
-            </h2>
-            <p className="text-center text-muted-foreground font-light text-sm mb-14">
-              A glimpse into our lifestyle — events, fashion, beauty.
-            </p>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-            {instaFeed.map((item, i) => (
-              <ScrollReveal key={i} delay={i * 60}>
-                <a
-                  href="https://instagram.com/ki_ki_decor"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block group overflow-hidden relative aspect-square"
-                >
-                  <img
-                    src={item.img}
-                    alt={item.alt}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors duration-500 flex items-center justify-center">
-                    <Instagram
-                      size={18}
-                      className="text-background opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      strokeWidth={1.5}
-                    />
-                  </div>
-                </a>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ═══ 4. LIFESTYLE GALLERY ═══ */}
+      <LifestyleGallery />
 
       {/* ═══ 5. TESTIMONIALS ═══ */}
       <section className="section-padding">
