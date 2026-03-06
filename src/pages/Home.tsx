@@ -382,7 +382,7 @@ const Home = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
                 <Link
                   to="/booking"
-                  className="inline-flex items-center justify-center gap-2 px-10 py-4.5 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary/90 transition-all duration-500 shadow-[var(--shadow-lavender)]"
+                  className="btn-glow inline-flex items-center justify-center gap-2 px-10 py-4.5 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary/90 transition-all duration-500"
                 >
                   Book a Consultation
                 </Link>
