@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_interactions: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          id: string
+          input_data: Json | null
+          interaction_type: string
+          output_data: Json | null
+          photo_url: string | null
+          selected_product_ids: string[] | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          input_data?: Json | null
+          interaction_type: string
+          output_data?: Json | null
+          photo_url?: string | null
+          selected_product_ids?: string[] | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          input_data?: Json | null
+          interaction_type?: string
+          output_data?: Json | null
+          photo_url?: string | null
+          selected_product_ids?: string[] | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_interactions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocked_dates: {
         Row: {
           blocked_date: string
