@@ -431,6 +431,9 @@ const VirtualTryOn = () => {
               </motion.div>
             )}
           </AnimatePresence>
+
+          </>)}
+
         </div>
       </section>
     </>
