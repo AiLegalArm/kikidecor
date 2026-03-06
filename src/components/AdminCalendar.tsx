@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { format, isSameDay } from "date-fns";
 import { ru } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
   CalendarDays, Ban, CheckCircle2, Edit, Trash2, User, Phone, Mail, MapPin, Users, X, MessageCircle,
 } from "lucide-react";
+import type { DayContentProps } from "react-day-picker";
 
 type Lead = {
   id: string;
@@ -160,6 +162,57 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
     onLeadUpdated?.();
   };
 
+  const DayWithTooltip = useCallback(
+    (dayProps: DayContentProps) => {
+      const dateStr = format(dayProps.date, "yyyy-MM-dd");
+      const dayLeads = leadsByDate[dateStr];
+      const isBlocked = blockedDateSet.has(dateStr);
+      const blockedEntry = blockedDates.find((b) => b.blocked_date === dateStr);
+
+      if (!dayLeads?.length && !isBlocked) {
+        return <span>{dayProps.date.getDate()}</span>;
+      }
+
+      return (
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <span className="relative flex items-center justify-center w-full h-full">
+              {dayProps.date.getDate()}
+              {dayLeads?.length ? (
+                <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 flex gap-0.5">
+                  {dayLeads.slice(0, 3).map((_, i) => (
+                    <span key={i} className="w-1 h-1 rounded-full bg-primary" />
+                  ))}
+                </span>
+              ) : null}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="max-w-xs p-3 space-y-2">
+            {isBlocked && (
+              <div className="text-xs font-medium text-destructive flex items-center gap-1">
+                <Ban size={11} /> Заблокировано{blockedEntry?.reason ? `: ${blockedEntry.reason}` : ""}
+              </div>
+            )}
+            {dayLeads?.map((lead) => (
+              <div key={lead.id} className="text-xs space-y-0.5 border-b border-border/50 pb-1.5 last:border-0 last:pb-0">
+                <div className="font-medium text-foreground">{lead.name}</div>
+                <div className="text-muted-foreground">{lead.event_type}</div>
+                <div className="flex gap-3 text-muted-foreground/70">
+                  {lead.guests && <span>{lead.guests} гостей</span>}
+                  {lead.location && <span>{lead.location}</span>}
+                </div>
+                <span className={`inline-block rounded-full border px-1.5 py-0 text-[9px] font-semibold ${statusColor(lead.status)}`}>
+                  {statusLabel(lead.status)}
+                </span>
+              </div>
+            ))}
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
+    [leadsByDate, blockedDateSet, blockedDates]
+  );
+
   return (
     <div className="bg-background border border-border p-6">
       <div className="flex items-center gap-3 mb-6">
@@ -184,6 +237,9 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
             }}
             numberOfMonths={2}
             className={cn("p-3 pointer-events-auto")}
+            components={{
+              DayContent: DayWithTooltip,
+            }}
           />
           <div className="mt-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground px-3">
             <span className="flex items-center gap-1.5">
