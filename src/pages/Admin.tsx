@@ -44,10 +44,11 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "products" | "calendar" | "orders" | "instagram" | "ai" | "analytics";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ai" | "analytics";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "leads", label: "Лиды", icon: Users },
+  { key: "customers", label: "Клиенты", icon: Users },
   { key: "products", label: "Товары", icon: ShoppingBag },
   { key: "orders", label: "Заказы", icon: ShoppingBag },
   { key: "calendar", label: "Календарь", icon: CalendarDays },
