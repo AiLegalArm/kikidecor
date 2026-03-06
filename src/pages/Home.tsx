@@ -40,14 +40,6 @@ const testimonials = [
   },
 ];
 
-const instaFeed = [
-  { img: weddingImg, alt: "Wedding decor" },
-  { img: detailImg, alt: "Floral details" },
-  { img: loungeImg, alt: "Lounge styling" },
-  { img: birthdayImg, alt: "Birthday setup" },
-  { img: dessertImg, alt: "Dessert table" },
-  { img: themedImg, alt: "Facade decor" },
-];
 
 const Home = () => {
   const heroRef = useRef<HTMLDivElement>(null);
