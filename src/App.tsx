@@ -34,6 +34,7 @@ const AnimatedRoutes = () => {
           <Route path="/about" element={<PageTransition><About /></PageTransition>} />
           <Route path="/booking" element={<PageTransition><Booking /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+          <Route path="/instagram" element={<PageTransition><InstagramPage /></PageTransition>} />
           <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
