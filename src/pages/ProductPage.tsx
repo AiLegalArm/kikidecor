@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { useParams, Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
 import ProductCard from "@/components/shop/ProductCard";
@@ -255,4 +256,11 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+export default function ProductPageWithPopup() {
+  return (
+    <>
+      <ProductPage />
+      <ExitIntentPopup offer="showroom" />
+    </>
+  );
+}
