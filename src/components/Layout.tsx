@@ -209,7 +209,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Decor */}
             <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/20 mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/decor", label: t.footer.decorServices[lang] },
@@ -217,7 +217,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   { to: "/packages", label: t.footer.packages[lang] },
                   { to: "/booking", label: t.footer.booking[lang] },
                 ].map(l => (
-                  <Link key={l.to} to={l.to} className="text-sm font-light text-background/35 hover:text-primary transition-colors duration-500">{l.label}</Link>
+                  <Link key={l.to} to={l.to} className="text-sm font-light text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
                 ))}
               </div>
             </div>
