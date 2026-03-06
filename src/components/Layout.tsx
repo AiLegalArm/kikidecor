@@ -11,8 +11,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showTop, setShowTop] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const location = useLocation();
   const { lang, setLang, t } = useLanguage();
+  const { count } = useCart();
 
   const navLinks = [
     { name: t.nav.home[lang], path: "/" },
