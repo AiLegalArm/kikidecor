@@ -250,7 +250,7 @@ const Showroom = () => {
       </section>
 
       {quickViewProduct && (
-        <QuickView product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+        <QuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
       )}
     </>
   );
