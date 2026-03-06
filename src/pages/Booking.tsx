@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const eventTypes = ["Свадьба", "День рождения", "Декор фасада", "Фотозона", "Входная группа", "Корпоратив", "Другое"];
 
@@ -12,10 +13,30 @@ const Booking = () => {
     name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Спасибо! Мы свяжемся с вами в течение 24 часов.");
-    setFormData({ name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "" });
+    setSubmitting(true);
+    const { error } = await supabase.from("event_leads").insert({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      event_type: formData.eventType,
+      event_date: formData.date || null,
+      location: null,
+      guests: formData.guests ? parseInt(formData.guests) : null,
+      message: formData.message || null,
+      status: "new",
+    });
+    setSubmitting(false);
+    if (error) {
+      console.error(error);
+      toast.error("Ошибка отправки. Попробуйте позже.");
+    } else {
+      toast.success("Спасибо! Мы свяжемся с вами в течение 24 часов.");
+      setFormData({ name: "", email: "", phone: "", eventType: "", date: "", guests: "", budget: "", message: "" });
+    }
   };
 
   const update = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -81,8 +102,8 @@ const Booking = () => {
                 <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Расскажите о вашей идее *</label>
                 <Textarea value={formData.message} onChange={update("message")} required rows={5} placeholder="Опишите ваше мероприятие, пожелания по стилю и декору..." className="rounded-none border-border bg-transparent focus:border-primary resize-none" />
               </div>
-              <Button type="submit" className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                Отправить заявку
+              <Button type="submit" disabled={submitting} className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
+                {submitting ? "Отправка..." : "Отправить заявку"}
               </Button>
             </form>
           </ScrollReveal>
