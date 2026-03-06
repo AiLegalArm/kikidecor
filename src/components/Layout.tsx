@@ -186,7 +186,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <div className="container mx-auto px-6 md:px-10 py-12 md:py-28">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 mb-12 md:mb-20">
             {/* Brand */}
-            <div className="lg:col-span-4">
+            <div className="sm:col-span-2 lg:col-span-4">
               <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-80 mb-6" />
               <p className="font-display text-lg italic font-light text-background/60 leading-relaxed mb-8">
                 {t.footer.tagline[lang]}
