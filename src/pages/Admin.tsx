@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import AdminCalendar from "@/components/AdminCalendar";
 
 type Lead = {
   id: string;
