@@ -56,9 +56,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Filter only IMAGE and CAROUSEL_ALBUM (skip VIDEO for gallery)
+    // Include IMAGE, CAROUSEL_ALBUM, and VIDEO (Reels)
     const imagePosts = posts.filter(
-      (p) => p.media_type === "IMAGE" || p.media_type === "CAROUSEL_ALBUM"
+      (p) => p.media_type === "IMAGE" || p.media_type === "CAROUSEL_ALBUM" || p.media_type === "VIDEO"
     );
 
     // Upsert posts — uses instagram_id UNIQUE constraint to avoid duplicates
