@@ -359,7 +359,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══ 6. CONTACT & SOCIAL ═══ */}
+      {/* ═══ LEAD CAPTURE ═══ */}
+      <LeadCapture />
+
+      {/* ═══ 8. CONTACT & SOCIAL ═══ */}
       <section className="relative overflow-hidden">
         <img
           src={loungeImg}
