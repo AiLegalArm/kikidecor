@@ -50,16 +50,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       >
         <nav className="container mx-auto flex items-center justify-between px-6 md:px-10">
           {/* Left nav */}
-          <div className="hidden lg:flex items-center gap-8 flex-1">
+          <div className="hidden lg:flex items-center gap-10 flex-1">
             {navLinks.slice(0, 3).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "text-[10px] uppercase tracking-[0.25em] font-body font-medium transition-all duration-300 hover:text-primary relative py-1",
+                  "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 hover:text-primary relative py-1",
                   location.pathname === link.path
                     ? "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary"
-                    : "text-muted-foreground"
+                    : "text-foreground/70"
                 )}
               >
                 {link.name}
@@ -72,20 +72,20 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             "transition-all duration-500 hover:opacity-80 lg:absolute lg:left-1/2 lg:-translate-x-1/2",
             location.pathname === "/" && !scrolled ? "opacity-0 pointer-events-none" : "opacity-100"
           )}>
-            <img src={logoImg} alt="KiKi" className={cn("w-auto transition-all duration-500", scrolled ? "h-8 md:h-10" : "h-10 md:h-14")} />
+            <img src={logoImg} alt="KiKi" className={cn("w-auto transition-all duration-500", scrolled ? "h-12 md:h-14" : "h-14 md:h-18")} />
           </Link>
 
           {/* Right nav */}
-          <div className="hidden lg:flex items-center gap-8 flex-1 justify-end">
+          <div className="hidden lg:flex items-center gap-10 flex-1 justify-end">
             {navLinks.slice(3).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "text-[10px] uppercase tracking-[0.25em] font-body font-medium transition-all duration-300 hover:text-primary relative py-1",
+                  "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 hover:text-primary relative py-1",
                   location.pathname === link.path
                     ? "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary"
-                    : "text-muted-foreground"
+                    : "text-foreground/70"
                 )}
               >
                 {link.name}
@@ -93,10 +93,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             ))}
             <button
               onClick={toggleLang}
-              className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 ml-2 font-medium"
+              className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 ml-2 font-semibold"
               aria-label="Switch language"
             >
-              <Globe size={15} strokeWidth={2} />
+              <Globe size={16} strokeWidth={2} />
               {lang === "ru" ? "EN" : "RU"}
             </button>
             <button
@@ -104,9 +104,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               className="relative text-foreground/70 hover:text-primary transition-colors duration-300 ml-2"
               aria-label="Cart"
             >
-              <ShoppingBag size={20} strokeWidth={2} />
+              <ShoppingBag size={22} strokeWidth={2} />
               {count > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-primary text-primary-foreground text-[9px] font-body font-bold rounded-full flex items-center justify-center">
                   {count}
                 </span>
               )}
