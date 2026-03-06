@@ -38,14 +38,23 @@ const Home = () => {
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-4xl">
             <div className="w-px h-10 md:h-16 bg-background/15 mx-auto mb-6 md:mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
-            <div className="relative w-40 sm:w-56 md:w-72 lg:w-80 mx-auto mb-8 md:mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
-              <div className="absolute inset-0 bg-foreground/60 rounded-2xl blur-2xl scale-110" />
+            <div className="relative w-44 sm:w-60 md:w-72 lg:w-80 mx-auto mb-4 md:mb-6 animate-reveal" style={{ animationDelay: "0.5s" }}>
               <img
                 src={logoHero}
-                alt="KiKi"
-                className="relative w-full h-auto drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
+                alt="KiKi — Luxury Events & Fashion"
+                className="relative w-full h-auto drop-shadow-[0_4px_40px_rgba(0,0,0,0.35)]"
               />
             </div>
+            <p
+              className="animate-reveal text-background/90 tracking-wide mb-8 md:mb-12 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+              style={{
+                fontFamily: "'Great Vibes', cursive",
+                fontSize: "clamp(1.2rem, 3vw, 1.8rem)",
+                animationDelay: "0.8s",
+              }}
+            >
+              Роскошь в каждой детали
+            </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-reveal px-4 sm:px-0" style={{ animationDelay: "1s" }}>
               <Link to="/decor" className="group inline-flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
                 {t.home.exploreDecor[lang]}
