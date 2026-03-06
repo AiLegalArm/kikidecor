@@ -1,0 +1,306 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { Search, Filter, Eye, ChevronLeft, ChevronRight } from "lucide-react";
+
+type Lead = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  event_type: string;
+  event_date: string | null;
+  location: string | null;
+  guests: number | null;
+  message: string | null;
+  status: string;
+  notes: string | null;
+  created_at: string;
+};
+
+const STATUSES = [
+  { value: "new", label: "Новая", color: "bg-blue-100 text-blue-800 border-blue-200" },
+  { value: "contacted", label: "Связались", color: "bg-yellow-100 text-yellow-800 border-yellow-200" },
+  { value: "booked", label: "Забронировано", color: "bg-green-100 text-green-800 border-green-200" },
+  { value: "completed", label: "Завершено", color: "bg-purple-100 text-purple-800 border-purple-200" },
+  { value: "cancelled", label: "Отменено", color: "bg-red-100 text-red-800 border-red-200" },
+];
+
+const getStatusBadge = (status: string) => {
+  const s = STATUSES.find((st) => st.value === status);
+  return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
+};
+
+const Admin = () => {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [editNotes, setEditNotes] = useState("");
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 20;
+
+  const fetchLeads = async () => {
+    setLoading(true);
+    let query = supabase
+      .from("event_leads")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (filterStatus !== "all") {
+      query = query.eq("status", filterStatus);
+    }
+    if (search.trim()) {
+      query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,phone.ilike.%${search}%`);
+    }
+
+    query = query.range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+    const { data, error } = await query;
+    if (error) {
+      toast.error("Ошибка загрузки заявок");
+      console.error(error);
+    } else {
+      setLeads(data || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchLeads();
+  }, [filterStatus, page]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(0);
+    fetchLeads();
+  };
+
+  const updateStatus = async (id: string, newStatus: string) => {
+    const { error } = await supabase.from("event_leads").update({ status: newStatus }).eq("id", id);
+    if (error) {
+      toast.error("Ошибка обновления статуса");
+    } else {
+      toast.success("Статус обновлён");
+      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status: newStatus } : l)));
+      if (selectedLead?.id === id) setSelectedLead((prev) => prev ? { ...prev, status: newStatus } : null);
+    }
+  };
+
+  const saveNotes = async () => {
+    if (!selectedLead) return;
+    const { error } = await supabase.from("event_leads").update({ notes: editNotes }).eq("id", selectedLead.id);
+    if (error) {
+      toast.error("Ошибка сохранения заметок");
+    } else {
+      toast.success("Заметки сохранены");
+      setLeads((prev) => prev.map((l) => (l.id === selectedLead.id ? { ...l, notes: editNotes } : l)));
+      setSelectedLead((prev) => prev ? { ...prev, notes: editNotes } : null);
+    }
+  };
+
+  const openDetail = (lead: Lead) => {
+    setSelectedLead(lead);
+    setEditNotes(lead.notes || "");
+  };
+
+  return (
+    <div className="min-h-screen bg-muted/30">
+      <title>CRM — Ki Ki Decor</title>
+
+      {/* Header */}
+      <div className="bg-background border-b border-border px-6 py-5">
+        <h1 className="font-display text-2xl md:text-3xl font-light">
+          CRM <span className="text-primary">Панель</span>
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">Управление заявками Ki Ki Decor</p>
+      </div>
+
+      {/* Toolbar */}
+      <div className="px-6 py-4 flex flex-col md:flex-row gap-3 items-start md:items-center">
+        <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Поиск по имени, email, телефону..."
+              className="pl-9 rounded-none border-border"
+            />
+          </div>
+          <Button type="submit" variant="outline" className="rounded-none">
+            <Search size={16} />
+          </Button>
+        </form>
+
+        <div className="flex items-center gap-2">
+          <Filter size={16} className="text-muted-foreground" />
+          <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(0); }}>
+            <SelectTrigger className="w-[180px] rounded-none border-border">
+              <SelectValue placeholder="Все статусы" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Все статусы</SelectItem>
+              {STATUSES.map((s) => (
+                <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="px-6">
+        <div className="bg-background border border-border overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Имя</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden md:table-cell">Телефон</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden lg:table-cell">Email</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Тип</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium hidden md:table-cell">Дата</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Статус</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-wider text-muted-foreground font-medium">Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Загрузка...</td></tr>
+              ) : leads.length === 0 ? (
+                <tr><td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">Заявок не найдено</td></tr>
+              ) : (
+                leads.map((lead) => (
+                  <tr key={lead.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-3 font-medium">{lead.name}</td>
+                    <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{lead.phone}</td>
+                    <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{lead.email}</td>
+                    <td className="px-4 py-3">{lead.event_type}</td>
+                    <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">
+                      {lead.event_date ? new Date(lead.event_date).toLocaleDateString("ru-RU") : "—"}
+                    </td>
+                    <td className="px-4 py-3">{getStatusBadge(lead.status)}</td>
+                    <td className="px-4 py-3">
+                      <Button variant="ghost" size="sm" onClick={() => openDetail(lead)}>
+                        <Eye size={16} />
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between py-4">
+          <Button variant="outline" size="sm" className="rounded-none" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
+            <ChevronLeft size={16} /> Назад
+          </Button>
+          <span className="text-sm text-muted-foreground">Страница {page + 1}</span>
+          <Button variant="outline" size="sm" className="rounded-none" disabled={leads.length < PAGE_SIZE} onClick={() => setPage((p) => p + 1)}>
+            Вперёд <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
+
+      {/* Detail Dialog */}
+      <Dialog open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>
+        <DialogContent className="max-w-lg rounded-none">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl font-light">Детали заявки</DialogTitle>
+          </DialogHeader>
+          {selectedLead && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Имя</span>
+                  <p className="font-medium mt-0.5">{selectedLead.name}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Телефон</span>
+                  <p className="mt-0.5">{selectedLead.phone}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Email</span>
+                  <p className="mt-0.5">{selectedLead.email}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Тип</span>
+                  <p className="mt-0.5">{selectedLead.event_type}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Дата</span>
+                  <p className="mt-0.5">{selectedLead.event_date ? new Date(selectedLead.event_date).toLocaleDateString("ru-RU") : "—"}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Локация</span>
+                  <p className="mt-0.5">{selectedLead.location || "—"}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Гостей</span>
+                  <p className="mt-0.5">{selectedLead.guests || "—"}</p>
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Создана</span>
+                  <p className="mt-0.5">{new Date(selectedLead.created_at).toLocaleDateString("ru-RU")}</p>
+                </div>
+              </div>
+
+              {selectedLead.message && (
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">Сообщение</span>
+                  <p className="mt-1 text-sm bg-muted/50 p-3 border border-border">{selectedLead.message}</p>
+                </div>
+              )}
+
+              {/* Status update */}
+              <div>
+                <span className="text-xs uppercase tracking-wider text-muted-foreground block mb-2">Статус</span>
+                <div className="flex flex-wrap gap-2">
+                  {STATUSES.map((s) => (
+                    <button
+                      key={s.value}
+                      onClick={() => updateStatus(selectedLead.id, s.value)}
+                      className={`px-3 py-1.5 text-xs border transition-all ${
+                        selectedLead.status === s.value
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "border-border hover:border-primary text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <span className="text-xs uppercase tracking-wider text-muted-foreground block mb-2">Заметки</span>
+                <Textarea
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  rows={3}
+                  placeholder="Добавьте заметки по заявке..."
+                  className="rounded-none border-border resize-none"
+                />
+                <Button onClick={saveNotes} className="mt-2 rounded-none text-xs uppercase tracking-wider" size="sm">
+                  Сохранить заметки
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default Admin;
