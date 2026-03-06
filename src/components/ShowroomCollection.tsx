@@ -46,7 +46,7 @@ const ShowroomCollection = () => {
                   <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-all duration-500 flex items-center justify-center">
                     <span className="px-5 py-2.5 bg-background text-foreground text-[9px] uppercase tracking-[0.25em] opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-500">
                       {sc.viewProduct[lang]}
-                    </motion.span>
+                    </span>
                   </div>
                   <span className="absolute top-3 left-3 text-[8px] uppercase tracking-[0.2em] px-2.5 py-1 bg-background/80 backdrop-blur-sm text-foreground/70 font-medium">{product.category}</span>
                 </div>

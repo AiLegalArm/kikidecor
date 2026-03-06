@@ -317,6 +317,36 @@
   50% { transform: translateY(-6px); }
 }
 
+@keyframes hero-zoom-in {
+  0% { transform: scale(1.05); }
+  100% { transform: scale(1.15); }
+}
+
+@keyframes hero-zoom-out {
+  0% { transform: scale(1.15); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1); }
+}
+
+.animate-hero-zoom-in {
+  animation: hero-zoom-in 20s linear alternate infinite;
+  will-change: transform;
+}
+
+.animate-hero-zoom-out {
+  animation: hero-zoom-out 20s linear alternate infinite;
+  will-change: transform;
+}
+
+.animate-scroll-pulse {
+  transform-origin: top;
+  animation: scroll-pulse 2.5s ease-in-out infinite;
+}
+
 /* Smooth scrollbar */
 html {
   scroll-behavior: smooth;

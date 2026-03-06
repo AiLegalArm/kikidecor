@@ -1,29 +1,19 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Quote, Instagram, Mail, Phone } from "lucide-react";
-import { useRef, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 import heroDecor from "@/assets/hero-decor.jpg";
 import heroShowroom from "@/assets/hero-showroom.jpg";
-import logoImg from "@/assets/logo.png";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
 const LifestyleGallery = lazy(() => import("@/components/LifestyleGallery"));
 const SignatureDecor = lazy(() => import("@/components/SignatureDecor"));
 const ShowroomCollection = lazy(() => import("@/components/ShowroomCollection"));
 const LeadCapture = lazy(() => import("@/components/LeadCapture"));
 
-
 const Home = () => {
   const { lang, t } = useLanguage();
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
   const testimonials = t.testimonials;
 
   return (
@@ -32,69 +22,55 @@ const Home = () => {
       <meta name="description" content="KiKi — premium lifestyle brand combining luxury event decoration studio and fashion showroom. Beauty in every detail." />
 
       {/* ═══ 1. CINEMATIC HERO ═══ */}
-      <section ref={heroRef} className="relative h-screen overflow-hidden -mt-18 md:-mt-24">
-        <motion.div className="absolute inset-0 flex" style={{ y: heroY }}>
+      <section className="relative h-screen overflow-hidden -mt-18 md:-mt-24">
+        <div className="absolute inset-0 flex">
           <div className="w-1/2 relative overflow-hidden">
-            <motion.img
+            <img
               src={heroDecor}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-in"
               loading="eager"
-              initial={{ scale: 1.15 }}
-              animate={{ scale: 1.05 }}
-              transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
             />
             <div className="absolute inset-0 bg-foreground/50" />
           </div>
           <div className="w-1/2 relative overflow-hidden">
-            <motion.img
+            <img
               src={heroShowroom}
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-out"
               loading="eager"
-              initial={{ scale: 1.05 }}
-              animate={{ scale: 1.15 }}
-              transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
             />
             <div className="absolute inset-0 bg-foreground/50" />
           </div>
-        </motion.div>
+        </div>
 
         <div className="absolute top-0 bottom-0 left-1/2 w-px bg-background/10 z-10 hidden md:block" />
         <div className="absolute inset-0 z-[5]" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.3) 100%)" }} />
 
-        <motion.div
-          className="relative z-20 h-full flex items-center justify-center text-center px-6"
-          style={{ opacity: heroOpacity }}
-        >
-          <motion.div initial="hidden" animate="visible" className="max-w-3xl">
-            <motion.div
-              className="w-px h-20 bg-background/20 mx-auto mb-10"
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
-              style={{ transformOrigin: "top" }}
+        <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
+          <div className="max-w-3xl">
+            <div
+              className="w-px h-20 bg-background/20 mx-auto mb-10 animate-reveal"
+              style={{ animationDelay: "0.2s" }}
             />
 
-            <motion.h1
-              className="font-display text-6xl md:text-8xl lg:text-[7rem] font-light text-background leading-none tracking-[-0.02em] mb-6"
-              variants={fadeUp}
-              custom={0}
+            <h1
+              className="font-display text-6xl md:text-8xl lg:text-[7rem] font-light text-background leading-none tracking-[-0.02em] mb-6 animate-reveal"
+              style={{ animationDelay: "0.4s" }}
             >
               KiKi
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              className="font-body text-[11px] md:text-xs uppercase tracking-[0.45em] text-background/50 mb-14"
-              variants={fadeUp}
-              custom={1}
+            <p
+              className="font-body text-[11px] md:text-xs uppercase tracking-[0.45em] text-background/50 mb-14 animate-reveal"
+              style={{ animationDelay: "0.6s" }}
             >
               {t.home.subtitle[lang]}
-            </motion.p>
+            </p>
 
-            <motion.div className="w-16 h-px bg-primary/50 mx-auto mb-14" variants={fadeUp} custom={2} />
+            <div className="w-16 h-px bg-primary/50 mx-auto mb-14 animate-reveal" style={{ animationDelay: "0.8s" }} />
 
-            <motion.div className="flex flex-col sm:flex-row gap-5 justify-center" variants={fadeUp} custom={3}>
+            <div className="flex flex-col sm:flex-row gap-5 justify-center animate-reveal" style={{ animationDelay: "1s" }}>
               <Link
                 to="/decor"
                 className="group inline-flex items-center gap-3 px-10 py-5 bg-background/95 text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700 backdrop-blur-sm"
@@ -109,25 +85,15 @@ const Home = () => {
                 {t.home.visitShowroom[lang]}
                 <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </div>
+          </div>
+        </div>
 
         <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.2, duration: 1 }}
-            className="flex flex-col items-center gap-4"
-          >
-            <motion.div
-              className="w-px h-12 bg-background/15"
-              animate={{ scaleY: [0.5, 1, 0.5] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transformOrigin: "top" }}
-            />
+          <div className="flex flex-col items-center gap-4 animate-reveal" style={{ animationDelay: "2.2s" }}>
+            <div className="w-px h-12 bg-background/15 animate-scroll-pulse" />
             <p className="text-[8px] uppercase tracking-[0.4em] text-background/25 font-light">{t.home.scroll[lang]}</p>
-          </motion.div>
+          </div>
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
@@ -145,36 +111,26 @@ const Home = () => {
               </div>
             </ScrollReveal>
 
-            <div className="lg:py-12">
-              <ScrollReveal delay={150}>
+            <ScrollReveal delay={200}>
+              <div className="lg:py-12">
                 <p className="overline text-primary mb-6">{t.home.storyOverline[lang]}</p>
-              </ScrollReveal>
-              <ScrollReveal delay={250}>
                 <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.08] mb-8">
                   {t.home.storyTitle1[lang]}
                   <br />
                   {t.home.storyTitle2[lang]} <span className="italic">KiKi</span>
                 </h2>
-              </ScrollReveal>
-              <ScrollReveal delay={350}>
                 <div className="w-16 h-px bg-primary/40 mb-10" />
-              </ScrollReveal>
-              <ScrollReveal delay={450}>
                 <p className="text-muted-foreground font-light text-base md:text-lg leading-[2] mb-6">
                   {t.home.storyParagraph1[lang]}
                 </p>
-              </ScrollReveal>
-              <ScrollReveal delay={550}>
                 <p className="text-muted-foreground font-light text-base md:text-lg leading-[2] mb-6">
                   {t.home.storyParagraph2[lang]}
                 </p>
-              </ScrollReveal>
-              <ScrollReveal delay={650}>
                 <p className="text-foreground/80 font-display text-lg md:text-xl italic leading-relaxed">
                   {t.home.storyPhilosophy[lang]}
                 </p>
-              </ScrollReveal>
-            </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -237,9 +193,15 @@ const Home = () => {
         </div>
       </section>
 
-      <SignatureDecor />
-      <ShowroomCollection />
-      <LifestyleGallery />
+      <Suspense fallback={<div className="h-96" />}>
+        <SignatureDecor />
+      </Suspense>
+      <Suspense fallback={<div className="h-96" />}>
+        <ShowroomCollection />
+      </Suspense>
+      <Suspense fallback={<div className="h-96" />}>
+        <LifestyleGallery />
+      </Suspense>
 
       {/* ═══ TESTIMONIALS ═══ */}
       <section className="section-padding">
@@ -274,7 +236,9 @@ const Home = () => {
         </div>
       </section>
 
-      <LeadCapture />
+      <Suspense fallback={<div className="h-96" />}>
+        <LeadCapture />
+      </Suspense>
 
       {/* ═══ CONTACT & SOCIAL ═══ */}
       <section className="relative overflow-hidden">
