@@ -20,6 +20,7 @@ const Booking = () => {
   const { lang, t } = useLanguage();
   const isMobile = useIsMobile();
   const b = t.booking;
+  const eventTypes = b.eventTypes.map((et) => et[lang]);
   const budgetRanges = b.budgetRanges.map((br) => br[lang]);
   const decorStyles = b.decorStyles.map((ds) => ds[lang]);
 
