@@ -224,6 +224,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/showroom", label: t.footer.collection[lang] },
+                  { to: "/shop", label: lang === "ru" ? "Каталог" : "Catalog" },
                   { to: "/calculator", label: t.footer.calculator[lang] },
                 ].map(l => (
                   <Link key={l.to} to={l.to} className="text-sm font-light text-background/35 hover:text-primary transition-colors duration-500">{l.label}</Link>

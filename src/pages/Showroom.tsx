@@ -79,15 +79,14 @@ const Showroom = () => {
               <h2 className="font-display text-4xl md:text-6xl font-light mb-6">{s.comingSoon[lang]}</h2>
               <p className="text-muted-foreground font-light max-w-lg mx-auto mb-10 leading-relaxed">{s.comingSoonText[lang]}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/contact" className="inline-flex items-center gap-3 px-10 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary transition-all duration-500 font-body">
+                <Link to="/shop" className="inline-flex items-center gap-3 px-10 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary transition-all duration-500 font-body">
+                  <ArrowRight size={14} />
+                  {lang === "ru" ? "Каталог" : "Shop Now"}
+                </Link>
+                <Link to="/contact" className="inline-flex items-center gap-3 px-10 py-4 border border-foreground/15 text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-foreground hover:text-background transition-all duration-500 font-body">
                   <CalendarDays size={14} />
                   {s.bookVisit[lang]}
                 </Link>
-                <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-10 py-4 border border-foreground/15 text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-foreground hover:text-background transition-all duration-500 font-body">
-                  <Instagram size={14} />
-                  Instagram
-                </a>
               </div>
             </ScrollReveal>
           </div>
