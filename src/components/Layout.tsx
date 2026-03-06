@@ -178,7 +178,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       {/* Main */}
       <main className="flex-1">{children}</main>
 
-      {/* ── Footer ── */}
+      {/* ── Footer (hidden on homepage) ── */}
+      {location.pathname !== "/" && (
       <footer className="bg-foreground text-background/60">
         <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
