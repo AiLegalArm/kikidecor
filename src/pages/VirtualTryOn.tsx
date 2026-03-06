@@ -18,11 +18,14 @@ const VirtualTryOn = () => {
   const isRu = lang === "ru";
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [mode, setMode] = useState<"photo" | "3d">("photo");
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [showProductPicker, setShowProductPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const [mannequinProduct, setMannequinProduct] = useState<string | null>(null);
+  const [showMannequinPicker, setShowMannequinPicker] = useState(false);
 
   const product = products?.find(p => p.id === selectedProduct);
 
