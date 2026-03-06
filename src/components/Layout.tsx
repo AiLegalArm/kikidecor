@@ -180,28 +180,28 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       {/* ── Footer (hidden on homepage) ── */}
       {location.pathname !== "/" && (
-      <footer className="bg-foreground text-background/60">
+      <footer className="bg-foreground text-background/80">
         <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
         <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
             {/* Brand */}
             <div className="lg:col-span-4">
-              <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-60 mb-6" />
-              <p className="font-display text-lg italic font-light text-background/30 leading-relaxed mb-8">
+              <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-80 mb-6" />
+              <p className="font-display text-lg italic font-light text-background/60 leading-relaxed mb-8">
                 {t.footer.tagline[lang]}
               </p>
               <div className="flex items-center gap-4">
                 <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full border border-background/10 flex items-center justify-center text-background/30 hover:text-primary hover:border-primary/40 transition-all duration-500">
+                  className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center text-background/60 hover:text-primary hover:border-primary/40 transition-all duration-500">
                   <Instagram size={16} strokeWidth={1.5} />
                 </a>
                 <a href="https://t.me/kikidecor" target="_blank" rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full border border-background/10 flex items-center justify-center text-background/30 hover:text-primary hover:border-primary/40 transition-all duration-500">
+                  className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center text-background/60 hover:text-primary hover:border-primary/40 transition-all duration-500">
                   <Send size={16} strokeWidth={1.5} />
                 </a>
                 <a href="mailto:info@kikidecor.ru"
-                  className="w-10 h-10 rounded-full border border-background/10 flex items-center justify-center text-background/30 hover:text-primary hover:border-primary/40 transition-all duration-500">
+                  className="w-10 h-10 rounded-full border border-background/20 flex items-center justify-center text-background/60 hover:text-primary hover:border-primary/40 transition-all duration-500">
                   <Mail size={16} strokeWidth={1.5} />
                 </a>
               </div>
@@ -209,7 +209,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Decor */}
             <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/20 mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/decor", label: t.footer.decorServices[lang] },
@@ -217,14 +217,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   { to: "/packages", label: t.footer.packages[lang] },
                   { to: "/booking", label: t.footer.booking[lang] },
                 ].map(l => (
-                  <Link key={l.to} to={l.to} className="text-sm font-light text-background/35 hover:text-primary transition-colors duration-500">{l.label}</Link>
+                  <Link key={l.to} to={l.to} className="text-sm font-light text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
                 ))}
               </div>
             </div>
 
             {/* Showroom */}
             <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/20 mb-6 font-body font-medium">{t.footer.showroom[lang]}</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.showroom[lang]}</h4>
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/showroom", label: t.footer.collection[lang] },
@@ -232,15 +232,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   { to: "/lookbook", label: "Lookbook" },
                   { to: "/calculator", label: t.footer.calculator[lang] },
                 ].map(l => (
-                  <Link key={l.to} to={l.to} className="text-sm font-light text-background/35 hover:text-primary transition-colors duration-500">{l.label}</Link>
+                  <Link key={l.to} to={l.to} className="text-sm font-light text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
                 ))}
               </div>
             </div>
 
             {/* Contact */}
             <div className="lg:col-span-4">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/20 mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
-              <div className="flex flex-col gap-4 text-sm font-light text-background/35">
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
+              <div className="flex flex-col gap-4 text-sm font-light text-background/70">
                 <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
                   <Mail size={14} strokeWidth={1.5} className="opacity-50" /> info@kikidecor.ru
                 </a>
@@ -256,17 +256,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           {/* Bottom */}
-          <div className="border-t border-background/6 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-background/15 font-body">
+          <div className="border-t border-background/15 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-background/40 font-body">
               © {new Date().getFullYear()} KiKi. {t.footer.rights[lang]}
             </p>
             <div className="flex items-center gap-6">
-              <Link to="/contact" className="text-[10px] uppercase tracking-[0.15em] text-background/15 hover:text-primary/50 transition-colors duration-500 font-body">
+              <Link to="/contact" className="text-[10px] uppercase tracking-[0.15em] text-background/40 hover:text-primary transition-colors duration-500 font-body">
                 {t.footer.getInTouch[lang]}
               </Link>
-              <span className="w-px h-3 bg-background/8" />
+              <span className="w-px h-3 bg-background/20" />
               <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer"
-                className="text-[10px] uppercase tracking-[0.15em] text-background/15 hover:text-primary/50 transition-colors duration-500 font-body">
+                className="text-[10px] uppercase tracking-[0.15em] text-background/40 hover:text-primary transition-colors duration-500 font-body">
                 Instagram
               </a>
             </div>
