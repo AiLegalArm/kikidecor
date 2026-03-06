@@ -277,12 +277,12 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
     return (
       <section className="relative">
         {/* Full-bleed image */}
-        <ScrollReveal>
-          <div className="relative h-[70vh] md:h-[85vh] overflow-hidden cursor-pointer group" onClick={onImageClick}>
+        <ScrollReveal variant="fade">
+          <div className="relative h-[70vh] md:h-[85vh] img-zoom cursor-pointer group" onClick={onImageClick}>
             <img
               src={project.img}
               alt={project.title}
-              className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+              className="w-full h-full object-cover"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
@@ -338,13 +338,13 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
       <div className={cn("grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-6 items-start", !imageOnLeft && "direction-rtl")}>
         {/* Image column */}
         <div className={cn("lg:col-span-7", !imageOnLeft ? "lg:order-2" : "lg:order-1")}>
-          <ScrollReveal>
-            <div className="relative overflow-hidden cursor-pointer group" onClick={onImageClick}>
+          <ScrollReveal variant={imageOnLeft ? "slide-left" : "slide-right"}>
+            <div className="relative img-zoom cursor-pointer group" onClick={onImageClick}>
               <div className="aspect-[4/5] md:aspect-[3/4]">
                 <img
                   src={project.img}
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                  className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
@@ -355,12 +355,12 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
             {/* Secondary image offset */}
             {project.secondaryImg && (
               <div className={cn("relative -mt-20 md:-mt-32 z-10", imageOnLeft ? "ml-auto mr-0 w-3/5 md:w-2/5 pr-0 pl-4" : "mr-auto ml-0 w-3/5 md:w-2/5 pl-0 pr-4")}>
-                <div className="overflow-hidden shadow-xl cursor-pointer group" onClick={onImageClick}>
+                <div className="img-zoom shadow-xl cursor-pointer group" onClick={onImageClick}>
                   <div className="aspect-[4/3]">
                     <img
                       src={project.secondaryImg}
                       alt={`${project.title} detail`}
-                      className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                      className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
@@ -372,7 +372,7 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
 
         {/* Text column */}
         <div className={cn("lg:col-span-5 flex flex-col justify-center", !imageOnLeft ? "lg:order-1 lg:pr-10" : "lg:order-2 lg:pl-10")}>
-          <ScrollReveal delay={200}>
+          <ScrollReveal delay={250} variant={imageOnLeft ? "slide-right" : "slide-left"}>
             <div className="sticky top-32">
               {/* Project number */}
               <p className="font-display text-6xl md:text-8xl font-light text-border/60 leading-none mb-6">{number}</p>
