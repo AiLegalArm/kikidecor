@@ -372,7 +372,7 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
 
         {/* Text column */}
         <div className={cn("lg:col-span-5 flex flex-col justify-center", !imageOnLeft ? "lg:order-1 lg:pr-10" : "lg:order-2 lg:pl-10")}>
-          <ScrollReveal delay={200}>
+          <ScrollReveal delay={250} variant={imageOnLeft ? "slide-right" : "slide-left"}>
             <div className="sticky top-32">
               {/* Project number */}
               <p className="font-display text-6xl md:text-8xl font-light text-border/60 leading-none mb-6">{number}</p>
