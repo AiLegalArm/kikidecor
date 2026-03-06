@@ -5,13 +5,11 @@ import { cn } from "@/lib/utils";
 import logoImg from "@/assets/logo.png";
 
 const navLinks = [
-  { name: "Главная", path: "/" },
+  { name: "Home", path: "/" },
   { name: "Decor Studio", path: "/decor" },
   { name: "Showroom", path: "/showroom" },
-  { name: "Портфолио", path: "/portfolio" },
-  { name: "Shop", path: "/shop" },
-  { name: "О нас", path: "/about" },
-  { name: "Контакты", path: "/contact" },
+  { name: "About", path: "/about" },
+  { name: "Contact", path: "/contact" },
 ];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -115,7 +113,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Divisions */}
             <div>
-              <h4 className="overline text-background/30 mb-6">Направления</h4>
+              <h4 className="overline text-background/30 mb-6">Brand Worlds</h4>
               <div className="flex flex-col gap-3.5">
                 <Link to="/decor" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
                   KiKi Decor Studio
@@ -124,10 +122,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   KiKi Showroom
                 </Link>
                 <Link to="/portfolio" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
-                  Портфолио
-                </Link>
-                <Link to="/shop" className="text-sm font-light text-background/50 hover:text-primary transition-colors duration-300">
-                  Shop
+                  Portfolio
                 </Link>
               </div>
             </div>
