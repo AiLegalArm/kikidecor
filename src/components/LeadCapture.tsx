@@ -3,17 +3,21 @@ import { Send, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import ScrollReveal from "@/components/ScrollReveal";
-
-const leadSchema = z.object({
-  name: z.string().trim().min(1, "Введите имя").max(100),
-  phone: z.string().trim().min(5, "Введите телефон").max(30),
-  email: z.string().trim().email("Введите корректный email").max(255),
-  interest: z.enum(["decor", "showroom"], { required_error: "Выберите направление" }),
-});
-
-type LeadForm = z.infer<typeof leadSchema>;
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const LeadCapture = () => {
+  const { lang, t } = useLanguage();
+  const l = t.lead;
+
+  const leadSchema = z.object({
+    name: z.string().trim().min(1, l.validationName[lang]).max(100),
+    phone: z.string().trim().min(5, l.validationPhone[lang]).max(30),
+    email: z.string().trim().email(l.validationEmail[lang]).max(255),
+    interest: z.enum(["decor", "showroom"], { required_error: l.validationInterest[lang] }),
+  });
+
+  type LeadForm = z.infer<typeof leadSchema>;
+
   const [form, setForm] = useState<LeadForm>({ name: "", phone: "", email: "", interest: "decor" });
   const [errors, setErrors] = useState<Partial<Record<keyof LeadForm, string>>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -48,7 +52,7 @@ const LeadCapture = () => {
       if (error) throw error;
       setSubmitted(true);
     } catch {
-      setErrors({ name: "Произошла ошибка. Попробуйте ещё раз." });
+      setErrors({ name: l.errorGeneric[lang] });
     } finally {
       setSubmitting(false);
     }
@@ -60,10 +64,8 @@ const LeadCapture = () => {
         <div className="container mx-auto max-w-lg text-center">
           <ScrollReveal>
             <CheckCircle size={40} className="text-primary mx-auto mb-6" strokeWidth={1.2} />
-            <h3 className="font-display text-3xl font-light mb-4">Thank You</h3>
-            <p className="text-muted-foreground font-light leading-relaxed">
-              We've received your request and will contact you shortly to schedule your free consultation.
-            </p>
+            <h3 className="font-display text-3xl font-light mb-4">{l.thankYou[lang]}</h3>
+            <p className="text-muted-foreground font-light leading-relaxed">{l.thankYouText[lang]}</p>
           </ScrollReveal>
         </div>
       </section>
@@ -74,43 +76,32 @@ const LeadCapture = () => {
     <section className="section-padding bg-secondary/30">
       <div className="container mx-auto max-w-4xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
-          {/* Copy */}
           <ScrollReveal>
-            <p className="overline text-primary mb-5">Free Consultation</p>
+            <p className="overline text-primary mb-5">{l.overline[lang]}</p>
             <h2 className="font-display text-3xl md:text-5xl font-light mb-6 leading-[1.1]">
-              Let's create something <span className="italic">extraordinary</span>
+              {l.title[lang]} <span className="italic">{l.titleItalic[lang]}</span>
             </h2>
-            <p className="text-muted-foreground font-light leading-[1.9] mb-6">
-              Whether you're dreaming of the perfect event or looking for personal styling,
-              our team is here to bring your vision to life. Book a free consultation — no commitment required.
-            </p>
+            <p className="text-muted-foreground font-light leading-[1.9] mb-6">{l.subtitle[lang]}</p>
             <div className="w-16 h-px bg-primary/30" />
           </ScrollReveal>
 
-          {/* Form */}
           <ScrollReveal delay={200}>
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Name */}
               <div>
-                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
-                  Name
-                </label>
+                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 block">{l.nameLabel[lang]}</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => handleChange("name", e.target.value)}
-                  placeholder="Your name"
+                  placeholder={l.namePlaceholder[lang]}
                   className="w-full bg-transparent border-b border-border/60 py-3 text-sm font-light focus:border-primary focus:outline-none transition-colors duration-300 placeholder:text-muted-foreground/40"
                   maxLength={100}
                 />
                 {errors.name && <p className="text-destructive text-xs mt-1.5 font-light">{errors.name}</p>}
               </div>
 
-              {/* Phone */}
               <div>
-                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
-                  Phone
-                </label>
+                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 block">{l.phoneLabel[lang]}</label>
                 <input
                   type="tel"
                   value={form.phone}
@@ -122,11 +113,8 @@ const LeadCapture = () => {
                 {errors.phone && <p className="text-destructive text-xs mt-1.5 font-light">{errors.phone}</p>}
               </div>
 
-              {/* Email */}
               <div>
-                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 block">
-                  Email
-                </label>
+                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2 block">{l.emailLabel[lang]}</label>
                 <input
                   type="email"
                   value={form.email}
@@ -138,15 +126,12 @@ const LeadCapture = () => {
                 {errors.email && <p className="text-destructive text-xs mt-1.5 font-light">{errors.email}</p>}
               </div>
 
-              {/* Interest */}
               <div>
-                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-3 block">
-                  I'm interested in
-                </label>
+                <label className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-3 block">{l.interestLabel[lang]}</label>
                 <div className="flex gap-3">
                   {[
-                    { value: "decor" as const, label: "Decor Studio" },
-                    { value: "showroom" as const, label: "Showroom" },
+                    { value: "decor" as const, label: l.decorOption[lang] },
+                    { value: "showroom" as const, label: l.showroomOption[lang] },
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -165,20 +150,12 @@ const LeadCapture = () => {
                 {errors.interest && <p className="text-destructive text-xs mt-1.5 font-light">{errors.interest}</p>}
               </div>
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={submitting}
                 className="btn-glow w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary transition-all duration-500 disabled:opacity-50 disabled:pointer-events-none mt-4"
               >
-                {submitting ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    Book Free Consultation
-                    <Send size={12} />
-                  </>
-                )}
+                {submitting ? l.submitting[lang] : (<>{l.submitBtn[lang]} <Send size={12} /></>)}
               </button>
             </form>
           </ScrollReveal>
