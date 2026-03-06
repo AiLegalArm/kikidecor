@@ -277,12 +277,12 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
     return (
       <section className="relative">
         {/* Full-bleed image */}
-        <ScrollReveal>
-          <div className="relative h-[70vh] md:h-[85vh] overflow-hidden cursor-pointer group" onClick={onImageClick}>
+        <ScrollReveal variant="fade">
+          <div className="relative h-[70vh] md:h-[85vh] img-zoom cursor-pointer group" onClick={onImageClick}>
             <img
               src={project.img}
               alt={project.title}
-              className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+              className="w-full h-full object-cover"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent" />
