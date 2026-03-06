@@ -7,10 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import heroDecor from "@/assets/hero-decor.jpg";
 import heroShowroom from "@/assets/hero-showroom.jpg";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
-const LifestyleGallery = lazy(() => import("@/components/LifestyleGallery"));
 const SignatureDecor = lazy(() => import("@/components/SignatureDecor"));
-const ShowroomCollection = lazy(() => import("@/components/ShowroomCollection"));
-const LeadCapture = lazy(() => import("@/components/LeadCapture"));
 
 const Home = () => {
   const { lang, t } = useLanguage();
@@ -21,25 +18,15 @@ const Home = () => {
       <title>KiKi — Luxury Events & Fashion</title>
       <meta name="description" content="KiKi — premium lifestyle brand combining luxury event decoration studio and fashion showroom. Beauty in every detail." />
 
-      {/* ═══ 1. CINEMATIC HERO ═══ */}
+      {/* ═══ HERO ═══ */}
       <section className="relative h-screen overflow-hidden -mt-18 md:-mt-24">
         <div className="absolute inset-0 flex">
           <div className="w-1/2 relative overflow-hidden">
-            <img
-              src={heroDecor}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-in"
-              loading="eager"
-            />
+            <img src={heroDecor} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-in" loading="eager" />
             <div className="absolute inset-0 bg-foreground/50" />
           </div>
           <div className="w-1/2 relative overflow-hidden">
-            <img
-              src={heroShowroom}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-out"
-              loading="eager"
-            />
+            <img src={heroShowroom} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-out" loading="eager" />
             <div className="absolute inset-0 bg-foreground/50" />
           </div>
         </div>
@@ -49,39 +36,20 @@ const Home = () => {
 
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-3xl">
-            <div
-              className="w-px h-20 bg-background/20 mx-auto mb-10 animate-reveal"
-              style={{ animationDelay: "0.2s" }}
-            />
-
-            <h1
-              className="font-display text-6xl md:text-8xl lg:text-[7rem] font-light text-background leading-none tracking-[-0.02em] mb-6 animate-reveal"
-              style={{ animationDelay: "0.4s" }}
-            >
+            <div className="w-px h-20 bg-background/20 mx-auto mb-10 animate-reveal" style={{ animationDelay: "0.2s" }} />
+            <h1 className="font-display text-6xl md:text-8xl lg:text-[7rem] font-light text-background leading-none tracking-[-0.02em] mb-6 animate-reveal" style={{ animationDelay: "0.4s" }}>
               KiKi
             </h1>
-
-            <p
-              className="font-body text-[11px] md:text-xs uppercase tracking-[0.45em] text-background/50 mb-14 animate-reveal"
-              style={{ animationDelay: "0.6s" }}
-            >
+            <p className="font-body text-[11px] md:text-xs uppercase tracking-[0.45em] text-background/50 mb-14 animate-reveal" style={{ animationDelay: "0.6s" }}>
               {t.home.subtitle[lang]}
             </p>
-
             <div className="w-16 h-px bg-primary/50 mx-auto mb-14 animate-reveal" style={{ animationDelay: "0.8s" }} />
-
             <div className="flex flex-col sm:flex-row gap-5 justify-center animate-reveal" style={{ animationDelay: "1s" }}>
-              <Link
-                to="/decor"
-                className="group inline-flex items-center gap-3 px-10 py-5 bg-background/95 text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700 backdrop-blur-sm"
-              >
+              <Link to="/decor" className="group inline-flex items-center gap-3 px-10 py-5 bg-background/95 text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700 backdrop-blur-sm">
                 {t.home.exploreDecor[lang]}
                 <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
-              <Link
-                to="/showroom"
-                className="group inline-flex items-center gap-3 px-10 py-5 border border-background/25 text-background text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-background hover:text-foreground transition-all duration-700 backdrop-blur-sm"
-              >
+              <Link to="/showroom" className="group inline-flex items-center gap-3 px-10 py-5 border border-background/25 text-background text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-background hover:text-foreground transition-all duration-700 backdrop-blur-sm">
                 {t.home.visitShowroom[lang]}
                 <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
@@ -99,47 +67,11 @@ const Home = () => {
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
       </section>
 
-      {/* ═══ 2. THE STORY OF KIKI ═══ */}
-      <section className="section-padding overflow-hidden">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-            <ScrollReveal>
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <img src={heroDecor} alt="KiKi brand story" className="w-full h-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent" />
-                <div className="absolute top-6 left-6 right-6 bottom-6 border border-primary/15 pointer-events-none" />
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={200}>
-              <div className="lg:py-12">
-                <p className="overline text-primary mb-6">{t.home.storyOverline[lang]}</p>
-                <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.08] mb-8">
-                  {t.home.storyTitle1[lang]}
-                  <br />
-                  {t.home.storyTitle2[lang]} <span className="italic">KiKi</span>
-                </h2>
-                <div className="w-16 h-px bg-primary/40 mb-10" />
-                <p className="text-muted-foreground font-light text-base md:text-lg leading-[2] mb-6">
-                  {t.home.storyParagraph1[lang]}
-                </p>
-                <p className="text-muted-foreground font-light text-base md:text-lg leading-[2] mb-6">
-                  {t.home.storyParagraph2[lang]}
-                </p>
-                <p className="text-foreground/80 font-display text-lg md:text-xl italic leading-relaxed">
-                  {t.home.storyPhilosophy[lang]}
-                </p>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 3. TWO WORLDS OF KIKI ═══ */}
-      <section className="px-6 md:px-10 pb-24 md:pb-40">
+      {/* ═══ TWO WORLDS ═══ */}
+      <section className="px-6 md:px-10 py-20 md:py-32">
         <div className="container mx-auto">
           <ScrollReveal>
-            <div className="text-center mb-16 md:mb-20">
+            <div className="text-center mb-14 md:mb-18">
               <p className="overline text-primary mb-5">{t.home.discoverOverline[lang]}</p>
               <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.08]">
                 {t.home.twoWorldsTitle[lang]} <span className="italic">KiKi</span>
@@ -149,18 +81,13 @@ const Home = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <ScrollReveal delay={0}>
-              <Link to="/decor" className="group block relative overflow-hidden aspect-[3/4]">
+              <Link to="/decor" className="group block relative overflow-hidden aspect-[4/5]">
                 <img src={heroDecor} alt="KiKi Decor" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.06]" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5 transition-all duration-700 group-hover:from-foreground/85 group-hover:via-foreground/40" />
-                <div className="absolute inset-4 border border-background/0 group-hover:border-background/10 transition-all duration-700 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-14">
+                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
                   <p className="overline text-primary/70 mb-3 text-[9px]">{t.home.divisionI[lang]}</p>
-                  <h3 className="font-display text-3xl md:text-5xl font-light text-background mb-4 leading-[1.1]">
-                    KiKi <span className="italic">Decor</span>
-                  </h3>
-                  <p className="text-sm text-background/50 font-light max-w-sm mb-8 leading-[1.8]">
-                    {t.home.decorDescription[lang]}
-                  </p>
+                  <h3 className="font-display text-3xl md:text-5xl font-light text-background mb-4 leading-[1.1]">KiKi <span className="italic">Decor</span></h3>
+                  <p className="text-sm text-background/50 font-light max-w-sm mb-6 leading-[1.8]">{t.home.decorDescription[lang]}</p>
                   <span className="inline-flex items-center gap-3 px-6 py-3 border border-background/20 text-[10px] uppercase tracking-[0.25em] text-background/80 group-hover:bg-background group-hover:text-foreground transition-all duration-600">
                     {t.home.exploreDecor[lang]}
                     <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
@@ -170,18 +97,13 @@ const Home = () => {
             </ScrollReveal>
 
             <ScrollReveal delay={200}>
-              <Link to="/showroom" className="group block relative overflow-hidden aspect-[3/4]">
+              <Link to="/showroom" className="group block relative overflow-hidden aspect-[4/5]">
                 <img src={heroShowroom} alt="KiKi Showroom" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.06]" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5 transition-all duration-700 group-hover:from-foreground/85 group-hover:via-foreground/40" />
-                <div className="absolute inset-4 border border-background/0 group-hover:border-background/10 transition-all duration-700 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-14">
+                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
                   <p className="overline text-primary/70 mb-3 text-[9px]">{t.home.divisionII[lang]}</p>
-                  <h3 className="font-display text-3xl md:text-5xl font-light text-background mb-4 leading-[1.1]">
-                    KiKi <span className="italic">Showroom</span>
-                  </h3>
-                  <p className="text-sm text-background/50 font-light max-w-sm mb-8 leading-[1.8]">
-                    {t.home.showroomDescription[lang]}
-                  </p>
+                  <h3 className="font-display text-3xl md:text-5xl font-light text-background mb-4 leading-[1.1]">KiKi <span className="italic">Showroom</span></h3>
+                  <p className="text-sm text-background/50 font-light max-w-sm mb-6 leading-[1.8]">{t.home.showroomDescription[lang]}</p>
                   <span className="inline-flex items-center gap-3 px-6 py-3 border border-background/20 text-[10px] uppercase tracking-[0.25em] text-background/80 group-hover:bg-background group-hover:text-foreground transition-all duration-600">
                     {t.home.visitShowroom[lang]}
                     <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
@@ -193,14 +115,9 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ═══ SIGNATURE DECOR ═══ */}
       <Suspense fallback={<div className="h-96" />}>
         <SignatureDecor />
-      </Suspense>
-      <Suspense fallback={<div className="h-96" />}>
-        <ShowroomCollection />
-      </Suspense>
-      <Suspense fallback={<div className="h-96" />}>
-        <LifestyleGallery />
       </Suspense>
 
       {/* ═══ TESTIMONIALS ═══ */}
@@ -236,11 +153,7 @@ const Home = () => {
         </div>
       </section>
 
-      <Suspense fallback={<div className="h-96" />}>
-        <LeadCapture />
-      </Suspense>
-
-      {/* ═══ CONTACT & SOCIAL ═══ */}
+      {/* ═══ CTA ═══ */}
       <section className="relative overflow-hidden">
         <img src={loungeImg} alt="KiKi brand atmosphere" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-foreground/60" />
@@ -256,16 +169,10 @@ const Home = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-14">
-                <Link
-                  to="/booking"
-                  className="btn-glow inline-flex items-center justify-center gap-2 px-10 py-4.5 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary/90 transition-all duration-500"
-                >
+                <Link to="/booking" className="btn-glow inline-flex items-center justify-center gap-2 px-10 py-4.5 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary/90 transition-all duration-500">
                   {t.home.bookConsultation[lang]}
                 </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center gap-2 px-10 py-4.5 border border-background/30 text-background text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-background hover:text-foreground transition-all duration-500"
-                >
+                <Link to="/contact" className="inline-flex items-center justify-center gap-2 px-10 py-4.5 border border-background/30 text-background text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-background hover:text-foreground transition-all duration-500">
                   {t.home.contactUs[lang]}
                 </Link>
               </div>
