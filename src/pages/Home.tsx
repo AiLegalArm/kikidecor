@@ -325,13 +325,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-                  </span>
-                </div>
-              </Link>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
 
       {/* ═══ 4. INSTAGRAM LIFESTYLE FEED ═══ */}
       <section className="section-padding bg-secondary/40">
