@@ -11,6 +11,7 @@ import loungeImg from "@/assets/portfolio-lounge.jpg";
 import LifestyleGallery from "@/components/LifestyleGallery";
 import SignatureDecor from "@/components/SignatureDecor";
 import ShowroomCollection from "@/components/ShowroomCollection";
+import LeadCapture from "@/components/LeadCapture";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 25 },
