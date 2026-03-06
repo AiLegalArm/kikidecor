@@ -28,6 +28,7 @@ type Lead = {
   status: string;
   notes: string | null;
   created_at: string;
+  booking_type: string;
 };
 
 type BlockedDate = {
