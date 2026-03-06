@@ -15,11 +15,11 @@ import dessertImg from "@/assets/portfolio-dessert.jpg";
 import themedImg from "@/assets/portfolio-themed.jpg";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 25 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay: i * 0.18, ease: "easeOut" as const },
+    transition: { duration: 1.2, delay: 0.4 + i * 0.22, ease: "easeOut" as const },
   }),
 };
 
@@ -69,20 +69,39 @@ const Home = () => {
 
       {/* ═══ 1. CINEMATIC HERO ═══ */}
       <section ref={heroRef} className="relative h-screen overflow-hidden -mt-18 md:-mt-24">
-        {/* Parallax background — split */}
+        {/* Parallax background — split with Ken Burns */}
         <motion.div className="absolute inset-0 flex" style={{ y: heroY }}>
           <div className="w-1/2 relative overflow-hidden">
-            <img src={heroDecor} alt="" className="absolute inset-0 w-full h-full object-cover scale-110" loading="eager" />
-            <div className="absolute inset-0 bg-foreground/45" />
+            <motion.img
+              src={heroDecor}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+              initial={{ scale: 1.15 }}
+              animate={{ scale: 1.05 }}
+              transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
+            />
+            <div className="absolute inset-0 bg-foreground/50" />
           </div>
           <div className="w-1/2 relative overflow-hidden">
-            <img src={heroShowroom} alt="" className="absolute inset-0 w-full h-full object-cover scale-110" loading="eager" />
-            <div className="absolute inset-0 bg-foreground/45" />
+            <motion.img
+              src={heroShowroom}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+              initial={{ scale: 1.05 }}
+              animate={{ scale: 1.15 }}
+              transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
+            />
+            <div className="absolute inset-0 bg-foreground/50" />
           </div>
         </motion.div>
 
-        {/* Center divider */}
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-background/15 z-10 hidden md:block" />
+        {/* Center divider — elegant thin line */}
+        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-background/10 z-10 hidden md:block" />
+
+        {/* Vignette overlay */}
+        <div className="absolute inset-0 z-[5]" style={{ background: "radial-gradient(ellipse at center, transparent 40%, hsl(0 0% 0% / 0.3) 100%)" }} />
 
         {/* Hero content */}
         <motion.div
@@ -92,79 +111,86 @@ const Home = () => {
           <motion.div
             initial="hidden"
             animate="visible"
-            className="max-w-3xl space-y-6"
+            className="max-w-3xl"
           >
-            {/* Decorative line */}
+            {/* Top decorative line */}
             <motion.div
-              className="w-px h-16 bg-background/25 mx-auto"
+              className="w-px h-20 bg-background/20 mx-auto mb-10"
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
+              style={{ transformOrigin: "top" }}
+            />
+
+            {/* Brand name */}
+            <motion.h1
+              className="font-display text-6xl md:text-8xl lg:text-[7rem] font-light text-background leading-none tracking-[-0.02em] mb-6"
               variants={fadeUp}
               custom={0}
-            />
+            >
+              KiKi
+            </motion.h1>
 
-            <motion.img
-              src={logoImg}
-              alt="KiKi"
-              className="h-14 md:h-20 w-auto mx-auto brightness-0 invert"
+            {/* Subtitle */}
+            <motion.p
+              className="font-body text-[11px] md:text-xs uppercase tracking-[0.45em] text-background/50 mb-14"
               variants={fadeUp}
               custom={1}
-            />
-
-            <motion.p
-              className="font-body text-xs md:text-sm uppercase tracking-[0.35em] text-background/60"
-              variants={fadeUp}
-              custom={2}
             >
               Luxury Events & Fashion
             </motion.p>
 
-            <motion.h1
-              className="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-light text-background leading-[1.05]"
+            {/* Elegant divider */}
+            <motion.div
+              className="w-16 h-px bg-primary/50 mx-auto mb-14"
+              variants={fadeUp}
+              custom={2}
+            />
+
+            {/* CTAs */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-5 justify-center"
               variants={fadeUp}
               custom={3}
             >
-              Beauty in every
-              <br />
-              <span className="italic">detail</span>
-            </motion.h1>
-
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center pt-6"
-              variants={fadeUp}
-              custom={4}
-            >
               <Link
                 to="/decor"
-                className="inline-flex items-center gap-3 px-10 py-4.5 bg-background text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-500"
+                className="group inline-flex items-center gap-3 px-10 py-5 bg-background/95 text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700 backdrop-blur-sm"
               >
                 Explore Decor Studio
-                <ArrowRight size={13} />
+                <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
               <Link
                 to="/showroom"
-                className="inline-flex items-center gap-3 px-10 py-4.5 border border-background/35 text-background text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-background hover:text-foreground transition-all duration-500"
+                className="group inline-flex items-center gap-3 px-10 py-5 border border-background/25 text-background text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-background hover:text-foreground transition-all duration-700 backdrop-blur-sm"
               >
                 Visit Showroom
-                <ArrowRight size={13} />
+                <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Scroll hint */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
+        {/* Scroll indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="flex flex-col items-center gap-3"
+            transition={{ delay: 2.2, duration: 1 }}
+            className="flex flex-col items-center gap-4"
           >
-            <div className="w-px h-10 bg-background/20 animate-float" />
-            <p className="text-[9px] uppercase tracking-[0.3em] text-background/30">Scroll</p>
+            <motion.div
+              className="w-px h-12 bg-background/15"
+              animate={{ scaleY: [0.5, 1, 0.5] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              style={{ transformOrigin: "top" }}
+            />
+            <p className="text-[8px] uppercase tracking-[0.4em] text-background/25 font-light">Scroll</p>
           </motion.div>
         </div>
 
-        {/* Bottom gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent z-10" />
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
       </section>
 
       {/* ═══ 2. BRAND MANIFESTO ═══ */}
