@@ -8,15 +8,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw,
-  CheckCircle2, AlertCircle, Loader2, LogOut, LayoutGrid, List,
+  Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram,
+  LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
-  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Image as ImageIcon, Menu, X,
+  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
 import AdminLogin from "@/components/AdminLogin";
 import AdminProducts from "@/components/admin/AdminProducts";
+import AdminInstagramCommerce from "@/components/admin/AdminInstagramCommerce";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCustomers from "@/components/admin/AdminCustomers";
@@ -76,11 +77,6 @@ const Admin = () => {
   const pipelineRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 20;
 
-  // Instagram state
-  const [igImporting, setIgImporting] = useState(false);
-  const [igSyncing, setIgSyncing] = useState(false);
-  const [igResult, setIgResult] = useState<{ success: boolean; synced?: number; error?: string } | null>(null);
-  const [igPostCount, setIgPostCount] = useState<number | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -110,12 +106,9 @@ const Admin = () => {
     setLoading(false);
   };
 
-  const fetchIgCount = async () => {
-    const { count } = await supabase.from("instagram_posts").select("*", { count: "exact", head: true });
-    if (count !== null) setIgPostCount(count);
-  };
+  const fetchIgCount = () => {};
 
-  useEffect(() => { if (session) { fetchLeads(); fetchIgCount(); } }, [filterStatus, page, session]);
+  useEffect(() => { if (session) { fetchLeads(); } }, [filterStatus, page, session]);
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   if (!session) return <AdminLogin onLogin={() => {}} />;
@@ -142,20 +135,7 @@ const Admin = () => {
 
   const openDetail = (lead: Lead) => { setSelectedLead(lead); setEditNotes(lead.notes || ""); };
 
-  const triggerInstagramSync = async (importAll: boolean) => {
-    const setter = importAll ? setIgImporting : setIgSyncing;
-    setter(true); setIgResult(null);
-    try {
-      const { data, error } = await supabase.functions.invoke("sync-instagram", { body: { import_all: importAll } });
-      if (error) throw error;
-      setIgResult(data);
-      if (data?.success) { toast.success(`${importAll ? "Импорт" : "Синхронизация"}: ${data.synced} постов`); fetchIgCount(); }
-      else toast.error(data?.error || "Ошибка");
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Ошибка";
-      setIgResult({ success: false, error: msg }); toast.error(msg);
-    } finally { setter(false); }
-  };
+
 
   const navigateTo = (s: Section) => { setSection(s); setSidebarOpen(false); };
 
@@ -326,35 +306,8 @@ const Admin = () => {
             </>
           )}
 
-          {/* ═══ INSTAGRAM ═══ */}
-          {section === "instagram" && (
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <Instagram size={22} strokeWidth={1.5} className="text-primary" />
-                <h2 className="font-display text-2xl font-light">Instagram Контент</h2>
-                {igPostCount !== null && <span className="text-xs text-muted-foreground border border-border px-2 py-0.5">{igPostCount} постов</span>}
-              </div>
-              <p className="text-sm text-muted-foreground mb-5 max-w-xl">
-                Импортируйте все исторические посты или запустите быструю синхронизацию последних публикаций.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={() => triggerInstagramSync(true)} disabled={igImporting || igSyncing} className="rounded-none gap-2">
-                  {igImporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-                  {igImporting ? "Импорт..." : "Импорт всего контента"}
-                </Button>
-                <Button variant="outline" onClick={() => triggerInstagramSync(false)} disabled={igImporting || igSyncing} className="rounded-none gap-2">
-                  {igSyncing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
-                  {igSyncing ? "Синхронизация..." : "Быстрая синхронизация"}
-                </Button>
-              </div>
-              {igResult && (
-                <div className={`mt-4 flex items-start gap-2 text-sm p-3 border ${igResult.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"}`}>
-                  {igResult.success ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> : <AlertCircle size={16} className="mt-0.5 shrink-0" />}
-                  <span>{igResult.success ? `Синхронизировано ${igResult.synced} постов` : `Ошибка: ${igResult.error}`}</span>
-                </div>
-              )}
-            </div>
-          )}
+          {/* ═══ INSTAGRAM COMMERCE ═══ */}
+          {section === "instagram" && <AdminInstagramCommerce />}
 
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && (
