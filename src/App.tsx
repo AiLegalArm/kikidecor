@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Layout from "./components/Layout";
 import PageTransition from "./components/PageTransition";
-import Index from "./pages/Index";
+import Home from "./pages/Home";
 import Portfolio from "./pages/Portfolio";
 import Services from "./pages/Services";
 import Packages from "./pages/Packages";
@@ -16,6 +16,7 @@ import Booking from "./pages/Booking";
 import Contact from "./pages/Contact";
 import InstagramPage from "./pages/Instagram";
 import Admin from "./pages/Admin";
+import Showroom from "./pages/Showroom";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,7 +27,9 @@ const AnimatedRoutes = () => {
     <Layout>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/decor" element={<PageTransition><Services /></PageTransition>} />
+          <Route path="/showroom" element={<PageTransition><Showroom /></PageTransition>} />
           <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
           <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
           <Route path="/packages" element={<PageTransition><Packages /></PageTransition>} />
