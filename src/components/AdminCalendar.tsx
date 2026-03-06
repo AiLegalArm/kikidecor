@@ -75,17 +75,22 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
 
   useEffect(() => { fetchData(); }, []);
 
-  // Group leads by date
+  // Group leads by date (filtered by type)
+  const filteredLeads = useMemo(() =>
+    typeFilter === "all" ? leads : leads.filter((l) => l.booking_type === typeFilter),
+    [leads, typeFilter]
+  );
+
   const leadsByDate = useMemo(() => {
     const map: Record<string, Lead[]> = {};
-    leads.forEach((l) => {
+    filteredLeads.forEach((l) => {
       if (l.event_date) {
         if (!map[l.event_date]) map[l.event_date] = [];
         map[l.event_date].push(l);
       }
     });
     return map;
-  }, [leads]);
+  }, [filteredLeads]);
 
   const blockedDateSet = useMemo(
     () => new Set(blockedDates.map((b) => b.blocked_date)),
