@@ -1,97 +1,117 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Flower2, Heart, PartyPopper, Sparkles, Palette, Camera } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import weddingImg from "@/assets/portfolio-wedding.jpg";
 import birthdayImg from "@/assets/portfolio-birthday.jpg";
 import proposalImg from "@/assets/portfolio-proposal.jpg";
+import corporateImg from "@/assets/portfolio-corporate.jpg";
+import themedImg from "@/assets/portfolio-themed.jpg";
 
 const services = [
   {
-    icon: Heart,
     title: "Wedding Decoration",
-    desc: "From intimate ceremonies to grand receptions, we craft every detail with love. Floral arches, table styling, lighting design, and bespoke installations.",
+    desc: "Timeless floral arches, elegant table styling, bespoke lighting, and luxurious installations to make your special day truly unforgettable.",
+    price: "$1,500",
     img: weddingImg,
   },
   {
-    icon: PartyPopper,
-    title: "Birthday Styling",
-    desc: "Milestone birthdays deserve extraordinary settings. Custom themes, balloon artistry, dessert table design, and photo-worthy backdrops.",
+    title: "Birthday Decoration",
+    desc: "Custom balloon artistry, dessert table design, photo-worthy backdrops, and themed styling for milestone celebrations of all ages.",
+    price: "$800",
     img: birthdayImg,
   },
   {
-    icon: Sparkles,
-    title: "Proposal Setups",
-    desc: "Create an unforgettable moment. Romantic candle-lit settings, floral arrangements, fairy light installations, and intimate dining setups.",
+    title: "Proposal Decoration",
+    desc: "Romantic candlelit setups, rose petal arrangements, fairy light canopies, and intimate dining scenes for the perfect moment.",
+    price: "$600",
     img: proposalImg,
   },
   {
-    icon: Palette,
-    title: "Themed Events",
-    desc: "Immersive themed experiences that transport your guests. From concept development to full execution with props, lighting, and custom décor.",
+    title: "Corporate Event Decoration",
+    desc: "Polished stage designs, branded floral centerpieces, gala dinner styling, and professional décor for conferences and awards.",
+    price: "$2,000",
+    img: corporateImg,
   },
   {
-    icon: Flower2,
-    title: "Floral Design",
-    desc: "Bespoke floral arrangements using premium blooms. Bouquets, centerpieces, installations, and seasonal arrangements for any occasion.",
-  },
-  {
-    icon: Camera,
-    title: "Event Styling",
-    desc: "Complete event styling consultation. Colour palette development, venue selection support, vendor coordination, and day-of styling.",
+    title: "Custom Themed Decoration",
+    desc: "Fully immersive themed experiences — from concept to execution with custom props, lighting, greenery, and bespoke installations.",
+    price: "$1,200",
+    img: themedImg,
   },
 ];
 
 const Services = () => (
   <>
-    <title>Services | Élara Events</title>
-    <meta name="description" content="Explore our luxury event decoration services including weddings, birthdays, proposals, themed parties, floral design, and event styling." />
+    <title>Services | Élara Events — Luxury Event Decoration</title>
+    <meta name="description" content="Explore our luxury event decoration services — weddings, birthdays, proposals, corporate events, and custom themed decorations. Starting from $600." />
 
-    <section className="section-padding">
-      <div className="container mx-auto max-w-5xl">
+    {/* Header */}
+    <section className="section-padding pb-8 md:pb-12">
+      <div className="container mx-auto max-w-3xl text-center">
         <ScrollReveal>
-          <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">What We Offer</p>
-          <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">Our Services</h1>
+          <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4">What We Offer</p>
+          <h1 className="font-display text-4xl md:text-6xl font-light mb-5">Our Services</h1>
           <div className="gold-divider" />
-          <p className="text-center text-muted-foreground font-light text-sm md:text-base max-w-2xl mx-auto mt-6">
-            Every event is unique, and so is our approach. We offer a comprehensive range of decoration and styling services tailored to your vision.
+          <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto">
+            Every event is unique, and so is our approach. Explore our curated decoration services designed to bring your vision to life.
           </p>
         </ScrollReveal>
       </div>
     </section>
 
-    {services.map((service, i) => (
-      <section key={service.title} className={i % 2 === 0 ? "bg-background" : "bg-secondary"}>
-        <div className="container mx-auto max-w-6xl px-5 md:px-8 py-16 md:py-24">
-          <div className={`grid grid-cols-1 ${service.img ? "md:grid-cols-2" : ""} gap-12 items-center`}>
-            <ScrollReveal className={i % 2 !== 0 && service.img ? "md:order-2" : ""}>
-              <div className="max-w-lg">
-                <service.icon size={28} className="text-primary mb-4" strokeWidth={1.5} />
-                <h2 className="font-display text-2xl md:text-4xl font-light mb-4">{service.title}</h2>
-                <p className="text-muted-foreground font-light leading-relaxed text-sm md:text-base">{service.desc}</p>
+    {/* Service Cards Grid */}
+    <section className="px-5 md:px-8 lg:px-16 pb-16 md:pb-28">
+      <div className="container mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {services.map((service, i) => (
+            <ScrollReveal key={service.title} delay={i * 100}>
+              <div className="bg-card rounded-2xl overflow-hidden shadow-[0_4px_30px_-8px_hsl(var(--foreground)/0.08)] hover:shadow-[0_12px_40px_-8px_hsl(var(--foreground)/0.15)] transition-shadow duration-500 flex flex-col h-full group">
+                {/* Image */}
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={service.img}
+                    alt={service.title}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-6 md:p-8 flex flex-col flex-1">
+                  <h2 className="font-display text-xl md:text-2xl font-medium mb-3">{service.title}</h2>
+                  <p className="text-muted-foreground font-light text-sm leading-relaxed flex-1 mb-5">
+                    {service.desc}
+                  </p>
+                  <div className="flex items-end justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">Starting from</p>
+                      <p className="font-display text-2xl text-primary">{service.price}</p>
+                    </div>
+                    <Link to="/booking">
+                      <Button className="rounded-full text-[11px] uppercase tracking-[0.12em] px-5 py-5 bg-primary hover:bg-primary/90 text-primary-foreground shadow-none">
+                        Request Service
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </ScrollReveal>
-            {service.img && (
-              <ScrollReveal delay={200} className={i % 2 !== 0 ? "md:order-1" : ""}>
-                <div className="aspect-[4/5] overflow-hidden">
-                  <img src={service.img} alt={service.title} className="w-full h-full object-cover" loading="lazy" />
-                </div>
-              </ScrollReveal>
-            )}
-          </div>
+          ))}
         </div>
-      </section>
-    ))}
+      </div>
+    </section>
 
-    <section className="section-padding bg-background">
+    {/* CTA */}
+    <section className="section-padding bg-secondary">
       <div className="container mx-auto text-center max-w-2xl">
         <ScrollReveal>
-          <h2 className="font-display text-3xl md:text-4xl font-light mb-6">Have Something Special in Mind?</h2>
+          <h2 className="font-display text-3xl md:text-4xl font-light mb-5">Have Something Special in Mind?</h2>
           <p className="text-muted-foreground font-light text-sm mb-8">
-            We love bringing unique ideas to life. Let's discuss your vision.
+            We love bringing unique ideas to life. Let's discuss your vision and create something extraordinary together.
           </p>
           <Link to="/booking">
-            <Button className="rounded-none text-xs uppercase tracking-[0.15em] px-10 py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button variant="outline" className="rounded-full text-xs uppercase tracking-[0.15em] px-10 py-6 border-foreground/20 hover:bg-foreground hover:text-background">
               Book a Consultation <ArrowRight size={14} className="ml-2" />
             </Button>
           </Link>
