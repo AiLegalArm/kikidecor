@@ -26,6 +26,7 @@ import Lookbook from "./pages/Lookbook";
 import Stylist from "./pages/Stylist";
 import OutfitGenerator from "./pages/OutfitGenerator";
 import FindSimilar from "./pages/FindSimilar";
+import VirtualTryOn from "./pages/VirtualTryOn";
 import ShowroomBooking from "./pages/ShowroomBooking";
 import ShoppableGalleryPage from "./pages/ShoppableGalleryPage";
 import NotFound from "./pages/NotFound";
@@ -56,6 +57,7 @@ const AnimatedRoutes = () => {
           <Route path="/stylist" element={<PageTransition><Stylist /></PageTransition>} />
           <Route path="/outfits" element={<PageTransition><OutfitGenerator /></PageTransition>} />
           <Route path="/find-similar" element={<PageTransition><FindSimilar /></PageTransition>} />
+          <Route path="/try-on" element={<PageTransition><VirtualTryOn /></PageTransition>} />
           <Route path="/showroom-booking" element={<PageTransition><ShowroomBooking /></PageTransition>} />
           <Route path="/shop-the-look" element={<PageTransition><ShoppableGalleryPage /></PageTransition>} />
           <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
