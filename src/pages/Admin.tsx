@@ -46,7 +46,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ai" | "analytics";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "analytics";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "leads", label: "Лиды", icon: Users },
@@ -55,6 +55,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "orders", label: "Заказы", icon: ShoppingBag },
   { key: "calendar", label: "Календарь", icon: CalendarDays },
   { key: "instagram", label: "Instagram", icon: Instagram },
+  { key: "ig-analytics", label: "IG Аналитика", icon: Instagram },
   { key: "ai", label: "AI Генератор", icon: Sparkles },
   { key: "analytics", label: "Аналитика", icon: BarChart3 },
 ];
