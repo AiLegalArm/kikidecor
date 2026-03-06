@@ -25,6 +25,7 @@ import CheckoutPage from "./pages/Checkout";
 import Lookbook from "./pages/Lookbook";
 import Stylist from "./pages/Stylist";
 import OutfitGenerator from "./pages/OutfitGenerator";
+import FindSimilar from "./pages/FindSimilar";
 import ShowroomBooking from "./pages/ShowroomBooking";
 import ShoppableGalleryPage from "./pages/ShoppableGalleryPage";
 import NotFound from "./pages/NotFound";
