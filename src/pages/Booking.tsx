@@ -29,6 +29,26 @@ const Booking = () => {
       message: formData.message || null,
       status: "new",
     });
+
+    // Trigger email notification
+    try {
+      await supabase.functions.invoke("notify-new-lead", {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          eventType: formData.eventType,
+          date: formData.date,
+          guests: formData.guests,
+          budget: formData.budget,
+          message: formData.message,
+          source: "booking",
+        },
+      });
+    } catch (err) {
+      console.warn("Email notification failed:", err);
+    }
+
     setSubmitting(false);
     if (error) {
       console.error(error);

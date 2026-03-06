@@ -189,8 +189,8 @@ const Contact = () => {
                   <label className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Сообщение *</label>
                   <Textarea value={form.message} onChange={update("message")} required rows={5} className="rounded-xl border-border bg-transparent focus:border-primary resize-none" />
                 </div>
-                <Button type="submit" className="w-full rounded-xl text-xs uppercase tracking-[0.12em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                  Отправить <ArrowRight size={14} className="ml-2" />
+                <Button type="submit" disabled={submitting} className="w-full rounded-xl text-xs uppercase tracking-[0.12em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
+                  {submitting ? "Отправка..." : "Отправить"} {!submitting && <ArrowRight size={14} className="ml-2" />}
                 </Button>
               </form>
             </ScrollReveal>
