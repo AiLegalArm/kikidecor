@@ -18,6 +18,7 @@ import AdminAIGenerator from "@/components/AdminAIGenerator";
 import AdminLogin from "@/components/AdminLogin";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInstagramCommerce from "@/components/admin/AdminInstagramCommerce";
+import AdminInstagramAnalytics from "@/components/admin/AdminInstagramAnalytics";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCustomers from "@/components/admin/AdminCustomers";
@@ -45,7 +46,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ai" | "analytics";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "analytics";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "leads", label: "Лиды", icon: Users },
@@ -54,6 +55,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "orders", label: "Заказы", icon: ShoppingBag },
   { key: "calendar", label: "Календарь", icon: CalendarDays },
   { key: "instagram", label: "Instagram", icon: Instagram },
+  { key: "ig-analytics", label: "IG Аналитика", icon: Instagram },
   { key: "ai", label: "AI Генератор", icon: Sparkles },
   { key: "analytics", label: "Аналитика", icon: BarChart3 },
 ];
@@ -308,6 +310,9 @@ const Admin = () => {
 
           {/* ═══ INSTAGRAM COMMERCE ═══ */}
           {section === "instagram" && <AdminInstagramCommerce />}
+
+          {/* ═══ INSTAGRAM ANALYTICS ═══ */}
+          {section === "ig-analytics" && <AdminInstagramAnalytics />}
 
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && (
