@@ -225,6 +225,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 {[
                   { to: "/showroom", label: t.footer.collection[lang] },
                   { to: "/shop", label: lang === "ru" ? "Каталог" : "Catalog" },
+                  { to: "/lookbook", label: "Lookbook" },
                   { to: "/calculator", label: t.footer.calculator[lang] },
                 ].map(l => (
                   <Link key={l.to} to={l.to} className="text-sm font-light text-background/35 hover:text-primary transition-colors duration-500">{l.label}</Link>

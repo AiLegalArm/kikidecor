@@ -190,6 +190,48 @@ export type Database = {
         }
         Relationships: []
       }
+      lookbook_looks: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_en: string | null
+          id: string
+          image_url: string
+          is_published: boolean | null
+          product_ids: string[] | null
+          season: string | null
+          sort_order: number
+          title: string
+          title_en: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          id?: string
+          image_url: string
+          is_published?: boolean | null
+          product_ids?: string[] | null
+          season?: string | null
+          sort_order?: number
+          title: string
+          title_en?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          id?: string
+          image_url?: string
+          is_published?: boolean | null
+          product_ids?: string[] | null
+          season?: string | null
+          sort_order?: number
+          title?: string
+          title_en?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string | null
