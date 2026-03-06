@@ -86,11 +86,11 @@ const Calculator = () => {
 
   return (
     <>
-      <title>Калькулятор стоимости | Ki Ki Decor</title>
-      <meta
-        name="description"
-        content="Рассчитайте примерную стоимость оформления мероприятия онлайн. Выберите тип события, стиль декора и дополнительные услуги."
-      />
+      <title>Калькулятор стоимости декора | Ki Ki Decor</title>
+      <meta name="description" content="Рассчитайте стоимость event decoration онлайн. Wedding decoration, birthday decor, proposal decor — мгновенный расчёт." />
+      <meta property="og:title" content="Калькулятор стоимости декора — Ki Ki Decor" />
+      <meta property="og:description" content="Онлайн-калькулятор стоимости оформления мероприятия. Мгновенный расчёт." />
+      <meta property="og:type" content="website" />
 
       <section className="section-padding pb-8 md:pb-12">
         <div className="container mx-auto max-w-3xl text-center">
