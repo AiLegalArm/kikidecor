@@ -112,7 +112,7 @@ const Index = () => {
               <Link to="/booking">
                 <Button
                   size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]"
+                  className="btn-glow bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]"
                 >
                   Заказать декор
                 </Button>
