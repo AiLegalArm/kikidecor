@@ -209,7 +209,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Decor */}
             <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/decor", label: t.footer.decorServices[lang] },
