@@ -106,12 +106,9 @@ const Admin = () => {
     setLoading(false);
   };
 
-  const fetchIgCount = async () => {
-    const { count } = await supabase.from("instagram_posts").select("*", { count: "exact", head: true });
-    if (count !== null) setIgPostCount(count);
-  };
+  const fetchIgCount = () => {};
 
-  useEffect(() => { if (session) { fetchLeads(); fetchIgCount(); } }, [filterStatus, page, session]);
+  useEffect(() => { if (session) { fetchLeads(); } }, [filterStatus, page, session]);
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   if (!session) return <AdminLogin onLogin={() => {}} />;
