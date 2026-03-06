@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, ArrowRight, Loader2, Shirt, ShoppingBag, Plus, Heart } from "lucide-react";
+import { Sparkles, ArrowRight, Loader2, Shirt, ShoppingBag, Plus, Heart, Camera } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import StylePhotoAnalyzer from "@/components/StylePhotoAnalyzer";
 
 const occasions = {
   ru: ["Свидание", "Деловая встреча", "Свадьба", "Вечеринка", "На каждый день", "Путешествие"],
