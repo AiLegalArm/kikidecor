@@ -36,8 +36,8 @@ const Home = () => {
 
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-4xl">
-            <div className="w-px h-16 bg-background/15 mx-auto mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
-            <div className="relative w-56 md:w-72 lg:w-80 mx-auto mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
+            <div className="w-px h-10 md:h-16 bg-background/15 mx-auto mb-6 md:mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
+            <div className="relative w-40 sm:w-56 md:w-72 lg:w-80 mx-auto mb-8 md:mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
               <div className="absolute inset-0 bg-foreground/60 rounded-2xl blur-2xl scale-110" />
               <img
                 src={logoHero}
