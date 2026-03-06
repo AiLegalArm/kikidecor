@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Quote, Instagram, Mail, Phone } from "lucide-react";
+import logoHero from "@/assets/logo-hero.png";
 import { lazy, Suspense } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -40,12 +41,12 @@ const Home = () => {
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-4xl">
             <div className="w-px h-16 bg-background/15 mx-auto mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
-            <h1 className="font-display text-7xl md:text-9xl lg:text-[10rem] font-light text-background leading-none tracking-[-0.03em] mb-4 animate-reveal" style={{ animationDelay: "0.5s" }}>
-              KiKi
-            </h1>
-            <p className="font-body text-[10px] md:text-xs uppercase tracking-[0.5em] text-background/40 mb-16 animate-reveal" style={{ animationDelay: "0.7s" }}>
-              {t.home.subtitle[lang]}
-            </p>
+            <img
+              src={logoHero}
+              alt="KiKi"
+              className="w-56 md:w-72 lg:w-80 h-auto mx-auto mb-12 animate-reveal drop-shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
+              style={{ animationDelay: "0.5s" }}
+            />
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-reveal" style={{ animationDelay: "1s" }}>
               <Link to="/decor" className="group inline-flex items-center gap-3 px-10 py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
                 {t.home.exploreDecor[lang]}
