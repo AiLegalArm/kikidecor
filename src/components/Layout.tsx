@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/hooks/useCart";
 import CartSidebar from "@/components/shop/CartSidebar";
-import logoImg from "@/assets/logo.png";
+import logoImg from "@/assets/logo-kiki.png";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
