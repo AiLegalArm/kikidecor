@@ -93,18 +93,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             ))}
             <button
               onClick={toggleLang}
-              className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors duration-300 ml-2"
+              className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 ml-2 font-medium"
               aria-label="Switch language"
             >
-              <Globe size={13} strokeWidth={1.5} />
+              <Globe size={15} strokeWidth={2} />
               {lang === "ru" ? "EN" : "RU"}
             </button>
             <button
               onClick={() => setCartOpen(true)}
-              className="relative text-muted-foreground hover:text-primary transition-colors duration-300 ml-2"
+              className="relative text-foreground/70 hover:text-primary transition-colors duration-300 ml-2"
               aria-label="Cart"
             >
-              <ShoppingBag size={18} strokeWidth={1.5} />
+              <ShoppingBag size={20} strokeWidth={2} />
               {count > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
                   {count}
@@ -117,10 +117,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex items-center gap-3 lg:hidden">
             <button
               onClick={() => setCartOpen(true)}
-              className="relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              className="relative text-foreground/70 hover:text-primary transition-colors duration-300"
               aria-label="Cart"
             >
-              <ShoppingBag size={18} strokeWidth={1.5} />
+              <ShoppingBag size={20} strokeWidth={2} />
               {count > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
                   {count}
@@ -129,10 +129,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </button>
             <button
               onClick={toggleLang}
-              className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
+              className="text-[11px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 flex items-center gap-1 font-medium"
               aria-label="Switch language"
             >
-              <Globe size={13} strokeWidth={1.5} />
+              <Globe size={15} strokeWidth={2} />
               {lang === "ru" ? "EN" : "RU"}
             </button>
             <button
@@ -140,7 +140,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               className="text-foreground p-1 transition-transform duration-300"
               aria-label="Menu"
             >
-              {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
+              {menuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
             </button>
           </div>
         </nav>
