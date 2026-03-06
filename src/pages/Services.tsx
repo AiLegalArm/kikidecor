@@ -81,7 +81,7 @@ const Services = () => {
           <ScrollReveal>
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-light mb-5">{s.customTitle[lang]}</h2>
             <p className="text-muted-foreground font-light text-sm mb-10 leading-relaxed">{s.customText[lang]}</p>
-            <Link to="/booking" className="group inline-flex items-center gap-3 px-10 py-4 border border-foreground/15 text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-foreground hover:text-background transition-all duration-500 font-body">
+            <Link to="/booking" className="group inline-flex items-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 border border-foreground/15 text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-foreground hover:text-background transition-all duration-500 font-body">
               {s.discussProject[lang]}
               <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
