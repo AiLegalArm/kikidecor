@@ -9,13 +9,6 @@ import heroShowroom from "@/assets/hero-showroom.jpg";
 import logoImg from "@/assets/logo.png";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
 import LifestyleGallery from "@/components/LifestyleGallery";
-import logoImg from "@/assets/logo.png";
-import weddingImg from "@/assets/portfolio-wedding.jpg";
-import birthdayImg from "@/assets/portfolio-birthday.jpg";
-import detailImg from "@/assets/portfolio-detail.jpg";
-import loungeImg from "@/assets/portfolio-lounge.jpg";
-import dessertImg from "@/assets/portfolio-dessert.jpg";
-import themedImg from "@/assets/portfolio-themed.jpg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 25 },
