@@ -126,17 +126,17 @@ const Home = () => {
                 <div className="p-8 md:p-12 lg:p-16 flex items-center">
                   <div>
                     <p className="overline text-primary mb-5">{t.home.storyOverline[lang]}</p>
-                    <h2 className="font-display text-3xl md:text-4xl font-light mb-6 leading-[1.1]">
+                    <h2 className="font-display text-3xl md:text-4xl font-light mb-6 leading-[1.1] text-foreground">
                       {t.home.storyTitle1[lang]} <span className="italic">{t.home.storyTitle2[lang]}</span> KiKi
                     </h2>
                     <div className="w-12 h-px bg-primary/40 mb-6" />
-                    <p className="text-foreground/65 font-light leading-[2] text-sm mb-5">
+                    <p className="text-foreground/85 font-light leading-[1.9] text-[15px] mb-5">
                       {t.home.storyParagraph1[lang]}
                     </p>
-                    <p className="text-foreground/65 font-light leading-[2] text-sm mb-6">
+                    <p className="text-foreground/85 font-light leading-[1.9] text-[15px] mb-6">
                       {t.home.storyParagraph2[lang]}
                     </p>
-                    <p className="font-display text-base italic text-primary/70 leading-relaxed">
+                    <p className="font-display text-base italic text-primary leading-relaxed">
                       {t.home.storyPhilosophy[lang]}
                     </p>
                   </div>
