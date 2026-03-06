@@ -104,7 +104,7 @@ const Index = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500"
+                  className="btn-glow border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500"
                 >
                   Портфолио <ArrowRight size={14} className="ml-3" />
                 </Button>
