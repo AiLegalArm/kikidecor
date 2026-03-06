@@ -171,6 +171,41 @@ ${message || "—"}
       console.log("WhatsApp not configured — skipping.");
     }
 
+    // ── 4. Telegram notification ──
+    const TELEGRAM_BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN");
+    const TELEGRAM_CHAT_ID = Deno.env.get("TELEGRAM_CHAT_ID");
+
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+      const tgMessage = source === "booking"
+        ? `🎉 <b>Новая заявка на декор</b>\n\n👤 ${name}\n📞 ${phone || "—"}\n📧 ${email}\n🎪 ${eventType}\n📅 ${date || "—"}\n👥 ${guests || "—"} гостей\n📍 ${location || "—"}\n\n💬 ${message || "—"}`
+        : `📩 <b>Новое сообщение с сайта</b>\n\n👤 ${name}\n📧 ${email}\n📝 ${subject || "—"}\n\n💬 ${message || "—"}`;
+
+      try {
+        const tgRes = await fetch(
+          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CHAT_ID,
+              text: tgMessage,
+              parse_mode: "HTML",
+            }),
+          }
+        );
+
+        if (!tgRes.ok) {
+          console.error(`Telegram API error [${tgRes.status}]: ${await tgRes.text()}`);
+        } else {
+          console.log("Telegram notification sent");
+        }
+      } catch (tgErr) {
+        console.error("Telegram send failed:", tgErr);
+      }
+    } else {
+      console.log("Telegram not configured — skipping.");
+    }
+
     return new Response(
       JSON.stringify({ success: true, message: "Lead processed" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
