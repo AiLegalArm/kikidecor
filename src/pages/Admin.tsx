@@ -235,6 +235,11 @@ const Admin = () => {
         </div>
       </div>
 
+      {/* Admin Calendar */}
+      <div className="px-6 pb-6">
+        <AdminCalendar onLeadUpdated={fetchLeads} />
+      </div>
+
       {/* Toolbar */}
       <div className="px-6 py-4 flex flex-col md:flex-row gap-3 items-start md:items-center">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
