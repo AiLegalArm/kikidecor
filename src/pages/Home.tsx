@@ -193,23 +193,63 @@ const Home = () => {
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
       </section>
 
-      {/* ═══ 2. BRAND MANIFESTO ═══ */}
-      <section className="section-padding">
-        <div className="container mx-auto max-w-3xl text-center">
-          <ScrollReveal>
-            <p className="overline text-primary mb-6">Our Philosophy</p>
-            <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.08] mb-8">
-              Two worlds.
-              <br />
-              <span className="italic">One vision.</span>
-            </h2>
-            <div className="gold-divider" />
-            <p className="text-muted-foreground font-light text-base md:text-lg max-w-2xl mx-auto mt-10 leading-[1.9]">
-              KiKi is a premium lifestyle brand where the art of event decoration meets 
-              the world of curated fashion. We believe beauty should surround you in 
-              everything — from the spaces you celebrate in to the style you wear every day.
-            </p>
-          </ScrollReveal>
+      {/* ═══ 2. THE STORY OF KIKI ═══ */}
+      <section className="section-padding overflow-hidden">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+            {/* Image */}
+            <ScrollReveal>
+              <div className="relative aspect-[3/4] overflow-hidden">
+                <img
+                  src={heroDecor}
+                  alt="KiKi brand story — luxury lifestyle"
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent" />
+                {/* Accent frame */}
+                <div className="absolute top-6 left-6 right-6 bottom-6 border border-primary/15 pointer-events-none" />
+              </div>
+            </ScrollReveal>
+
+            {/* Text */}
+            <div className="lg:py-12">
+              <ScrollReveal delay={150}>
+                <p className="overline text-primary mb-6">Our Story</p>
+              </ScrollReveal>
+              <ScrollReveal delay={250}>
+                <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.08] mb-8">
+                  The Story
+                  <br />
+                  of <span className="italic">KiKi</span>
+                </h2>
+              </ScrollReveal>
+              <ScrollReveal delay={350}>
+                <div className="w-16 h-px bg-primary/40 mb-10" />
+              </ScrollReveal>
+              <ScrollReveal delay={450}>
+                <p className="text-muted-foreground font-light text-base md:text-lg leading-[2] mb-6">
+                  KiKi was born from a simple belief — that beauty is not a luxury, 
+                  it's a way of life. What started as a passion for transforming spaces 
+                  into unforgettable experiences has grown into a lifestyle brand that 
+                  touches every aspect of aesthetic living.
+                </p>
+              </ScrollReveal>
+              <ScrollReveal delay={550}>
+                <p className="text-muted-foreground font-light text-base md:text-lg leading-[2] mb-6">
+                  Our Decor Studio crafts immersive atmospheres for weddings, celebrations, 
+                  and private events — where every petal, candle, and drape tells a story. 
+                  Our Showroom curates fashion that embodies the same refined elegance — 
+                  clothing and accessories chosen for women who see style as self-expression.
+                </p>
+              </ScrollReveal>
+              <ScrollReveal delay={650}>
+                <p className="text-foreground/80 font-display text-lg md:text-xl italic leading-relaxed">
+                  Two worlds, one philosophy: surround yourself with beauty, always.
+                </p>
+              </ScrollReveal>
+            </div>
+          </div>
         </div>
       </section>
 
