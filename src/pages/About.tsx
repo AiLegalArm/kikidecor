@@ -13,8 +13,11 @@ const stats = [
 
 const About = () => (
   <>
-    <title>О нас | Ki Ki Decor — Студия декора</title>
-    <meta name="description" content="Познакомьтесь со студией Ki Ki Decor — мы создаём волшебство через декор фасадов, свадеб, праздников и фотозон по всей России." />
+    <title>О студии Ki Ki Decor — 500+ проектов декора</title>
+    <meta name="description" content="Ki Ki Decor — 7 лет опыта, 500+ проектов event decoration и wedding decoration. Команда профессионалов по всей России." />
+    <meta property="og:title" content="О студии Ki Ki Decor — 500+ проектов декора" />
+    <meta property="og:description" content="7 лет опыта в event styling, wedding decoration, birthday decor по всей России." />
+    <meta property="og:type" content="website" />
 
     <section className="grid grid-cols-1 md:grid-cols-2 min-h-[60vh]">
       <div className="flex items-center justify-center section-padding">
