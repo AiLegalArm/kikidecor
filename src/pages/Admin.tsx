@@ -11,7 +11,7 @@ import {
   Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram,
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
-  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X,
+  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
