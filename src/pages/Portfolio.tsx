@@ -338,13 +338,13 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
       <div className={cn("grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-6 items-start", !imageOnLeft && "direction-rtl")}>
         {/* Image column */}
         <div className={cn("lg:col-span-7", !imageOnLeft ? "lg:order-2" : "lg:order-1")}>
-          <ScrollReveal>
-            <div className="relative overflow-hidden cursor-pointer group" onClick={onImageClick}>
+          <ScrollReveal variant={imageOnLeft ? "slide-left" : "slide-right"}>
+            <div className="relative img-zoom cursor-pointer group" onClick={onImageClick}>
               <div className="aspect-[4/5] md:aspect-[3/4]">
                 <img
                   src={project.img}
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                  className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
@@ -355,12 +355,12 @@ const EditorialSection = ({ project, index, onImageClick }: EditorialSectionProp
             {/* Secondary image offset */}
             {project.secondaryImg && (
               <div className={cn("relative -mt-20 md:-mt-32 z-10", imageOnLeft ? "ml-auto mr-0 w-3/5 md:w-2/5 pr-0 pl-4" : "mr-auto ml-0 w-3/5 md:w-2/5 pl-0 pr-4")}>
-                <div className="overflow-hidden shadow-xl cursor-pointer group" onClick={onImageClick}>
+                <div className="img-zoom shadow-xl cursor-pointer group" onClick={onImageClick}>
                   <div className="aspect-[4/3]">
                     <img
                       src={project.secondaryImg}
                       alt={`${project.title} detail`}
-                      className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                      className="w-full h-full object-cover"
                       loading="lazy"
                     />
                   </div>
