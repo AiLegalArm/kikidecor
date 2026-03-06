@@ -37,12 +37,14 @@ const Home = () => {
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-4xl">
             <div className="w-px h-16 bg-background/15 mx-auto mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
-            <img
-              src={logoHero}
-              alt="KiKi"
-              className="w-56 md:w-72 lg:w-80 h-auto mx-auto mb-12 animate-reveal drop-shadow-[0_4px_30px_rgba(0,0,0,0.3)]"
-              style={{ animationDelay: "0.5s" }}
-            />
+            <div className="relative w-56 md:w-72 lg:w-80 mx-auto mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
+              <div className="absolute inset-0 bg-foreground/60 rounded-2xl blur-2xl scale-110" />
+              <img
+                src={logoHero}
+                alt="KiKi"
+                className="relative w-full h-auto drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
+              />
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-reveal" style={{ animationDelay: "1s" }}>
               <Link to="/decor" className="group inline-flex items-center gap-3 px-10 py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
                 {t.home.exploreDecor[lang]}
