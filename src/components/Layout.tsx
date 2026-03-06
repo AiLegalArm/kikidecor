@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send } from "lucide-react";
+import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCart } from "@/hooks/useCart";
+import CartSidebar from "@/components/shop/CartSidebar";
 import logoImg from "@/assets/logo.png";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
