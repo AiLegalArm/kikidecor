@@ -44,8 +44,11 @@ const Booking = () => {
 
   return (
     <>
-      <title>Заявка на декор | Ki Ki Decor</title>
-      <meta name="description" content="Оставьте заявку на декор — расскажите о вашем мероприятии и мы свяжемся для бесплатной консультации." />
+      <title>Заявка на декор мероприятия | Ki Ki Decor</title>
+      <meta name="description" content="Оставьте заявку на event decoration — бесплатная консультация по wedding decoration, birthday decor, proposal decor." />
+      <meta property="og:title" content="Заявка на декор — Ki Ki Decor" />
+      <meta property="og:description" content="Оставьте заявку на оформление мероприятия и получите бесплатную консультацию." />
+      <meta property="og:type" content="website" />
 
       <section className="section-padding">
         <div className="container mx-auto max-w-2xl">
