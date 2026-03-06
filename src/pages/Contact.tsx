@@ -23,13 +23,6 @@ const Contact = () => {
     { icon: Clock, label: c.workHoursLabel[lang], value: c.workHoursValue[lang] },
   ];
 
-  const quickButtons = [
-    { label: c.callBtn[lang], icon: Phone, href: "tel:+79001234567", className: "bg-foreground text-background hover:bg-foreground/90" },
-    { label: c.whatsappBtn[lang], icon: MessageCircle, href: "https://wa.me/79001234567", className: "bg-[hsl(142,70%,40%)] text-white hover:bg-[hsl(142,70%,35%)]" },
-    { label: c.instagramBtn[lang], icon: Instagram, href: "https://instagram.com/ki_ki_decor", className: "bg-gradient-to-br from-[hsl(330,70%,55%)] to-[hsl(25,90%,55%)] text-white hover:opacity-90" },
-    { label: c.emailBtn[lang], icon: Mail, href: "mailto:info@kikidecor.ru", className: "bg-primary text-primary-foreground hover:bg-primary/90" },
-  ];
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -64,31 +57,33 @@ const Contact = () => {
     <>
       <title>{c.title[lang]} — KiKi</title>
 
-      <section className="section-padding pb-8 md:pb-12">
+      {/* Header */}
+      <section className="pt-32 md:pt-40 pb-16 md:pb-20 px-6 md:px-10">
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4">{c.overline[lang]}</p>
-            <h1 className="font-display text-4xl md:text-6xl font-light mb-5">{c.title[lang]}</h1>
+            <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{c.overline[lang]}</p>
+            <h1 className="font-display text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{c.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto">{c.subtitle[lang]}</p>
+            <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{c.subtitle[lang]}</p>
           </ScrollReveal>
         </div>
       </section>
 
-      <section className="px-5 md:px-8 lg:px-16 pb-12">
+      {/* Quick actions */}
+      <section className="px-6 md:px-10 pb-16">
         <div className="container mx-auto max-w-3xl">
           <ScrollReveal>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-              {quickButtons.map((btn) => (
-                <a
-                  key={btn.label}
-                  href={btn.href}
-                  target={btn.href.startsWith("http") ? "_blank" : undefined}
-                  rel="noopener noreferrer"
-                  className={`flex flex-col items-center gap-2 rounded-2xl py-5 px-4 transition-all duration-300 hover:scale-[1.03] shadow-[0_4px_20px_-4px_hsl(var(--foreground)/0.1)] ${btn.className}`}
-                >
-                  <btn.icon size={22} strokeWidth={1.5} />
-                  <span className="text-xs uppercase tracking-[0.12em] font-medium">{btn.label}</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: c.callBtn[lang], icon: Phone, href: "tel:+79001234567", cls: "bg-foreground text-background hover:bg-foreground/90" },
+                { label: c.whatsappBtn[lang], icon: MessageCircle, href: "https://wa.me/79001234567", cls: "bg-[hsl(142,70%,40%)] text-white hover:opacity-90" },
+                { label: c.instagramBtn[lang], icon: Instagram, href: "https://instagram.com/ki_ki_decor", cls: "bg-gradient-to-br from-[hsl(330,70%,55%)] to-[hsl(25,90%,55%)] text-white hover:opacity-90" },
+                { label: c.emailBtn[lang], icon: Mail, href: "mailto:info@kikidecor.ru", cls: "bg-primary text-primary-foreground hover:bg-primary/90" },
+              ].map((btn) => (
+                <a key={btn.label} href={btn.href} target={btn.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+                  className={`flex flex-col items-center gap-2 py-5 px-4 transition-all duration-300 hover:scale-[1.02] ${btn.cls}`}>
+                  <btn.icon size={20} strokeWidth={1.5} />
+                  <span className="text-[10px] uppercase tracking-[0.15em] font-medium font-body">{btn.label}</span>
                 </a>
               ))}
             </div>
@@ -96,23 +91,24 @@ const Contact = () => {
         </div>
       </section>
 
-      <section className="px-5 md:px-8 lg:px-16 pb-20 md:pb-28">
+      {/* Contact info + Form */}
+      <section className="px-6 md:px-10 pb-24 md:pb-32">
         <div className="container mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20">
             <ScrollReveal>
               <div className="space-y-8">
-                <p className="text-muted-foreground font-light text-sm leading-relaxed">{c.formIntro[lang]}</p>
+                <p className="text-foreground/60 font-light text-sm leading-[2]">{c.formIntro[lang]}</p>
                 {contactInfo.map(({ icon: Icon, label, value, href }) => (
                   <div key={label} className="flex items-start gap-4">
-                    <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center shrink-0">
-                      <Icon size={16} className="text-primary" strokeWidth={1.5} />
+                    <div className="w-10 h-10 border border-border flex items-center justify-center shrink-0">
+                      <Icon size={15} className="text-primary" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-1">{label}</p>
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1 font-body">{label}</p>
                       {href ? (
-                        <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-sm text-foreground hover:text-primary transition-colors">{value}</a>
+                        <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-sm text-foreground hover:text-primary transition-colors font-light">{value}</a>
                       ) : (
-                        <p className="text-sm text-foreground">{value}</p>
+                        <p className="text-sm text-foreground font-light">{value}</p>
                       )}
                     </div>
                   </div>
@@ -121,27 +117,27 @@ const Contact = () => {
             </ScrollReveal>
 
             <ScrollReveal delay={200}>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block">{c.nameLabel[lang]} *</label>
-                    <Input value={form.name} onChange={update("name")} required className="rounded-xl border-border bg-transparent focus:border-primary" />
+                    <label className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block font-body">{c.nameLabel[lang]} *</label>
+                    <Input value={form.name} onChange={update("name")} required className="border-border/50 bg-transparent focus:border-primary h-12 rounded-none" />
                   </div>
                   <div>
-                    <label className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block">{c.emailLabel[lang]} *</label>
-                    <Input type="email" value={form.email} onChange={update("email")} required className="rounded-xl border-border bg-transparent focus:border-primary" />
+                    <label className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block font-body">{c.emailLabel[lang]} *</label>
+                    <Input type="email" value={form.email} onChange={update("email")} required className="border-border/50 bg-transparent focus:border-primary h-12 rounded-none" />
                   </div>
                 </div>
                 <div>
-                  <label className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block">{c.subjectLabel[lang]}</label>
-                  <Input value={form.subject} onChange={update("subject")} className="rounded-xl border-border bg-transparent focus:border-primary" />
+                  <label className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block font-body">{c.subjectLabel[lang]}</label>
+                  <Input value={form.subject} onChange={update("subject")} className="border-border/50 bg-transparent focus:border-primary h-12 rounded-none" />
                 </div>
                 <div>
-                  <label className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block">{c.messageLabel[lang]} *</label>
-                  <Textarea value={form.message} onChange={update("message")} required rows={5} className="rounded-xl border-border bg-transparent focus:border-primary resize-none" />
+                  <label className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2 block font-body">{c.messageLabel[lang]} *</label>
+                  <Textarea value={form.message} onChange={update("message")} required rows={5} className="border-border/50 bg-transparent focus:border-primary resize-none rounded-none" />
                 </div>
-                <Button type="submit" disabled={submitting} className="w-full rounded-xl text-xs uppercase tracking-[0.12em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                  {submitting ? c.sending[lang] : c.send[lang]} {!submitting && <ArrowRight size={14} className="ml-2" />}
+                <Button type="submit" disabled={submitting} className="w-full rounded-none text-[10px] uppercase tracking-[0.2em] py-6 bg-foreground hover:bg-primary text-background transition-all duration-500">
+                  {submitting ? c.sending[lang] : c.send[lang]} {!submitting && <ArrowRight size={13} className="ml-2" />}
                 </Button>
               </form>
             </ScrollReveal>
@@ -149,10 +145,11 @@ const Contact = () => {
         </div>
       </section>
 
-      <section className="pb-0">
+      {/* Map */}
+      <section>
         <ScrollReveal>
-          <div className="container mx-auto max-w-5xl px-5 md:px-8 lg:px-16 mb-8">
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">{c.mapOverline[lang]}</p>
+          <div className="container mx-auto max-w-5xl px-6 md:px-10 mb-8">
+            <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4 text-center">{c.mapOverline[lang]}</p>
             <h2 className="font-display text-3xl md:text-4xl font-light text-center mb-4">{c.mapTitle[lang]}</h2>
             <div className="gold-divider" />
           </div>
