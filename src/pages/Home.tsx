@@ -59,30 +59,26 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center animate-reveal px-6 sm:px-0" style={{ animationDelay: "1.2s" }}>
               <Link
                 to="/decor"
-                className="group relative inline-flex items-center justify-center gap-3 px-8 sm:px-12 py-4 sm:py-5 text-[10px] uppercase tracking-[0.35em] font-medium overflow-hidden transition-all duration-700 min-w-[220px]"
+                className="group relative inline-flex items-center justify-center gap-3 px-10 sm:px-14 py-5 sm:py-6 text-[12px] uppercase tracking-[0.3em] font-bold overflow-hidden transition-all duration-700 min-w-[240px]"
               >
-                {/* Glassmorphism background */}
                 <span className="absolute inset-0 bg-background/90 backdrop-blur-sm border border-background/20 transition-all duration-700 group-hover:bg-primary group-hover:border-primary/60" />
-                {/* Shine sweep */}
-                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                 <span className="relative z-10 text-foreground group-hover:text-primary-foreground transition-colors duration-500">{t.home.exploreDecor[lang]}</span>
-                <ArrowRight size={13} className="relative z-10 text-foreground group-hover:text-primary-foreground transition-all duration-500 group-hover:translate-x-1.5" />
+                <ArrowRight size={15} className="relative z-10 text-foreground group-hover:text-primary-foreground transition-all duration-500 group-hover:translate-x-1.5" />
               </Link>
               <Link
                 to="/showroom"
-                className="group relative inline-flex items-center justify-center gap-3 px-8 sm:px-12 py-4 sm:py-5 text-[10px] uppercase tracking-[0.35em] font-medium overflow-hidden transition-all duration-700 min-w-[220px]"
+                className="group relative inline-flex items-center justify-center gap-3 px-10 sm:px-14 py-5 sm:py-6 text-[12px] uppercase tracking-[0.3em] font-bold overflow-hidden transition-all duration-700 min-w-[240px]"
               >
-                {/* Border glow */}
-                <span className="absolute inset-0 border border-background/25 transition-all duration-700 group-hover:border-primary/50 group-hover:shadow-[inset_0_0_30px_rgba(255,255,255,0.05),0_0_20px_hsl(var(--primary)/0.15)]" />
-                <span className="relative z-10 text-background/90 group-hover:text-primary transition-colors duration-500">{t.home.visitShowroom[lang]}</span>
-                <ArrowRight size={13} className="relative z-10 text-background/90 group-hover:text-primary transition-all duration-500 group-hover:translate-x-1.5" />
+                <span className="absolute inset-0 border-2 border-background/40 transition-all duration-700 group-hover:border-primary/60 group-hover:bg-background/10" />
+                <span className="relative z-10 text-background group-hover:text-primary transition-colors duration-500">{t.home.visitShowroom[lang]}</span>
+                <ArrowRight size={15} className="relative z-10 text-background group-hover:text-primary transition-all duration-500 group-hover:translate-x-1.5" />
               </Link>
             </div>
 
             {/* Brand Story trigger */}
             <button
               onClick={() => setStoryOpen(true)}
-              className="mt-10 text-[9px] uppercase tracking-[0.4em] text-background/35 hover:text-background/70 transition-colors duration-500 font-body animate-reveal"
+              className="mt-12 text-[13px] uppercase tracking-[0.35em] text-background/80 hover:text-background transition-colors duration-500 font-body font-bold animate-reveal border-b border-background/30 pb-1 hover:border-background/60"
               style={{ animationDelay: "1.4s" }}
             >
               {t.home.storyOverline[lang]}
