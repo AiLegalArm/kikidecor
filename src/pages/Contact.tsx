@@ -46,10 +46,44 @@ const quickButtons = [
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Сообщение отправлено! Мы свяжемся с вами в ближайшее время.");
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setSubmitting(true);
+
+    const { error } = await supabase.from("event_leads").insert({
+      name: form.name,
+      email: form.email,
+      phone: "",
+      event_type: "Обратная связь",
+      message: `${form.subject ? `[${form.subject}] ` : ""}${form.message}`,
+      status: "new",
+    });
+
+    // Trigger email notification
+    try {
+      await supabase.functions.invoke("notify-new-lead", {
+        body: {
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          source: "contact",
+        },
+      });
+    } catch (err) {
+      console.warn("Email notification failed:", err);
+    }
+
+    setSubmitting(false);
+    if (error) {
+      console.error(error);
+      toast.error("Ошибка отправки. Попробуйте позже.");
+    } else {
+      toast.success("Сообщение отправлено! Мы свяжемся с вами в ближайшее время.");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    }
   };
 
   const update = (f: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
