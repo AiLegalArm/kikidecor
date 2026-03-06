@@ -222,9 +222,31 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
 
   return (
     <div className="bg-background border border-border p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <CalendarDays size={22} strokeWidth={1.5} className="text-primary" />
-        <h2 className="font-display text-xl font-light">Календарь мероприятий</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <CalendarDays size={22} strokeWidth={1.5} className="text-primary" />
+          <h2 className="font-display text-xl font-light">Календарь мероприятий</h2>
+        </div>
+        <div className="flex items-center gap-0 border border-border">
+          {([
+            { value: "all", label: "Все" },
+            { value: "decor", label: "Декор" },
+            { value: "showroom", label: "Showroom" },
+          ] as const).map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setTypeFilter(f.value)}
+              className={cn(
+                "px-3 py-1.5 text-[10px] uppercase tracking-wider transition-colors",
+                typeFilter === f.value
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
