@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.find-similar]
 verify_jwt = false
+
+[functions.virtual-tryon]
+verify_jwt = false
