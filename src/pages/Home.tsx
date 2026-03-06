@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Quote, Instagram, Mail, Phone } from "lucide-react";
+import logoHero from "@/assets/logo-hero.png";
 import { lazy, Suspense } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
