@@ -8,10 +8,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
-  Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw,
-  CheckCircle2, AlertCircle, Loader2, LogOut, LayoutGrid, List,
+  Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram,
+  LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
-  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Image as ImageIcon, Menu, X,
+  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
