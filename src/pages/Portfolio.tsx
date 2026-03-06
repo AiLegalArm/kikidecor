@@ -85,8 +85,11 @@ const Portfolio = () => {
 
   return (
     <>
-      <title>Портфолио | Ki Ki Decor — Студия декора</title>
-      <meta name="description" content="Портфолио студии Ki Ki Decor — свадебный декор, оформление фасадов, праздников, фотозон и корпоративов." />
+      <title>Портфолио декора — свадьбы, праздники, фасады</title>
+      <meta name="description" content="Портфолио Ki Ki Decor: wedding decoration, birthday decor, proposal decor, event styling. Более 500 реализованных проектов." />
+      <meta property="og:title" content="Портфолио Ki Ki Decor — декор мероприятий" />
+      <meta property="og:description" content="Фотогалерея проектов: свадебный декор, дни рождения, предложения, корпоративы." />
+      <meta property="og:type" content="website" />
 
       <section className="section-padding pb-8 md:pb-12">
         <div className="container mx-auto max-w-3xl text-center">
