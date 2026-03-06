@@ -1,22 +1,24 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
+import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/i18n/LanguageContext";
 import logoImg from "@/assets/logo.png";
-
-const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Decor Studio", path: "/decor" },
-  { name: "Showroom", path: "/showroom" },
-  { name: "About", path: "/about" },
-  { name: "Contact", path: "/contact" },
-];
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showTop, setShowTop] = useState(false);
   const location = useLocation();
+  const { lang, setLang, t } = useLanguage();
+
+  const navLinks = [
+    { name: t.nav.home[lang], path: "/" },
+    { name: t.nav.decor[lang], path: "/decor" },
+    { name: t.nav.showroom[lang], path: "/showroom" },
+    { name: t.nav.about[lang], path: "/about" },
+    { name: t.nav.contact[lang], path: "/contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => {
@@ -28,6 +30,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+
+  const toggleLang = () => setLang(lang === "ru" ? "en" : "ru");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -61,16 +65,35 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 {link.name}
               </Link>
             ))}
+            {/* Language switcher */}
+            <button
+              onClick={toggleLang}
+              className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors duration-300"
+              aria-label="Switch language"
+            >
+              <Globe size={14} strokeWidth={1.5} />
+              {lang === "ru" ? "EN" : "RU"}
+            </button>
           </div>
 
           {/* Mobile toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="lg:hidden text-foreground p-2 transition-transform duration-300"
-            aria-label="Меню"
-          >
-            {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
-          </button>
+          <div className="flex items-center gap-4 lg:hidden">
+            <button
+              onClick={toggleLang}
+              className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
+              aria-label="Switch language"
+            >
+              <Globe size={14} strokeWidth={1.5} />
+              {lang === "ru" ? "EN" : "RU"}
+            </button>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-foreground p-2 transition-transform duration-300"
+              aria-label="Menu"
+            >
+              {menuOpen ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
+            </button>
+          </div>
         </nav>
 
         {/* Mobile menu */}
@@ -113,49 +136,49 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="text-center mb-20">
             <img src={logoImg} alt="KiKi" className="h-14 w-auto brightness-0 invert opacity-70 mx-auto mb-6" />
             <p className="font-cormorant text-lg md:text-xl italic font-light text-background/35 tracking-wide">
-              Красота в каждой детали
+              {t.footer.tagline[lang]}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14 lg:gap-10">
             {/* Decor Studio */}
             <div>
-              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Decor Studio</h4>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">{t.footer.decorStudio[lang]}</h4>
               <div className="flex flex-col gap-3.5">
                 <Link to="/decor" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Услуги декора
+                  {t.footer.decorServices[lang]}
                 </Link>
                 <Link to="/portfolio" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Портфолио
+                  {t.footer.portfolio[lang]}
                 </Link>
                 <Link to="/packages" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Пакеты
+                  {t.footer.packages[lang]}
                 </Link>
                 <Link to="/booking" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Бронирование
+                  {t.footer.booking[lang]}
                 </Link>
               </div>
             </div>
 
             {/* Showroom */}
             <div>
-              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Showroom</h4>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">{t.footer.showroom[lang]}</h4>
               <div className="flex flex-col gap-3.5">
                 <Link to="/showroom" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Коллекция
+                  {t.footer.collection[lang]}
                 </Link>
                 <Link to="/services" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Стилист
+                  {t.footer.stylist[lang]}
                 </Link>
                 <Link to="/calculator" className="text-sm font-light text-background/45 hover:text-primary transition-colors duration-500">
-                  Калькулятор
+                  {t.footer.calculator[lang]}
                 </Link>
               </div>
             </div>
 
             {/* Quick Nav */}
             <div>
-              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Навигация</h4>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">{t.footer.navigation[lang]}</h4>
               <div className="flex flex-col gap-3.5">
                 {navLinks.map((link) => (
                   <Link
@@ -171,7 +194,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Contact */}
             <div>
-              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">Контакты</h4>
+              <h4 className="overline text-background/25 mb-7 tracking-[0.2em]">{t.footer.contacts[lang]}</h4>
               <div className="flex flex-col gap-4 text-sm font-light text-background/45">
                 <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
                   <Mail size={14} strokeWidth={1.5} className="opacity-60" /> info@kikidecor.ru
@@ -180,7 +203,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   <Phone size={14} strokeWidth={1.5} className="opacity-60" /> +7 (900) 123-45-67
                 </a>
                 <span className="flex items-center gap-3">
-                  <MapPin size={14} strokeWidth={1.5} className="opacity-60" /> Ростов-на-Дону · Геленджик
+                  <MapPin size={14} strokeWidth={1.5} className="opacity-60" />
+                  {lang === "ru" ? "Ростов-на-Дону · Геленджик" : "Rostov-on-Don · Gelendzhik"}
                 </span>
               </div>
 
@@ -217,11 +241,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {/* Bottom bar */}
           <div className="border-t border-background/6 mt-20 pt-10 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="overline text-background/20 tracking-[0.15em]">
-              © {new Date().getFullYear()} KiKi. Все права защищены.
+              © {new Date().getFullYear()} KiKi. {t.footer.rights[lang]}
             </p>
             <div className="flex items-center gap-6">
               <Link to="/contact" className="overline text-background/20 hover:text-primary/60 transition-colors duration-500 tracking-[0.15em]">
-                Связаться
+                {t.footer.getInTouch[lang]}
               </Link>
               <span className="w-px h-3 bg-background/10" />
               <a
@@ -244,7 +268,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           "fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center shadow-lg backdrop-blur-sm transition-all duration-500",
           showTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
         )}
-        aria-label="Наверх"
+        aria-label={t.footer.backToTop[lang]}
       >
         <ArrowUp size={18} strokeWidth={1.5} />
       </button>
