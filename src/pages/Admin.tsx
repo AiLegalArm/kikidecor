@@ -309,6 +309,9 @@ const Admin = () => {
             </>
           )}
 
+          {/* ═══ CUSTOMERS ═══ */}
+          {section === "customers" && <AdminCustomers />}
+
           {/* ═══ PRODUCTS ═══ */}
           {section === "products" && <AdminProducts />}
 
