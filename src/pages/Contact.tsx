@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactInfo = [
   { icon: Phone, label: "Телефон", value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
