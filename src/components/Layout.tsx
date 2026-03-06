@@ -111,7 +111,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           {/* Mobile */}
-          <div className="flex items-center gap-4 lg:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={18} strokeWidth={1.5} />
+              {count > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
             <button
               onClick={toggleLang}
               className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
