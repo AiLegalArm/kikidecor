@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2, LogOut } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
+import AdminLogin from "@/components/AdminLogin";
+import type { Session } from "@supabase/supabase-js";
 
 type Lead = {
   id: string;
@@ -39,6 +41,8 @@ const getStatusBadge = (status: string) => {
 };
 
 const Admin = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -53,6 +57,24 @@ const Admin = () => {
   const [igSyncing, setIgSyncing] = useState(false);
   const [igResult, setIgResult] = useState<{ success: boolean; synced?: number; error?: string } | null>(null);
   const [igPostCount, setIgPostCount] = useState<number | null>(null);
+
+  // Auth listener
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+  };
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -88,9 +110,23 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    fetchLeads();
-    fetchIgCount();
-  }, [filterStatus, page]);
+    if (session) {
+      fetchLeads();
+      fetchIgCount();
+    }
+  }, [filterStatus, page, session]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <AdminLogin onLogin={() => {}} />;
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,11 +195,17 @@ const Admin = () => {
       <title>CRM — Ki Ki Decor</title>
 
       {/* Header */}
-      <div className="bg-background border-b border-border px-6 py-5">
-        <h1 className="font-display text-2xl md:text-3xl font-light">
-          CRM <span className="text-primary">Панель</span>
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">Управление заявками Ki Ki Decor</p>
+      <div className="bg-background border-b border-border px-6 py-5 flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl md:text-3xl font-light">
+            CRM <span className="text-primary">Панель</span>
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">Управление заявками Ki Ki Decor</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-none gap-2 text-xs uppercase tracking-wider">
+          <LogOut size={14} />
+          Выйти
+        </Button>
       </div>
 
       {/* Instagram Import Section */}
