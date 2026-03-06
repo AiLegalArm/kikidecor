@@ -311,6 +311,9 @@ const Admin = () => {
           {/* ═══ INSTAGRAM COMMERCE ═══ */}
           {section === "instagram" && <AdminInstagramCommerce />}
 
+          {/* ═══ INSTAGRAM ANALYTICS ═══ */}
+          {section === "ig-analytics" && <AdminInstagramAnalytics />}
+
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && (
             <>
