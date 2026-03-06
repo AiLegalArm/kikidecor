@@ -60,6 +60,7 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
   const [editForm, setEditForm] = useState({ name: "", phone: "", email: "", event_type: "", location: "", guests: "", notes: "" });
   const [blockReason, setBlockReason] = useState("");
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState<"all" | "decor" | "showroom">("all");
 
   const fetchData = async () => {
     setLoading(true);
