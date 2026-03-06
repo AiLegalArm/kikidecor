@@ -41,10 +41,10 @@ const Services = () => {
       <section className="px-6 md:px-10 pb-16 md:pb-24">
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="text-foreground/80 font-light text-sm md:text-base leading-[1.9] mb-4">
+            <p className="text-foreground font-normal text-sm md:text-base leading-[1.9] mb-4">
               {a.heroParagraph1[lang]}
             </p>
-            <p className="text-foreground/60 font-light text-sm leading-[1.9]">
+            <p className="text-foreground/80 font-normal text-sm leading-[1.9]">
               {a.heroParagraph2[lang]}
             </p>
           </ScrollReveal>
