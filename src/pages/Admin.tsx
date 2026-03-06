@@ -11,7 +11,7 @@ import {
   Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram,
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
-  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X,
+  ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
@@ -19,6 +19,7 @@ import AdminLogin from "@/components/AdminLogin";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminInstagramCommerce from "@/components/admin/AdminInstagramCommerce";
 import AdminInstagramAnalytics from "@/components/admin/AdminInstagramAnalytics";
+import AdminVenueAnalyzer from "@/components/admin/AdminVenueAnalyzer";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCustomers from "@/components/admin/AdminCustomers";
@@ -46,7 +47,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "analytics";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "analytics";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "leads", label: "Лиды", icon: Users },
@@ -56,6 +57,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
   { key: "calendar", label: "Календарь", icon: CalendarDays },
   { key: "instagram", label: "Instagram", icon: Instagram },
   { key: "ig-analytics", label: "IG Аналитика", icon: Instagram },
+  { key: "venue", label: "Анализ площадки", icon: Camera },
   { key: "ai", label: "AI Генератор", icon: Sparkles },
   { key: "analytics", label: "Аналитика", icon: BarChart3 },
 ];
@@ -321,6 +323,9 @@ const Admin = () => {
               <AdminAIGenerator />
             </>
           )}
+
+          {/* ═══ VENUE ANALYZER ═══ */}
+          {section === "venue" && <AdminVenueAnalyzer />}
 
           {/* ═══ ANALYTICS ═══ */}
           {section === "analytics" && <AdminAnalytics />}
