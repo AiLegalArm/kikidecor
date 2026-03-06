@@ -327,35 +327,8 @@ const Admin = () => {
             </>
           )}
 
-          {/* ═══ INSTAGRAM ═══ */}
-          {section === "instagram" && (
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <Instagram size={22} strokeWidth={1.5} className="text-primary" />
-                <h2 className="font-display text-2xl font-light">Instagram Контент</h2>
-                {igPostCount !== null && <span className="text-xs text-muted-foreground border border-border px-2 py-0.5">{igPostCount} постов</span>}
-              </div>
-              <p className="text-sm text-muted-foreground mb-5 max-w-xl">
-                Импортируйте все исторические посты или запустите быструю синхронизацию последних публикаций.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Button onClick={() => triggerInstagramSync(true)} disabled={igImporting || igSyncing} className="rounded-none gap-2">
-                  {igImporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-                  {igImporting ? "Импорт..." : "Импорт всего контента"}
-                </Button>
-                <Button variant="outline" onClick={() => triggerInstagramSync(false)} disabled={igImporting || igSyncing} className="rounded-none gap-2">
-                  {igSyncing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
-                  {igSyncing ? "Синхронизация..." : "Быстрая синхронизация"}
-                </Button>
-              </div>
-              {igResult && (
-                <div className={`mt-4 flex items-start gap-2 text-sm p-3 border ${igResult.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"}`}>
-                  {igResult.success ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> : <AlertCircle size={16} className="mt-0.5 shrink-0" />}
-                  <span>{igResult.success ? `Синхронизировано ${igResult.synced} постов` : `Ошибка: ${igResult.error}`}</span>
-                </div>
-              )}
-            </div>
-          )}
+          {/* ═══ INSTAGRAM COMMERCE ═══ */}
+          {section === "instagram" && <AdminInstagramCommerce />}
 
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && (
