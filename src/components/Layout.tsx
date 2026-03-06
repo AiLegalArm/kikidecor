@@ -50,16 +50,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       >
         <nav className="container mx-auto flex items-center justify-between px-6 md:px-10">
           {/* Left nav */}
-          <div className="hidden lg:flex items-center gap-8 flex-1">
+          <div className="hidden lg:flex items-center gap-10 flex-1">
             {navLinks.slice(0, 3).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "text-[10px] uppercase tracking-[0.25em] font-body font-medium transition-all duration-300 hover:text-primary relative py-1",
+                  "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 hover:text-primary relative py-1",
                   location.pathname === link.path
                     ? "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary"
-                    : "text-muted-foreground"
+                    : "text-foreground/70"
                 )}
               >
                 {link.name}
