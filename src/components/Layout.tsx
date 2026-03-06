@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send } from "lucide-react";
+import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCart } from "@/hooks/useCart";
+import CartSidebar from "@/components/shop/CartSidebar";
 import logoImg from "@/assets/logo.png";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showTop, setShowTop] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const location = useLocation();
   const { lang, setLang, t } = useLanguage();
+  const { count } = useCart();
 
   const navLinks = [
     { name: t.nav.home[lang], path: "/" },
@@ -92,10 +96,34 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <Globe size={13} strokeWidth={1.5} />
               {lang === "ru" ? "EN" : "RU"}
             </button>
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative text-muted-foreground hover:text-primary transition-colors duration-300 ml-2"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={18} strokeWidth={1.5} />
+              {count > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Mobile */}
-          <div className="flex items-center gap-4 lg:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={18} strokeWidth={1.5} />
+              {count > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </button>
             <button
               onClick={toggleLang}
               className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
@@ -196,6 +224,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/showroom", label: t.footer.collection[lang] },
+                  { to: "/shop", label: lang === "ru" ? "Каталог" : "Catalog" },
                   { to: "/calculator", label: t.footer.calculator[lang] },
                 ].map(l => (
                   <Link key={l.to} to={l.to} className="text-sm font-light text-background/35 hover:text-primary transition-colors duration-500">{l.label}</Link>
@@ -251,6 +280,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       >
         <ArrowUp size={16} strokeWidth={1.5} />
       </button>
+
+      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   );
 };
