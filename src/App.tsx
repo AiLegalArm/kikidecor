@@ -18,6 +18,9 @@ import Contact from "./pages/Contact";
 import InstagramPage from "./pages/Instagram";
 import Admin from "./pages/Admin";
 import Showroom from "./pages/Showroom";
+import Shop from "./pages/Shop";
+import ProductPage from "./pages/ProductPage";
+import CheckoutPage from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
