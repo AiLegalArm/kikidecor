@@ -102,8 +102,8 @@ const Booking = () => {
                 <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2 block">Расскажите о вашей идее *</label>
                 <Textarea value={formData.message} onChange={update("message")} required rows={5} placeholder="Опишите ваше мероприятие, пожелания по стилю и декору..." className="rounded-none border-border bg-transparent focus:border-primary resize-none" />
               </div>
-              <Button type="submit" className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
-                Отправить заявку
+              <Button type="submit" disabled={submitting} className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-6 bg-primary hover:bg-primary/90 text-primary-foreground">
+                {submitting ? "Отправка..." : "Отправить заявку"}
               </Button>
             </form>
           </ScrollReveal>
