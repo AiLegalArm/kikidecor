@@ -36,8 +36,8 @@ const Home = () => {
 
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-4xl">
-            <div className="w-px h-16 bg-background/15 mx-auto mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
-            <div className="relative w-56 md:w-72 lg:w-80 mx-auto mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
+            <div className="w-px h-10 md:h-16 bg-background/15 mx-auto mb-6 md:mb-8 animate-reveal" style={{ animationDelay: "0.3s" }} />
+            <div className="relative w-40 sm:w-56 md:w-72 lg:w-80 mx-auto mb-8 md:mb-12 animate-reveal" style={{ animationDelay: "0.5s" }}>
               <div className="absolute inset-0 bg-foreground/60 rounded-2xl blur-2xl scale-110" />
               <img
                 src={logoHero}
@@ -45,12 +45,12 @@ const Home = () => {
                 className="relative w-full h-auto drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-reveal" style={{ animationDelay: "1s" }}>
-              <Link to="/decor" className="group inline-flex items-center gap-3 px-10 py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-reveal px-4 sm:px-0" style={{ animationDelay: "1s" }}>
+              <Link to="/decor" className="group inline-flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 bg-background text-foreground text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-700">
                 {t.home.exploreDecor[lang]}
                 <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>
-              <Link to="/showroom" className="group inline-flex items-center gap-3 px-10 py-4 border border-background/20 text-background text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-background hover:text-foreground transition-all duration-700">
+              <Link to="/showroom" className="group inline-flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 border border-background/20 text-background text-[10px] uppercase tracking-[0.3em] font-medium hover:bg-background hover:text-foreground transition-all duration-700">
                 {t.home.visitShowroom[lang]}
                 <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>

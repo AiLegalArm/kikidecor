@@ -25,7 +25,7 @@ const Services = () => {
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
             <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{s.overline[lang]}</p>
-            <h1 className="font-display text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{s.title[lang]}</h1>
+            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{s.title[lang]}</h1>
             <div className="gold-divider" />
             <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{s.subtitle[lang]}</p>
           </ScrollReveal>
@@ -55,14 +55,14 @@ const Services = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {s.items.map((service, i) => (
               <ScrollReveal key={i} delay={i * 80}>
-                <div className="group relative overflow-hidden aspect-[4/5] cursor-pointer">
+                <div className="group relative overflow-hidden aspect-[3/4] sm:aspect-[4/5] cursor-pointer">
                   <img src={serviceImages[i]} alt={service.title[lang]} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.05]" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-all duration-700 group-hover:from-black/95" />
-                  <div className="absolute bottom-0 left-0 right-0 p-7 md:p-8">
-                    <h2 className="font-display text-2xl md:text-3xl font-light text-white mb-2">{service.title[lang]}</h2>
-                    <p className="text-sm text-white/70 font-light leading-relaxed mb-4 max-w-xs">{service.desc[lang]}</p>
+                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 md:p-8">
+                    <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-light text-white mb-1.5 sm:mb-2">{service.title[lang]}</h2>
+                    <p className="text-xs sm:text-sm text-white/70 font-light leading-relaxed mb-3 sm:mb-4 max-w-xs">{service.desc[lang]}</p>
                     <div className="flex items-center justify-between">
-                      <p className="font-display text-xl text-primary">{service.price[lang]}</p>
+                      <p className="font-display text-lg sm:text-xl text-primary">{service.price[lang]}</p>
                       <Link to="/booking" className="text-[9px] uppercase tracking-[0.25em] text-white/80 hover:text-white transition-colors duration-300 font-body">
                         {s.order[lang]} →
                       </Link>
@@ -79,9 +79,9 @@ const Services = () => {
       <section className="border-t border-border/50 px-6 md:px-10 py-24 md:py-32">
         <div className="container mx-auto text-center max-w-2xl">
           <ScrollReveal>
-            <h2 className="font-display text-3xl md:text-5xl font-light mb-5">{s.customTitle[lang]}</h2>
+            <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-light mb-5">{s.customTitle[lang]}</h2>
             <p className="text-muted-foreground font-light text-sm mb-10 leading-relaxed">{s.customText[lang]}</p>
-            <Link to="/booking" className="group inline-flex items-center gap-3 px-10 py-4 border border-foreground/15 text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-foreground hover:text-background transition-all duration-500 font-body">
+            <Link to="/booking" className="group inline-flex items-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 border border-foreground/15 text-foreground text-[10px] uppercase tracking-[0.25em] font-medium hover:bg-foreground hover:text-background transition-all duration-500 font-body">
               {s.discussProject[lang]}
               <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>

@@ -183,10 +183,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <footer className="bg-foreground text-background/80">
         <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        <div className="container mx-auto px-6 md:px-10 py-20 md:py-28">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
+        <div className="container mx-auto px-6 md:px-10 py-12 md:py-28">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 mb-12 md:mb-20">
             {/* Brand */}
-            <div className="lg:col-span-4">
+            <div className="sm:col-span-2 lg:col-span-4">
               <img src={logoImg} alt="KiKi" className="h-12 w-auto brightness-0 invert opacity-80 mb-6" />
               <p className="font-display text-lg italic font-light text-background/60 leading-relaxed mb-8">
                 {t.footer.tagline[lang]}
@@ -209,7 +209,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Decor */}
             <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/decor", label: t.footer.decorServices[lang] },
@@ -224,7 +224,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
             {/* Showroom */}
             <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.showroom[lang]}</h4>
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.showroom[lang]}</h4>
               <div className="flex flex-col gap-3">
                 {[
                   { to: "/showroom", label: t.footer.collection[lang] },
@@ -238,8 +238,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             {/* Contact */}
-            <div className="lg:col-span-4">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
+            <div className="sm:col-span-2 lg:col-span-4">
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
               <div className="flex flex-col gap-4 text-sm font-light text-background/70">
                 <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
                   <Mail size={14} strokeWidth={1.5} className="opacity-50" /> info@kikidecor.ru

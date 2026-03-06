@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -17,6 +18,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 
 const Booking = () => {
   const { lang, t } = useLanguage();
+  const isMobile = useIsMobile();
   const b = t.booking;
   const eventTypes = b.eventTypes.map((et) => et[lang]);
   const budgetRanges = b.budgetRanges.map((br) => br[lang]);
@@ -219,7 +221,7 @@ const Booking = () => {
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
             <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{b.overline[lang]}</p>
-            <h1 className="font-display text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{b.title[lang]}</h1>
+            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{b.title[lang]}</h1>
             <div className="gold-divider" />
             <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{b.subtitle[lang]}</p>
           </ScrollReveal>
@@ -370,7 +372,7 @@ const Booking = () => {
                     disabled={isDateDisabled}
                     modifiers={{ limited: limitedDates }}
                     modifiersClassNames={{ limited: "bg-primary/15 text-primary font-medium" }}
-                    numberOfMonths={2}
+                    numberOfMonths={isMobile ? 1 : 2}
                     locale={dateLocale}
                     className={cn("p-3 pointer-events-auto")}
                   />
