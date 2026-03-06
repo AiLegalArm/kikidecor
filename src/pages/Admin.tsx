@@ -278,6 +278,11 @@ const Admin = () => {
         </div>
       </div>
 
+      {/* AI Concept Generator */}
+      <div className="px-6 pb-6">
+        <AdminAIGenerator />
+      </div>
+
       {/* Admin Calendar */}
       <div className="px-6 pb-6">
         <AdminCalendar onLeadUpdated={fetchLeads} />
