@@ -372,7 +372,7 @@ const Booking = () => {
                     disabled={isDateDisabled}
                     modifiers={{ limited: limitedDates }}
                     modifiersClassNames={{ limited: "bg-primary/15 text-primary font-medium" }}
-                    numberOfMonths={2}
+                    numberOfMonths={isMobile ? 1 : 2}
                     locale={dateLocale}
                     className={cn("p-3 pointer-events-auto")}
                   />
