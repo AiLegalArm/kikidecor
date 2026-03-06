@@ -48,6 +48,7 @@ const AIStylist = () => {
   const { addItem } = useCart();
   const isRu = lang === "ru";
 
+  const [mode, setMode] = useState<"preferences" | "photo">("preferences");
   const [occasion, setOccasion] = useState("");
   const [style, setStyle] = useState("");
   const [colors, setColors] = useState("");
