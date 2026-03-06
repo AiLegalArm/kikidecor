@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import StylePhotoAnalyzer from "@/components/StylePhotoAnalyzer";
+import { trackAIInteraction } from "@/hooks/useAITracking";
 
 const occasions = {
   ru: ["Свидание", "Деловая встреча", "Свадьба", "Вечеринка", "На каждый день", "Путешествие"],
