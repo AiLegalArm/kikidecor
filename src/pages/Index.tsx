@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Instagram, Quote } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
+import { Button } from "@/components/ui/button";
+
 import heroImg from "@/assets/hero-decoration.jpg";
 import weddingImg from "@/assets/portfolio-wedding.jpg";
 import birthdayImg from "@/assets/portfolio-birthday.jpg";
@@ -9,7 +11,6 @@ import detailImg from "@/assets/portfolio-detail.jpg";
 import themedImg from "@/assets/portfolio-themed.jpg";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
 import dessertImg from "@/assets/portfolio-dessert.jpg";
-import { Button } from "@/components/ui/button";
 
 const featuredDecorations = [
   { img: weddingImg, title: "Свадебная арка", category: "Свадьба", span: "col-span-2 row-span-2" },
@@ -59,77 +60,120 @@ const Index = () => {
       <meta property="og:description" content="Event decoration, wedding decoration, birthday decor, proposal decor, event styling — по всей России." />
       <meta property="og:type" content="website" />
 
-      {/* Hero */}
-      <section className="relative h-screen overflow-hidden">
+      {/* Hero — Full viewport, cinematic */}
+      <section className="relative h-screen overflow-hidden -mt-18 md:-mt-24">
         <img
           src={heroImg}
           alt="Роскошное оформление мероприятия с цветами, свечами и декором от Ki Ki Decor"
-          className="absolute inset-0 w-full h-full object-cover scale-105"
+          className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/20 via-foreground/30 to-foreground/60" />
-        <div className="relative z-10 h-full flex items-center justify-center text-center px-5">
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/15 via-foreground/25 to-foreground/65" />
+
+        <div className="relative z-10 h-full flex items-center justify-center text-center px-6">
           <div className="max-w-3xl">
-            <div className="w-12 h-px bg-background/50 mx-auto mb-8 animate-fade-up" />
-            <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-background/70 font-body font-light mb-5 animate-fade-up" style={{ animationDelay: "0.1s", opacity: 0 }}>
+            {/* Decorative line */}
+            <div className="w-px h-16 bg-background/30 mx-auto mb-10 animate-fade-up" />
+
+            <p
+              className="overline text-background/60 mb-6 animate-fade-up"
+              style={{ animationDelay: "0.15s", opacity: 0 }}
+            >
               Студия декора
             </p>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-light text-background leading-[1.05] mb-5 animate-fade-up" style={{ animationDelay: "0.2s", opacity: 0 }}>
+
+            <h1
+              className="font-display text-5xl md:text-7xl lg:text-[6rem] font-light text-background leading-[1.02] mb-6 animate-fade-up"
+              style={{ animationDelay: "0.3s", opacity: 0 }}
+            >
               Ki Ki Decor
             </h1>
-            <p className="font-display text-lg md:text-2xl font-light italic text-background/80 mb-10 animate-fade-up" style={{ animationDelay: "0.35s", opacity: 0 }}>
+
+            <p
+              className="font-display text-xl md:text-2xl font-light italic text-background/70 mb-12 animate-fade-up"
+              style={{ animationDelay: "0.45s", opacity: 0 }}
+            >
               Творим волшебство
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: "0.5s", opacity: 0 }}>
+
+            <div
+              className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-fade-up"
+              style={{ animationDelay: "0.6s", opacity: 0 }}
+            >
               <Link to="/portfolio">
-                <Button variant="outline" size="lg" className="border-background/40 text-background bg-transparent hover:bg-background/10 font-body text-xs uppercase tracking-[0.15em] rounded-none px-8 py-6 min-w-[200px]">
-                  Портфолио <ArrowRight size={16} className="ml-2" />
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500"
+                >
+                  Портфолио <ArrowRight size={14} className="ml-3" />
                 </Button>
               </Link>
               <Link to="/booking">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-body text-xs uppercase tracking-[0.15em] rounded-none px-8 py-6 min-w-[200px]">
+                <Button
+                  size="lg"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]"
+                >
                   Заказать декор
                 </Button>
               </Link>
             </div>
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-fade-up" style={{ animationDelay: "0.7s", opacity: 0 }}>
-          <div className="w-px h-10 bg-background/30 mx-auto mb-2 animate-pulse" />
-          <p className="text-[10px] uppercase tracking-[0.3em] text-background/40">Листайте</p>
+
+        {/* Scroll indicator */}
+        <div
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 animate-fade-up"
+          style={{ animationDelay: "0.9s", opacity: 0 }}
+        >
+          <div className="w-px h-12 bg-background/20 mx-auto mb-3 animate-float" />
+          <p className="overline text-background/30 text-[9px]">Листайте</p>
         </div>
       </section>
 
-      {/* Featured */}
+      {/* Featured Portfolio */}
       <section className="section-padding">
         <div className="container mx-auto">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Наши работы</p>
-            <h2 className="font-display text-3xl md:text-5xl font-light text-center mb-4">Избранные проекты</h2>
+            <p className="overline text-primary mb-5 text-center">Наши работы</p>
+            <h2 className="font-display text-4xl md:text-6xl font-light text-center mb-5 leading-tight">
+              Избранные проекты
+            </h2>
             <div className="gold-divider" />
-            <p className="text-center text-muted-foreground font-light text-sm max-w-xl mx-auto mt-6 mb-14">
+            <p className="text-center text-muted-foreground font-light text-sm max-w-lg mx-auto mt-8 mb-16 leading-relaxed">
               Каждый проект — уникальная история, рассказанная через цветы, свет и внимание к деталям.
             </p>
           </ScrollReveal>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {featuredDecorations.map((item, i) => (
-              <ScrollReveal key={item.title} delay={i * 80} className={item.span}>
+              <ScrollReveal key={item.title} delay={i * 100} className={item.span}>
                 <Link to="/portfolio" className="block group overflow-hidden relative aspect-square">
-                  <img src={item.img} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4 md:p-6">
-                    <div className="translate-y-3 group-hover:translate-y-0 transition-transform duration-500">
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-background/60 mb-1">{item.category}</p>
-                      <p className="font-display text-base md:text-lg text-background">{item.title}</p>
+                  <img
+                    src={item.img}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-all duration-[800ms] group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-600 flex items-end p-5 md:p-8">
+                    <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-600">
+                      <p className="overline text-background/50 mb-1.5 text-[9px]">{item.category}</p>
+                      <p className="font-display text-lg md:text-xl text-background font-light">{item.title}</p>
                     </div>
                   </div>
                 </Link>
               </ScrollReveal>
             ))}
           </div>
-          <ScrollReveal delay={500}>
-            <div className="text-center mt-12">
-              <Link to="/portfolio" className="inline-flex items-center text-xs uppercase tracking-[0.2em] text-primary hover:text-primary/80 transition-colors font-medium group">
-                Смотреть все работы <ArrowRight size={14} className="ml-2 transition-transform group-hover:translate-x-1" />
+
+          <ScrollReveal delay={600}>
+            <div className="text-center mt-14">
+              <Link
+                to="/portfolio"
+                className="inline-flex items-center overline text-primary hover:text-primary/80 transition-colors duration-300 group"
+              >
+                Смотреть все работы
+                <ArrowRight size={14} className="ml-3 transition-transform duration-300 group-hover:translate-x-1.5" />
               </Link>
             </div>
           </ScrollReveal>
@@ -137,28 +181,31 @@ const Index = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="section-padding bg-secondary">
+      <section className="section-padding bg-secondary/60">
         <div className="container mx-auto max-w-6xl">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Отзывы</p>
-            <h2 className="font-display text-3xl md:text-5xl font-light text-center mb-4">Что говорят клиенты</h2>
-            <div className="gold-divider mb-14" />
+            <p className="overline text-primary mb-5 text-center">Отзывы</p>
+            <h2 className="font-display text-4xl md:text-6xl font-light text-center mb-5 leading-tight">
+              Что говорят клиенты
+            </h2>
+            <div className="gold-divider mb-16" />
           </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {testimonials.map((t, i) => (
               <ScrollReveal key={t.name} delay={i * 150}>
-                <div className="bg-card p-8 md:p-10 border border-border/50 h-full flex flex-col">
-                  <Quote size={24} className="text-primary/30 mb-5" strokeWidth={1} />
-                  <p className="text-sm font-light leading-relaxed text-foreground/80 flex-1 mb-6 italic">
+                <div className="luxury-card p-8 md:p-10 h-full flex flex-col">
+                  <Quote size={28} className="text-primary/25 mb-6" strokeWidth={1} />
+                  <p className="text-sm font-light leading-[1.9] text-foreground/75 flex-1 mb-8 italic">
                     «{t.text}»
                   </p>
-                  <div className="flex items-center gap-1 mb-3">
+                  <div className="flex items-center gap-1.5 mb-3">
                     {Array.from({ length: t.rating }).map((_, j) => (
-                      <Star key={j} size={12} className="fill-primary text-primary" />
+                      <Star key={j} size={11} className="fill-primary text-primary" />
                     ))}
                   </div>
-                  <p className="font-display text-base font-medium">{t.name}</p>
-                  <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground mt-1">{t.event}</p>
+                  <p className="font-display text-lg font-medium">{t.name}</p>
+                  <p className="overline text-muted-foreground mt-1.5 text-[9px]">{t.event}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -170,20 +217,37 @@ const Index = () => {
       <section className="section-padding">
         <div className="container mx-auto">
           <ScrollReveal>
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Instagram size={18} className="text-primary" strokeWidth={1.5} />
-              <p className="text-xs uppercase tracking-[0.3em] text-primary font-body">Подписывайтесь</p>
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <Instagram size={16} className="text-primary" strokeWidth={1.5} />
+              <p className="overline text-primary">Подписывайтесь</p>
             </div>
-            <h2 className="font-display text-3xl md:text-5xl font-light text-center mb-4">Instagram</h2>
-            <p className="text-center text-muted-foreground font-light text-sm mb-12">@ki_ki_decor</p>
+            <h2 className="font-display text-4xl md:text-6xl font-light text-center mb-4 leading-tight">
+              Instagram
+            </h2>
+            <p className="text-center text-muted-foreground font-light text-sm mb-14">@ki_ki_decor</p>
           </ScrollReveal>
+
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
             {instaImages.map((item, i) => (
-              <ScrollReveal key={i} delay={i * 60}>
-                <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer" className="block group overflow-hidden relative aspect-square">
-                  <img src={item.img} alt={item.alt} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors duration-300 flex items-center justify-center">
-                    <Instagram size={20} className="text-background opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <ScrollReveal key={i} delay={i * 80}>
+                <a
+                  href="https://instagram.com/ki_ki_decor"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group overflow-hidden relative aspect-square"
+                >
+                  <img
+                    src={item.img}
+                    alt={item.alt}
+                    className="w-full h-full object-cover transition-all duration-[600ms] group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors duration-400 flex items-center justify-center">
+                    <Instagram
+                      size={20}
+                      className="text-background opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+                      strokeWidth={1.5}
+                    />
                   </div>
                 </a>
               </ScrollReveal>
@@ -194,20 +258,28 @@ const Index = () => {
 
       {/* CTA */}
       <section className="relative overflow-hidden">
-        <img src={loungeImg} alt="Оформление зоны отдыха" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-        <div className="absolute inset-0 bg-foreground/60" />
+        <img
+          src={loungeImg}
+          alt="Оформление зоны отдыха"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-foreground/55" />
         <div className="relative z-10 section-padding">
           <div className="container mx-auto max-w-2xl text-center">
             <ScrollReveal>
-              <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4">Давайте создадим вместе</p>
-              <h2 className="font-display text-3xl md:text-5xl font-light text-background leading-tight mb-5">
+              <p className="overline text-primary mb-5">Давайте создадим вместе</p>
+              <h2 className="font-display text-4xl md:text-6xl font-light text-background leading-tight mb-6">
                 Готовы преобразить ваше пространство?
               </h2>
-              <p className="text-background/70 font-light text-sm md:text-base mb-10 max-w-lg mx-auto">
+              <p className="text-background/60 font-light text-sm md:text-base mb-12 max-w-lg mx-auto leading-relaxed">
                 Каждое великое преображение начинается с идеи. Расскажите нам свою — и мы воплотим её в жизнь с любовью и вниманием к каждой детали.
               </p>
               <Link to="/booking">
-                <Button size="lg" className="rounded-none text-xs uppercase tracking-[0.15em] px-12 py-7 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
+                <Button
+                  size="lg"
+                  className="rounded-none text-[10px] uppercase tracking-luxury px-14 py-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_10px_40px_-10px_hsl(var(--primary)/0.4)] transition-all duration-500"
+                >
                   Заказать декор
                 </Button>
               </Link>
