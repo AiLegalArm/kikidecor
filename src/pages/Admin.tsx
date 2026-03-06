@@ -53,7 +53,10 @@ const Admin = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [editNotes, setEditNotes] = useState("");
+  const [viewMode, setViewMode] = useState<"pipeline" | "table">("pipeline");
+  const [allLeads, setAllLeads] = useState<Lead[]>([]);
   const [page, setPage] = useState(0);
+  const pipelineRef = useRef<HTMLDivElement>(null);
   const PAGE_SIZE = 20;
 
   // Instagram import state
