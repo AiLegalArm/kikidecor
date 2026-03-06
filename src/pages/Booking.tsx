@@ -19,7 +19,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 const Booking = () => {
   const { lang, t } = useLanguage();
   const isMobile = useIsMobile();
-  const eventTypes = b.eventTypes.map((et) => et[lang]);
+  const b = t.booking;
   const budgetRanges = b.budgetRanges.map((br) => br[lang]);
   const decorStyles = b.decorStyles.map((ds) => ds[lang]);
 
