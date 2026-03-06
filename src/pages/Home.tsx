@@ -253,33 +253,43 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══ 3. TWO BRAND WORLDS ═══ */}
+      {/* ═══ 3. TWO WORLDS OF KIKI ═══ */}
       <section className="px-6 md:px-10 pb-24 md:pb-40">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <ScrollReveal>
+            <div className="text-center mb-16 md:mb-20">
+              <p className="overline text-primary mb-5">Discover</p>
+              <h2 className="font-display text-4xl md:text-6xl font-light leading-[1.08]">
+                Two Worlds of <span className="italic">KiKi</span>
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {/* KiKi Decor */}
             <ScrollReveal delay={0}>
               <Link to="/decor" className="group block relative overflow-hidden aspect-[3/4]">
                 <img
                   src={heroDecor}
                   alt="KiKi Decor — luxury event decoration"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-[1.04]"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.06]"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/25 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5 transition-all duration-700 group-hover:from-foreground/85 group-hover:via-foreground/40" />
+                {/* Accent border on hover */}
+                <div className="absolute inset-4 border border-background/0 group-hover:border-background/10 transition-all duration-700 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 md:p-14">
-                  <p className="overline text-primary/80 mb-3">Division I</p>
+                  <p className="overline text-primary/70 mb-3 text-[9px]">Division I</p>
                   <h3 className="font-display text-3xl md:text-5xl font-light text-background mb-4 leading-[1.1]">
-                    KiKi
-                    <br />
-                    <span className="italic">Decor</span>
+                    KiKi <span className="italic">Decor</span>
                   </h3>
-                  <p className="text-sm text-background/55 font-light max-w-sm mb-8 leading-relaxed">
-                    Weddings, celebrations, facades, photo zones — 
-                    we craft atmospheres that live in memory forever.
+                  <p className="text-sm text-background/50 font-light max-w-sm mb-8 leading-[1.8]">
+                    Luxury event decoration studio for weddings, birthdays 
+                    and celebrations. We craft atmospheres that live in memory forever.
                   </p>
-                  <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-background/70 group-hover:text-primary transition-colors duration-500">
-                    Explore Studio <ArrowRight size={13} />
+                  <span className="inline-flex items-center gap-3 px-6 py-3 border border-background/20 text-[10px] uppercase tracking-[0.25em] text-background/80 group-hover:bg-background group-hover:text-foreground transition-all duration-600">
+                    Explore Decor Studio
+                    <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
                   </span>
                 </div>
               </Link>
@@ -291,23 +301,23 @@ const Home = () => {
                 <img
                   src={heroShowroom}
                   alt="KiKi Showroom — fashion boutique"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-[1.04]"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.06]"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/25 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/30 to-foreground/5 transition-all duration-700 group-hover:from-foreground/85 group-hover:via-foreground/40" />
+                <div className="absolute inset-4 border border-background/0 group-hover:border-background/10 transition-all duration-700 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 md:p-14">
-                  <p className="overline text-primary/80 mb-3">Division II</p>
+                  <p className="overline text-primary/70 mb-3 text-[9px]">Division II</p>
                   <h3 className="font-display text-3xl md:text-5xl font-light text-background mb-4 leading-[1.1]">
-                    KiKi
-                    <br />
-                    <span className="italic">Showroom</span>
+                    KiKi <span className="italic">Showroom</span>
                   </h3>
-                  <p className="text-sm text-background/55 font-light max-w-sm mb-8 leading-relaxed">
-                    Curated fashion collections and accessories in 
-                    an atmosphere of refined elegance. Style that inspires.
+                  <p className="text-sm text-background/50 font-light max-w-sm mb-8 leading-[1.8]">
+                    Fashion showroom with curated clothing collections 
+                    and accessories. Style that inspires confidence and elegance.
                   </p>
-                  <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-background/70 group-hover:text-primary transition-colors duration-500">
-                    Visit Showroom <ArrowRight size={13} />
+                  <span className="inline-flex items-center gap-3 px-6 py-3 border border-background/20 text-[10px] uppercase tracking-[0.25em] text-background/80 group-hover:bg-background group-hover:text-foreground transition-all duration-600">
+                    Visit Showroom
+                    <ArrowRight size={12} className="transition-transform duration-500 group-hover:translate-x-1" />
                   </span>
                 </div>
               </Link>
