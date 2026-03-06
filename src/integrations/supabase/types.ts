@@ -59,6 +59,51 @@ export type Database = {
         }
         Relationships: []
       }
+      instagram_posts: {
+        Row: {
+          cached_image_url: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          instagram_id: string
+          like_count: number | null
+          media_type: string
+          media_url: string
+          permalink: string
+          thumbnail_url: string | null
+          timestamp: string
+          updated_at: string
+        }
+        Insert: {
+          cached_image_url?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          instagram_id: string
+          like_count?: number | null
+          media_type?: string
+          media_url: string
+          permalink: string
+          thumbnail_url?: string | null
+          timestamp: string
+          updated_at?: string
+        }
+        Update: {
+          cached_image_url?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          instagram_id?: string
+          like_count?: number | null
+          media_type?: string
+          media_url?: string
+          permalink?: string
+          thumbnail_url?: string | null
+          timestamp?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
