@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2, LogOut } from "lucide-react";
+import { Search, Filter, Eye, ChevronLeft, ChevronRight, Instagram, Download, RefreshCw, CheckCircle2, AlertCircle, Loader2, LogOut, LayoutGrid, List, Phone as PhoneIcon, MessageSquare, Mail as MailIcon, GripVertical } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminLogin from "@/components/AdminLogin";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
