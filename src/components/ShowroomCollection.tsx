@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
-import { motion } from "framer-motion";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 import heroShowroom from "@/assets/hero-showroom.jpg";
@@ -45,9 +44,9 @@ const ShowroomCollection = () => {
                 <div className="relative overflow-hidden aspect-[3/4] mb-5">
                   <img src={product.img} alt={product.name} className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-[1.05]" loading="lazy" />
                   <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-all duration-500 flex items-center justify-center">
-                    <motion.span className="px-5 py-2.5 bg-background text-foreground text-[9px] uppercase tracking-[0.25em] opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-500">
+                    <span className="px-5 py-2.5 bg-background text-foreground text-[9px] uppercase tracking-[0.25em] opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-500">
                       {sc.viewProduct[lang]}
-                    </motion.span>
+                    </span>
                   </div>
                   <span className="absolute top-3 left-3 text-[8px] uppercase tracking-[0.2em] px-2.5 py-1 bg-background/80 backdrop-blur-sm text-foreground/70 font-medium">{product.category}</span>
                 </div>
