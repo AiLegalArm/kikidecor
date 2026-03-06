@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
-import { motion } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 import heroShowroom from "@/assets/hero-showroom.jpg";
