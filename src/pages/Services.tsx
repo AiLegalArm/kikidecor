@@ -8,6 +8,7 @@ import proposalImg from "@/assets/portfolio-proposal.jpg";
 import corporateImg from "@/assets/portfolio-corporate.jpg";
 import themedImg from "@/assets/portfolio-themed.jpg";
 import detailImg from "@/assets/portfolio-detail.jpg";
+import logoDecor from "@/assets/logo-decor.png";
 
 const serviceImages = [themedImg, weddingImg, birthdayImg, detailImg, proposalImg, corporateImg];
 
@@ -24,10 +25,14 @@ const Services = () => {
       <section className="pt-32 md:pt-40 pb-16 md:pb-20 px-6 md:px-10">
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
+            {/* Logo */}
+            <div className="mb-8 md:mb-10">
+              <img src={logoDecor} alt="KiKi Decor" className="mx-auto w-48 sm:w-56 md:w-64 h-auto" />
+            </div>
             <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{s.overline[lang]}</p>
-            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{s.title[lang]}</h1>
+            <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05] text-foreground">{s.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{s.subtitle[lang]}</p>
+            <p className="text-foreground/70 font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{s.subtitle[lang]}</p>
           </ScrollReveal>
         </div>
       </section>
@@ -36,10 +41,10 @@ const Services = () => {
       <section className="px-6 md:px-10 pb-16 md:pb-24">
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="text-foreground/80 font-light text-sm md:text-base leading-[1.9] mb-4">
+            <p className="text-foreground font-normal text-sm md:text-base leading-[1.9] mb-4">
               {a.heroParagraph1[lang]}
             </p>
-            <p className="text-foreground/60 font-light text-sm leading-[1.9]">
+            <p className="text-foreground/80 font-normal text-sm leading-[1.9]">
               {a.heroParagraph2[lang]}
             </p>
           </ScrollReveal>
