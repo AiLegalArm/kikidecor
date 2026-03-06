@@ -230,48 +230,107 @@ export type Database = {
           },
         ]
       }
+      instagram_clicks: {
+        Row: {
+          click_type: string
+          created_at: string
+          id: string
+          instagram_post_id: string
+          session_id: string
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          click_type?: string
+          created_at?: string
+          id?: string
+          instagram_post_id: string
+          session_id: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          click_type?: string
+          created_at?: string
+          id?: string
+          instagram_post_id?: string
+          session_id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instagram_clicks_instagram_post_id_fkey"
+            columns: ["instagram_post_id"]
+            isOneToOne: false
+            referencedRelation: "instagram_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       instagram_posts: {
         Row: {
+          account: string
           cached_image_url: string | null
           caption: string | null
           created_at: string
           id: string
           instagram_id: string
+          is_featured: boolean | null
           like_count: number | null
+          link_type: string | null
+          linked_portfolio_index: number | null
+          linked_product_ids: string[] | null
+          linked_service_index: number | null
           media_type: string
           media_url: string
           permalink: string
           thumbnail_url: string | null
           timestamp: string
           updated_at: string
+          utm_clicks: number | null
         }
         Insert: {
+          account?: string
           cached_image_url?: string | null
           caption?: string | null
           created_at?: string
           id?: string
           instagram_id: string
+          is_featured?: boolean | null
           like_count?: number | null
+          link_type?: string | null
+          linked_portfolio_index?: number | null
+          linked_product_ids?: string[] | null
+          linked_service_index?: number | null
           media_type?: string
           media_url: string
           permalink: string
           thumbnail_url?: string | null
           timestamp: string
           updated_at?: string
+          utm_clicks?: number | null
         }
         Update: {
+          account?: string
           cached_image_url?: string | null
           caption?: string | null
           created_at?: string
           id?: string
           instagram_id?: string
+          is_featured?: boolean | null
           like_count?: number | null
+          link_type?: string | null
+          linked_portfolio_index?: number | null
+          linked_product_ids?: string[] | null
+          linked_service_index?: number | null
           media_type?: string
           media_url?: string
           permalink?: string
           thumbnail_url?: string | null
           timestamp?: string
           updated_at?: string
+          utm_clicks?: number | null
         }
         Relationships: []
       }
