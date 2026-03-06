@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { CalendarDays, X, Send, MapPin, Users, Phone, Mail, User, Sparkles } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
@@ -13,26 +14,30 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
-
-const eventTypes = ["Свадьба", "День рождения", "Декор фасада", "Фотозона", "Входная группа", "Корпоратив", "Другое"];
-
-const bookingSchema = z.object({
-  name: z.string().trim().min(1, "Укажите имя").max(100),
-  phone: z.string().trim().min(1, "Укажите телефон").max(30),
-  email: z.string().trim().email("Неверный email").max(255),
-  eventType: z.string().min(1, "Выберите тип"),
-  guests: z.string().max(20).optional(),
-  location: z.string().max(200).optional(),
-  message: z.string().max(2000).optional(),
-});
-
-type BookingForm = z.infer<typeof bookingSchema>;
-
-const initialForm: BookingForm = {
-  name: "", phone: "", email: "", eventType: "", guests: "", location: "", message: "",
-};
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const Booking = () => {
+  const { lang, t } = useLanguage();
+  const b = t.booking;
+
+  const eventTypes = b.eventTypes.map((et) => et[lang]);
+
+  const bookingSchema = z.object({
+    name: z.string().trim().min(1, b.validationName[lang]).max(100),
+    phone: z.string().trim().min(1, b.validationPhone[lang]).max(30),
+    email: z.string().trim().email(b.validationEmail[lang]).max(255),
+    eventType: z.string().min(1, b.validationType[lang]),
+    guests: z.string().max(20).optional(),
+    location: z.string().max(200).optional(),
+    message: z.string().max(2000).optional(),
+  });
+
+  type BookingForm = z.infer<typeof bookingSchema>;
+
+  const initialForm: BookingForm = {
+    name: "", phone: "", email: "", eventType: "", guests: "", location: "", message: "",
+  };
+
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [formOpen, setFormOpen] = useState(false);
   const [formData, setFormData] = useState<BookingForm>(initialForm);
@@ -55,18 +60,13 @@ const Booking = () => {
   const { data: blockedDatesData } = useQuery({
     queryKey: ["blocked-dates"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("blocked_dates")
-        .select("blocked_date");
+      const { data, error } = await supabase.from("blocked_dates").select("blocked_date");
       if (error) throw error;
       return data?.map((d) => d.blocked_date) as string[];
     },
   });
 
-  const blockedDateSet = useMemo(
-    () => new Set(blockedDatesData || []),
-    [blockedDatesData]
-  );
+  const blockedDateSet = useMemo(() => new Set(blockedDatesData || []), [blockedDatesData]);
 
   const { disabledDates, limitedDates } = useMemo(() => {
     if (!bookedDates) return { disabledDates: [], limitedDates: [] };
@@ -131,48 +131,39 @@ const Booking = () => {
     try {
       await supabase.functions.invoke("notify-new-lead", {
         body: {
-          name: result.data.name,
-          email: result.data.email,
-          phone: result.data.phone,
+          name: result.data.name, email: result.data.email, phone: result.data.phone,
           eventType: result.data.eventType,
           date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
-          guests: result.data.guests,
-          location: result.data.location,
-          message: result.data.message,
-          source: "booking",
+          guests: result.data.guests, location: result.data.location, message: result.data.message, source: "booking",
         },
       });
-    } catch (err) {
-      console.warn("Email notification failed:", err);
-    }
+    } catch (err) { console.warn("Email notification failed:", err); }
 
     setSubmitting(false);
     if (error) {
-      toast.error("Ошибка отправки. Попробуйте позже.");
+      toast.error(b.errorMsg[lang]);
     } else {
-      toast.success("Спасибо! Мы свяжемся с вами в течение 24 часов.");
+      toast.success(b.successMsg[lang]);
       setFormOpen(false);
       setSelectedDate(undefined);
     }
   };
 
+  const dateLocale = lang === "ru" ? ru : enUS;
+
   return (
     <>
-      <title>Заявка на декор мероприятия | Ki Ki Decor</title>
-      <meta name="description" content="Оставьте заявку на event decoration — бесплатная консультация по wedding decoration, birthday decor, proposal decor." />
+      <title>{b.title[lang]} — KiKi</title>
 
       <section className="section-padding">
         <div className="container mx-auto max-w-3xl">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">Бронирование</p>
-            <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">Выберите дату</h1>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4 text-center">{b.overline[lang]}</p>
+            <h1 className="font-display text-4xl md:text-6xl font-light text-center mb-6">{b.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-center text-muted-foreground font-light text-sm max-w-lg mx-auto mt-6 mb-12">
-              Выберите удобную дату для вашего мероприятия — мы покажем форму для заполнения деталей.
-            </p>
+            <p className="text-center text-muted-foreground font-light text-sm max-w-lg mx-auto mt-6 mb-12">{b.subtitle[lang]}</p>
           </ScrollReveal>
 
-          {/* Full Calendar */}
           <ScrollReveal delay={150}>
             <div className="flex justify-center">
               <div className="bg-card border border-border/60 shadow-sm p-4 md:p-8">
@@ -187,18 +178,9 @@ const Booking = () => {
                   className={cn("p-3 pointer-events-auto")}
                 />
                 <div className="mt-4 pt-4 border-t border-border/40 flex flex-wrap justify-center gap-6 text-[11px] text-muted-foreground">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-primary" />
-                    Выбрано
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-primary/20 border border-primary/40" />
-                    Почти занято
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
-                    Недоступно
-                  </span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary" />{b.selected[lang]}</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-primary/20 border border-primary/40" />{b.almostBooked[lang]}</span>
+                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />{b.unavailable[lang]}</span>
                 </div>
               </div>
             </div>
@@ -206,145 +188,89 @@ const Booking = () => {
         </div>
       </section>
 
-      {/* Booking Form Dialog */}
       <Dialog open={formOpen} onOpenChange={setFormOpen}>
         <DialogContent className="max-w-lg p-0 overflow-hidden bg-card border-border/50 rounded-none sm:rounded-sm">
           <div className="bg-primary/5 border-b border-border/40 px-6 py-5">
             <DialogHeader>
               <DialogTitle className="font-display text-2xl font-light flex items-center gap-2">
                 <Sparkles size={20} className="text-primary" />
-                Бронирование
+                {b.bookingTitle[lang]}
               </DialogTitle>
             </DialogHeader>
             {selectedDate && (
               <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
                 <CalendarDays size={14} className="text-primary" />
-                {format(selectedDate, "d MMMM yyyy, EEEE", { locale: ru })}
+                {format(selectedDate, "d MMMM yyyy, EEEE", { locale: dateLocale })}
               </p>
             )}
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            {/* Name */}
             <div>
-              <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Ваше имя *</label>
+              <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.nameLabel[lang]} *</label>
               <div className="relative">
                 <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                <Input
-                  value={formData.name}
-                  onChange={update("name")}
-                  placeholder="Анна Иванова"
-                  className={cn("pl-9 rounded-none border-border bg-transparent focus:border-primary", errors.name && "border-destructive")}
-                />
+                <Input value={formData.name} onChange={update("name")} className={cn("pl-9 rounded-none border-border bg-transparent focus:border-primary", errors.name && "border-destructive")} />
               </div>
               {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Phone */}
               <div>
-                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Телефон *</label>
+                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.phoneLabel[lang]} *</label>
                 <div className="relative">
                   <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                  <Input
-                    value={formData.phone}
-                    onChange={update("phone")}
-                    placeholder="+7 (900) 123-45-67"
-                    className={cn("pl-9 rounded-none border-border bg-transparent focus:border-primary", errors.phone && "border-destructive")}
-                  />
+                  <Input value={formData.phone} onChange={update("phone")} className={cn("pl-9 rounded-none border-border bg-transparent focus:border-primary", errors.phone && "border-destructive")} />
                 </div>
                 {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
               </div>
-
-              {/* Email */}
               <div>
-                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Email *</label>
+                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.emailLabel[lang]} *</label>
                 <div className="relative">
                   <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                  <Input
-                    type="email"
-                    value={formData.email}
-                    onChange={update("email")}
-                    placeholder="anna@mail.ru"
-                    className={cn("pl-9 rounded-none border-border bg-transparent focus:border-primary", errors.email && "border-destructive")}
-                  />
+                  <Input type="email" value={formData.email} onChange={update("email")} className={cn("pl-9 rounded-none border-border bg-transparent focus:border-primary", errors.email && "border-destructive")} />
                 </div>
                 {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
               </div>
             </div>
 
-            {/* Event Type */}
             <div>
-              <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Тип мероприятия *</label>
+              <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.eventTypeLabel[lang]} *</label>
               <select
                 value={formData.eventType}
                 onChange={update("eventType")}
-                className={cn(
-                  "w-full h-10 px-3 border bg-transparent text-sm font-body focus:outline-none focus:border-primary",
-                  errors.eventType ? "border-destructive" : "border-border"
-                )}
+                className={cn("w-full h-10 px-3 border bg-transparent text-sm font-body focus:outline-none focus:border-primary", errors.eventType ? "border-destructive" : "border-border")}
               >
-                <option value="">Выберите...</option>
-                {eventTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+                <option value="">{b.selectPlaceholder[lang]}</option>
+                {eventTypes.map((et) => <option key={et} value={et}>{et}</option>)}
               </select>
               {errors.eventType && <p className="text-xs text-destructive mt-1">{errors.eventType}</p>}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Guests */}
               <div>
-                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Гостей</label>
+                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.guestsLabel[lang]}</label>
                 <div className="relative">
                   <Users size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                  <Input
-                    value={formData.guests}
-                    onChange={update("guests")}
-                    placeholder="50-100"
-                    className="pl-9 rounded-none border-border bg-transparent focus:border-primary"
-                  />
+                  <Input value={formData.guests} onChange={update("guests")} placeholder="50-100" className="pl-9 rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
               </div>
-
-              {/* Location */}
               <div>
-                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Локация</label>
+                <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.locationLabel[lang]}</label>
                 <div className="relative">
                   <MapPin size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-                  <Input
-                    value={formData.location}
-                    onChange={update("location")}
-                    placeholder="Москва"
-                    className="pl-9 rounded-none border-border bg-transparent focus:border-primary"
-                  />
+                  <Input value={formData.location} onChange={update("location")} className="pl-9 rounded-none border-border bg-transparent focus:border-primary" />
                 </div>
               </div>
             </div>
 
-            {/* Message */}
             <div>
-              <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Пожелания</label>
-              <Textarea
-                value={formData.message}
-                onChange={update("message")}
-                rows={3}
-                placeholder="Расскажите о стиле, цветах, идеях..."
-                className="rounded-none border-border bg-transparent focus:border-primary resize-none"
-              />
+              <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">{b.wishesLabel[lang]}</label>
+              <Textarea value={formData.message} onChange={update("message")} rows={3} placeholder={b.wishesPlaceholder[lang]} className="rounded-none border-border bg-transparent focus:border-primary resize-none" />
             </div>
 
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-5 gap-2 btn-glow"
-            >
-              {submitting ? (
-                "Отправка..."
-              ) : (
-                <>
-                  <Send size={14} />
-                  Забронировать
-                </>
-              )}
+            <Button type="submit" disabled={submitting} className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-5 gap-2 btn-glow">
+              {submitting ? b.submitting[lang] : (<><Send size={14} />{b.submitBtn[lang]}</>)}
             </Button>
           </form>
         </DialogContent>
