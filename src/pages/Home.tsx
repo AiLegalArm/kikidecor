@@ -10,6 +10,7 @@ import logoImg from "@/assets/logo.png";
 import loungeImg from "@/assets/portfolio-lounge.jpg";
 import LifestyleGallery from "@/components/LifestyleGallery";
 import SignatureDecor from "@/components/SignatureDecor";
+import ShowroomCollection from "@/components/ShowroomCollection";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 25 },
@@ -318,7 +319,10 @@ const Home = () => {
       {/* ═══ 4. SIGNATURE DECOR ═══ */}
       <SignatureDecor />
 
-      {/* ═══ 5. LIFESTYLE GALLERY ═══ */}
+      {/* ═══ 5. SHOWROOM COLLECTION ═══ */}
+      <ShowroomCollection />
+
+      {/* ═══ 6. LIFESTYLE GALLERY ═══ */}
       <LifestyleGallery />
 
       {/* ═══ 5. TESTIMONIALS ═══ */}
