@@ -273,6 +273,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </footer>
+      )}
 
       {/* Back to top */}
       <button
