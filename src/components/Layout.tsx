@@ -132,7 +132,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               className="text-[11px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 flex items-center gap-1 font-medium"
               aria-label="Switch language">
               
-              <Globe size={15} strokeWidth={2} />
+              <Globe size={15} strokeWidth={2} className="text-primary-foreground w-0 h-0" />
               {lang === "ru" ? "EN" : "RU"}
             </button>
             <button
