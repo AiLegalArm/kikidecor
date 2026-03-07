@@ -12,7 +12,7 @@ import {
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
-  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen,
+  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
@@ -29,6 +29,7 @@ import AdminTelegramSettings from "@/components/admin/AdminTelegramSettings";
 import AdminBrandDesign from "@/components/admin/AdminBrandDesign";
 import AdminMediaManager from "@/components/admin/AdminMediaManager";
 import AdminSavedConcepts from "@/components/admin/AdminSavedConcepts";
+import AdminEventPlannerPipeline from "@/components/admin/AdminEventPlannerPipeline";
 import type { Session } from "@supabase/supabase-js";
 
 type Lead = {
@@ -53,7 +54,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
@@ -68,6 +69,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
   { key: "saved-concepts", label: "AI Концепции", icon: BookOpen, group: "AI" },
+  { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
   { key: "media", label: "Media Manager", icon: ImageIcon, group: "Контент" },
   { key: "brand", label: "Brand Design", icon: Palette, group: "Контент" },
   { key: "telegram", label: "Telegram", icon: Send, group: "Настройки" },
@@ -478,6 +480,9 @@ const Admin = () => {
 
           {/* ═══ SAVED CONCEPTS ═══ */}
           {section === "saved-concepts" && <AdminSavedConcepts />}
+
+          {/* ═══ EVENT PIPELINE ═══ */}
+          {section === "event-pipeline" && <AdminEventPlannerPipeline />}
 
           {/* ═══ MEDIA MANAGER ═══ */}
           {section === "media" && <AdminMediaManager />}
