@@ -229,20 +229,20 @@ const Showroom = () => {
       <section className="border-t border-border/50 px-6 md:px-10 py-20 md:py-28 bg-secondary/20">
         <div className="container mx-auto text-center max-w-2xl">
           <ScrollReveal>
-            <CalendarDays size={28} className="mx-auto text-primary mb-5" strokeWidth={1.5} />
-            <h2 className="font-display text-3xl md:text-5xl font-light mb-5">
+            <CalendarDays size={32} className="mx-auto text-primary mb-5" strokeWidth={1.5} />
+            <h2 className="font-display text-4xl md:text-6xl font-semibold mb-5">
               {s.bookVisit[lang]}
             </h2>
-            <p className="text-foreground/60 font-light text-sm mb-10 leading-relaxed max-w-md mx-auto">
+            <p className="text-foreground/70 font-medium text-base mb-10 leading-relaxed max-w-md mx-auto">
               {lang === "ru"
                 ? "Запишитесь на визит в шоурум для персональной консультации и примерки"
                 : "Book a visit to the showroom for a personal consultation and fitting"}
             </p>
             <Link
               to="/showroom-booking"
-              className="inline-flex items-center gap-3 px-12 py-5 bg-foreground text-background text-[11px] uppercase tracking-[0.2em] font-semibold hover:bg-primary transition-all duration-500 font-body"
+              className="inline-flex items-center gap-3 px-14 py-5 bg-foreground text-background text-[12px] uppercase tracking-[0.2em] font-bold hover:bg-primary transition-all duration-500 font-body"
             >
-              <CalendarDays size={15} />
+              <CalendarDays size={16} />
               {s.bookVisit[lang]}
             </Link>
           </ScrollReveal>
