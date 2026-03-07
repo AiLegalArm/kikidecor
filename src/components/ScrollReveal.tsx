@@ -13,28 +13,28 @@ interface ScrollRevealProps {
 const variantStyles = {
   "fade-up": {
     hidden: "opacity-0 translate-y-8",
-    visible: "opacity-100 translate-y-0",
+    visible: "opacity-100 translate-y-0"
   },
   fade: {
     hidden: "opacity-0",
-    visible: "opacity-100",
+    visible: "opacity-100"
   },
   "slide-left": {
     hidden: "opacity-0 -translate-x-8",
-    visible: "opacity-100 translate-x-0",
+    visible: "opacity-100 translate-x-0"
   },
   "slide-right": {
     hidden: "opacity-0 translate-x-8",
-    visible: "opacity-100 translate-x-0",
+    visible: "opacity-100 translate-x-0"
   },
   scale: {
     hidden: "opacity-0 scale-[0.97]",
-    visible: "opacity-100 scale-100",
+    visible: "opacity-100 scale-100"
   },
   "blur-up": {
     hidden: "opacity-0 translate-y-6 blur-[6px]",
-    visible: "opacity-100 translate-y-0 blur-0",
-  },
+    visible: "opacity-100 translate-y-0 blur-0"
+  }
 };
 
 const ScrollReveal = ({
@@ -43,7 +43,7 @@ const ScrollReveal = ({
   delay = 0,
   variant = "fade-up",
   parallax = false,
-  parallaxSpeed = 0.1,
+  parallaxSpeed = 0.1
 }: ScrollRevealProps) => {
   const { ref, isVisible } = useScrollReveal();
   const { ref: parallaxRef, offset } = useParallax(parallaxSpeed);
@@ -60,20 +60,20 @@ const ScrollReveal = ({
   return (
     <div
       ref={setRef}
-      className={cn(
-        "transition-all duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)]",
-        isVisible ? styles.visible : styles.hidden,
-        className
+      className={cn("transition-all duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)] px-[3px]",
+
+      isVisible ? styles.visible : styles.hidden,
+      className
       )}
       style={{
         transitionDelay: `${delay}ms`,
         willChange: isVisible ? "auto" : "transform, opacity, filter",
-        ...(parallax && isVisible ? { transform: `translateY(${offset}px)` } : {}),
-      }}
-    >
+        ...(parallax && isVisible ? { transform: `translateY(${offset}px)` } : {})
+      }}>
+      
       {children}
-    </div>
-  );
+    </div>);
+
 };
 
 export default ScrollReveal;
