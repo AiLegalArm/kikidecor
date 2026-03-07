@@ -1,42 +1,129 @@
+/* ── Global contrast overrides ── */
+
+.text-muted-foreground {
+  color: #555555 !important;
+  font-weight: 500;
+}
+
+/* Keep light text ONLY on dark backgrounds */
+.bg-foreground .text-muted-foreground,
+[class*="bg-primary"] .text-muted-foreground {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* Nav links */
+nav a,
+nav button {
+  font-weight: 500;
+}
+
+/* Dropdown items */
+[role="option"],
+[role="menuitem"] {
+  color: #111111;
+  font-weight: 500;
+}
+
+/* Badges */
+[class*="rounded-full"][class*="border"] {
+  font-weight: 600;
+}
+
+/* Uppercase labels (overline style) */
+.uppercase {
+  font-weight: 600;
+}
+
+/* Small text should still be readable */
+.text-xs {
+  font-weight: 500;
+  color: #444444;
+}
+
+.text-\[10px\],
+.text-\[9px\],
+.text-\[8px\] {
+  font-weight: 600;
+  color: #555555;
+}
+
+/* Table defaults */
+table th {
+  color: #111111 !important;
+  font-weight: 700 !important;
+  background: #FAFAFA;
+}
+
+table td {
+  color: #111111;
+  font-weight: 500;
+}
+
+/* Large numbers in stats */
+.font-display {
+  color: #000000;
+}
+
+/* Form inputs */
+input,
+textarea,
+select {
+  color: #111111 !important;
+  font-weight: 500;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #888888 !important;
+  font-weight: 400;
+}
+
+/* Sidebar nav overrides */
+aside .text-muted-foreground {
+  color: #444444 !important;
+  font-weight: 500;
+}
+
+/* Admin section main area */
+main p,
+main span,
+main li {
+  color: #111111;
+}
+
+/* Radix dropdown items */
+[data-radix-collection-item],
+[data-radix-select-item] {
+  color: #111111 !important;
+  font-weight: 500;
+}
+
+/* Loader */
+.animate-spin {
+  color: hsl(var(--primary));
+}
+
+/* Action buttons in quick-actions */
+.flex a[href^="tel"],
+.flex a[href^="https://wa"],
+.flex a[href^="mailto"] {
+  color: #333333;
+  font-weight: 600;
+}
+
+/* Status pipeline column empty state */
+[class*="text-muted-foreground/40"],
+[class*="text-muted-foreground/60"] {
+  color: #999999 !important;
+}
+
+/* Override sharp corners for admin UI elements using rounded-none */
+/* Keep them for public site elements, but admin card border radius via admin-card class */
+
+/* Legacy root sizing */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }

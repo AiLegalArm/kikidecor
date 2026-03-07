@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Mail, Lock, LogIn } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Mail, Lock, LogIn, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -30,53 +27,142 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "linear-gradient(135deg, #fafafa 0%, #f5f0ff 50%, #fafafa 100%)" }}
+    >
       <title>Вход в CRM — Ki Ki Decor</title>
-      <div className="w-full max-w-sm bg-background border border-border p-8">
-        <div className="text-center mb-8">
-          <h1 className="font-display text-3xl font-light">
-            Ki Ki<span className="text-primary">.</span>
+
+      <div style={{
+        width: "100%",
+        maxWidth: "400px",
+        background: "#ffffff",
+        borderRadius: "20px",
+        border: "1px solid #EAEAEA",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
+        padding: "40px",
+      }}>
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{
+            width: "52px", height: "52px",
+            background: "linear-gradient(135deg, #7C3AED, #9F6FE8)",
+            borderRadius: "14px",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            margin: "0 auto 16px",
+            boxShadow: "0 4px 16px rgba(124,58,237,0.25)",
+          }}>
+            <Sparkles size={24} color="#ffffff" />
+          </div>
+          <h1 style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: "1.75rem", fontWeight: 700, color: "#000000", margin: "0 0 6px", letterSpacing: "-0.02em" }}>
+            Ki Ki Admin
           </h1>
-          <p className="text-sm text-muted-foreground mt-2">Вход в панель управления</p>
+          <p style={{ fontSize: "0.875rem", color: "#666666", fontWeight: 500, margin: 0 }}>
+            Панель управления
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Email</label>
-            <div className="relative">
-              <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-              <Input
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          {/* Email */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <label style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#111111" }}>
+              Email
+            </label>
+            <div style={{ position: "relative" }}>
+              <Mail
+                size={15}
+                style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", color: "#999999", pointerEvents: "none" }}
+              />
+              <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@kikidecor.ru"
-                className="pl-9 rounded-none border-border bg-transparent focus:border-primary"
+                style={{
+                  width: "100%",
+                  padding: "11px 14px 11px 38px",
+                  border: "1px solid #E5E5E5",
+                  borderRadius: "10px",
+                  fontSize: "0.875rem",
+                  color: "#111111",
+                  fontWeight: 500,
+                  outline: "none",
+                  boxSizing: "border-box",
+                  transition: "border-color 0.15s, box-shadow 0.15s",
+                }}
+                onFocus={(e) => { e.target.style.borderColor = "#000000"; e.target.style.boxShadow = "0 0 0 3px rgba(0,0,0,0.05)"; }}
+                onBlur={(e) => { e.target.style.borderColor = "#E5E5E5"; e.target.style.boxShadow = "none"; }}
               />
             </div>
           </div>
 
-          <div>
-            <label className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-1.5 block">Пароль</label>
-            <div className="relative">
-              <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
-              <Input
+          {/* Password */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <label style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#111111" }}>
+              Пароль
+            </label>
+            <div style={{ position: "relative" }}>
+              <Lock
+                size={15}
+                style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", color: "#999999", pointerEvents: "none" }}
+              />
+              <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="pl-9 rounded-none border-border bg-transparent focus:border-primary"
+                style={{
+                  width: "100%",
+                  padding: "11px 14px 11px 38px",
+                  border: "1px solid #E5E5E5",
+                  borderRadius: "10px",
+                  fontSize: "0.875rem",
+                  color: "#111111",
+                  fontWeight: 500,
+                  outline: "none",
+                  boxSizing: "border-box",
+                  transition: "border-color 0.15s, box-shadow 0.15s",
+                }}
+                onFocus={(e) => { e.target.style.borderColor = "#000000"; e.target.style.boxShadow = "0 0 0 3px rgba(0,0,0,0.05)"; }}
+                onBlur={(e) => { e.target.style.borderColor = "#E5E5E5"; e.target.style.boxShadow = "none"; }}
               />
             </div>
           </div>
 
-          <Button
+          {/* Submit */}
+          <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-none text-xs uppercase tracking-[0.15em] py-5 gap-2 btn-glow"
+            style={{
+              marginTop: "8px",
+              width: "100%",
+              padding: "13px 20px",
+              background: loading ? "#999999" : "#000000",
+              color: "#ffffff",
+              border: "none",
+              borderRadius: "10px",
+              fontSize: "0.875rem",
+              fontWeight: 600,
+              cursor: loading ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              transition: "background 0.15s, transform 0.1s, box-shadow 0.15s",
+              boxShadow: loading ? "none" : "0 2px 8px rgba(0,0,0,0.15)",
+            }}
+            onMouseEnter={(e) => { if (!loading) { (e.target as HTMLElement).style.background = "#1a1a1a"; (e.target as HTMLElement).style.transform = "translateY(-1px)"; } }}
+            onMouseLeave={(e) => { if (!loading) { (e.target as HTMLElement).style.background = "#000000"; (e.target as HTMLElement).style.transform = "translateY(0)"; } }}
           >
-            {loading ? "Вход..." : <><LogIn size={14} /> Войти</>}
-          </Button>
+            <LogIn size={16} />
+            {loading ? "Вхожу..." : "Войти"}
+          </button>
         </form>
+
+        <p style={{ marginTop: "24px", textAlign: "center", fontSize: "0.75rem", color: "#999999", fontWeight: 400 }}>
+          Ki Ki Decor · Панель управления
+        </p>
       </div>
     </div>
   );

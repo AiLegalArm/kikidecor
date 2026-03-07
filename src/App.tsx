@@ -36,6 +36,16 @@ const queryClient = new QueryClient();
 const AnimatedRoutes = () => {
   const location = useLocation();
   usePageTracking();
+
+  // Admin route renders WITHOUT public Layout
+  if (location.pathname === "/admin") {
+    return (
+      <Routes location={location} key={location.pathname}>
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    );
+  }
+
   return (
     <Layout>
       <AnimatePresence mode="wait">
@@ -61,7 +71,6 @@ const AnimatedRoutes = () => {
           <Route path="/showroom-booking" element={<PageTransition><ShowroomBooking /></PageTransition>} />
           <Route path="/shop-the-look" element={<PageTransition><ShoppableGalleryPage /></PageTransition>} />
           <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
-          <Route path="/admin" element={<PageTransition><Admin /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </AnimatePresence>

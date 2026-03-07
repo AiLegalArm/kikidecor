@@ -1,19 +1,40 @@
+/**
+ * generate-outfits/index.ts
+ * Generates complete outfit combinations from the catalog automatically.
+ *
+ * STATUS: Was working. Refactored to use _shared/gemini.ts.
+ * FIXES:
+ * - Shared layer (timeout, structured errors)
+ * - Safe extractToolCall
+ * - gemini-2.0-flash
+ */
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import {
+  CORS_HEADERS,
+  requireApiKey,
+  geminiChat,
+  extractToolCall,
+  okResponse,
+  handleError,
+  GeminiError,
+  errorResponse,
+} from "../_shared/gemini.ts";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
 
   try {
-    const { lang, count } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    let body: any;
+    try { body = await req.json(); } catch {
+      body = {};
+    }
 
+    const { lang, count } = body;
+    console.log(`[generate-outfits] Starting | lang=${lang} | count=${count}`);
+
+    const GEMINI_API_KEY = requireApiKey();
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -26,9 +47,7 @@ serve(async (req) => {
 
     if (error) throw error;
     if (!products?.length) {
-      return new Response(JSON.stringify({ outfits: [] }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return okResponse({ outfits: [] });
     }
 
     const catalog = products.map((p: any) => ({
@@ -37,7 +56,7 @@ serve(async (req) => {
     }));
 
     const isRu = lang === "ru";
-    const outfitCount = Math.min(count || 4, 6);
+    const outfitCount = Math.min(Number(count) || 4, 6);
 
     const systemPrompt = isRu
       ? `Ты — AI-стилист люксового бренда KiKi Showroom. Из предоставленного каталога собери ${outfitCount} готовых образов.
@@ -63,88 +82,59 @@ Rules:
 - Use ONLY real product IDs from the catalog
 - Use ONLY the tool call to respond.`;
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: isRu ? "Собери готовые образы из каталога." : "Build complete outfits from the catalog." },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "build_outfits",
-            description: "Return complete outfit combinations from catalog",
-            parameters: {
-              type: "object",
-              properties: {
-                outfits: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      title: { type: "string" },
-                      occasion: { type: "string", description: "What occasion this outfit is for" },
-                      mood: { type: "string", description: "One-word mood (e.g. Refined, Playful, Bold, Casual)" },
-                      description: { type: "string", description: "Why these pieces work together" },
+    const data = await geminiChat({
+      apiKey: GEMINI_API_KEY,
+      model: "gemini-2.0-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: isRu ? "Собери готовые образы из каталога." : "Build complete outfits from the catalog." },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "build_outfits",
+          description: "Return complete outfit combinations from catalog",
+          parameters: {
+            type: "object",
+            properties: {
+              outfits: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string" },
+                    occasion: { type: "string" },
+                    mood: { type: "string" },
+                    description: { type: "string" },
+                    items: {
+                      type: "array",
                       items: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            product_id: { type: "string" },
-                            slot: { type: "string", enum: ["top", "bottom", "dress", "shoes", "accessories"] },
-                          },
-                          required: ["product_id", "slot"],
+                        type: "object",
+                        properties: {
+                          product_id: { type: "string" },
+                          slot: { type: "string", enum: ["top", "bottom", "dress", "shoes", "accessories"] },
                         },
+                        required: ["product_id", "slot"],
                       },
-                      styling_tips: { type: "string" },
                     },
-                    required: ["title", "occasion", "description", "items", "styling_tips"],
+                    styling_tips: { type: "string" },
                   },
+                  required: ["title", "occasion", "description", "items", "styling_tips"],
                 },
               },
-              required: ["outfits"],
             },
+            required: ["outfits"],
           },
-        }],
-        tool_choice: { type: "function", function: { name: "build_outfits" } },
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "build_outfits" } },
     });
 
-    if (!aiResponse.ok) {
-      const status = aiResponse.status;
-      if (status === 429) {
-        return new Response(JSON.stringify({ error: isRu ? "Слишком много запросов." : "Rate limit exceeded." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (status === 402) {
-        return new Response(JSON.stringify({ error: isRu ? "Необходимо пополнить баланс." : "Payment required." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const t = await aiResponse.text();
-      console.error("AI error:", status, t);
-      throw new Error("AI gateway error");
+    const parsed = extractToolCall(data);
+    if (!parsed) {
+      throw new GeminiError("INVALID_MODEL_RESPONSE", "Could not parse AI outfits response");
     }
 
-    const aiData = await aiResponse.json();
-    let parsed: any;
-    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
-    if (toolCall?.function?.arguments) {
-      parsed = JSON.parse(toolCall.function.arguments);
-    } else {
-      const content = aiData.choices?.[0]?.message?.content || "{}";
-      parsed = JSON.parse(content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim());
-    }
-
-    // Enrich with full product data
     const enriched = (parsed.outfits || []).map((outfit: any) => ({
       ...outfit,
       items: (outfit.items || []).map((item: any) => {
@@ -153,13 +143,10 @@ Rules:
       }).filter(Boolean),
     }));
 
-    return new Response(JSON.stringify({ outfits: enriched }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.log(`[generate-outfits] ✅ Success | outfits=${enriched.length}`);
+    return okResponse({ outfits: enriched });
+
   } catch (e) {
-    console.error("generate-outfits error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return handleError("generate-outfits", e);
   }
 });

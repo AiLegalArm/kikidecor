@@ -12,6 +12,7 @@ import {
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
+  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
@@ -24,6 +25,10 @@ import AdminAIInsights from "@/components/admin/AdminAIInsights";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCustomers from "@/components/admin/AdminCustomers";
+import AdminTelegramSettings from "@/components/admin/AdminTelegramSettings";
+import AdminBrandDesign from "@/components/admin/AdminBrandDesign";
+import AdminMediaManager from "@/components/admin/AdminMediaManager";
+import AdminSavedConcepts from "@/components/admin/AdminSavedConcepts";
 import type { Session } from "@supabase/supabase-js";
 
 type Lead = {
@@ -48,20 +53,24 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "ai-insights" | "analytics";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts";
 
-const NAV_ITEMS: { key: Section; label: string; icon: any }[] = [
-  { key: "leads", label: "Лиды", icon: Users },
-  { key: "customers", label: "Клиенты", icon: Users },
-  { key: "products", label: "Товары", icon: ShoppingBag },
-  { key: "orders", label: "Заказы", icon: ShoppingBag },
-  { key: "calendar", label: "Календарь", icon: CalendarDays },
-  { key: "instagram", label: "Instagram", icon: Instagram },
-  { key: "ig-analytics", label: "IG Аналитика", icon: Instagram },
-  { key: "venue", label: "Анализ площадки", icon: Camera },
-  { key: "ai", label: "AI Генератор", icon: Sparkles },
-  { key: "ai-insights", label: "AI Инсайты", icon: Sparkles },
-  { key: "analytics", label: "Аналитика", icon: BarChart3 },
+const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
+  { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
+  { key: "customers", label: "Клиенты", icon: Users, group: "CRM" },
+  { key: "orders", label: "Заказы", icon: ShoppingBag, group: "CRM" },
+  { key: "products", label: "Товары", icon: ShoppingBag, group: "CRM" },
+  { key: "calendar", label: "Календарь", icon: CalendarDays, group: "CRM" },
+  { key: "instagram", label: "Instagram", icon: Instagram, group: "Маркетинг" },
+  { key: "ig-analytics", label: "IG Аналитика", icon: BarChart3, group: "Маркетинг" },
+  { key: "analytics", label: "Аналитика", icon: BarChart3, group: "Маркетинг" },
+  { key: "venue", label: "Анализ площадки", icon: Camera, group: "AI" },
+  { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
+  { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
+  { key: "saved-concepts", label: "AI Концепции", icon: BookOpen, group: "AI" },
+  { key: "media", label: "Media Manager", icon: ImageIcon, group: "Контент" },
+  { key: "brand", label: "Brand Design", icon: Palette, group: "Контент" },
+  { key: "telegram", label: "Telegram", icon: Send, group: "Настройки" },
 ];
 
 const Admin = () => {
@@ -112,12 +121,12 @@ const Admin = () => {
     setLoading(false);
   };
 
-  const fetchIgCount = () => {};
+  const fetchIgCount = () => { };
 
   useEffect(() => { if (session) { fetchLeads(); } }, [filterStatus, page, session]);
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
-  if (!session) return <AdminLogin onLogin={() => {}} />;
+  if (!session) return <AdminLogin onLogin={() => { }} />;
 
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setPage(0); fetchLeads(); };
 
@@ -146,60 +155,197 @@ const Admin = () => {
   const navigateTo = (s: Section) => { setSection(s); setSidebarOpen(false); };
 
   return (
-    <div className="min-h-screen bg-muted/30 flex">
+    <div style={{ minHeight: "100dvh", display: "flex", background: "#F3F4F6", fontFamily: "'Montserrat', 'Inter', system-ui, sans-serif" }}>
       <title>Admin — KiKi</title>
 
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-56 bg-background border-r border-border flex flex-col transition-transform duration-300 md:relative md:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="p-5 border-b border-border">
-          <h1 className="font-display text-xl font-light">KiKi <span className="text-primary">Admin</span></h1>
+      {/* ── Mobile overlay ── */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 60,
+            background: "rgba(0,0,0,0.4)",
+            backdropFilter: "blur(3px)",
+          }}
+        />
+      )}
+
+      {/* ── Sidebar ── */}
+      <aside style={{
+        position: "sticky",
+        top: 0,
+        height: "100dvh",
+        width: "220px",
+        minWidth: "220px",
+        background: "#ffffff",
+        borderRight: "1px solid #E8E8E8",
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto",
+        flexShrink: 0,
+        zIndex: 10,
+        // Mobile: fixed slide-in
+      }}
+        className={[
+          "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-[70]",
+          "max-md:transition-transform max-md:duration-300",
+          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+        ].join(" ")}
+      >
+        {/* Logo */}
+        <div style={{ padding: "18px 14px 14px", borderBottom: "1px solid #F0F0F0", flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{
+              width: "36px", height: "36px",
+              background: "linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)",
+              borderRadius: "10px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+              boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
+            }}>
+              <span style={{ color: "#fff", fontSize: "15px", fontWeight: 700, fontFamily: "serif" }}>K</span>
+            </div>
+            <div>
+              <p style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#000", fontFamily: '"Cormorant Garamond", Georgia, serif', lineHeight: 1.15 }}>KiKi</p>
+              <p style={{ margin: 0, fontSize: "0.65rem", color: "#999", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase" }}>Admin</p>
+            </div>
+          </div>
         </div>
-        <nav className="flex-1 py-3 overflow-y-auto">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.key}
-              onClick={() => navigateTo(item.key)}
-              className={`w-full flex items-center gap-3 px-5 py-2.5 text-sm transition-colors ${
-                section === item.key
-                  ? "bg-primary/10 text-primary border-r-2 border-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              }`}
-            >
-              <item.icon size={16} />
-              {item.label}
-            </button>
-          ))}
+
+        {/* Nav items with groups */}
+        <nav style={{ flex: 1, padding: "8px 8px", overflowY: "auto" }}>
+          {(() => {
+            const groups = Array.from(new Set(NAV_ITEMS.map(i => i.group)));
+            return groups.map(group => {
+              const items = NAV_ITEMS.filter(i => i.group === group);
+              return (
+                <div key={group} style={{ marginBottom: "6px" }}>
+                  <p style={{ fontSize: "0.625rem", fontWeight: 700, color: "#BBB", textTransform: "uppercase", letterSpacing: "0.08em", padding: "6px 10px 2px", margin: 0 }}>{group}</p>
+                  {items.map(item => {
+                    const active = section === item.key;
+                    return (
+                      <button
+                        key={item.key}
+                        onClick={() => navigateTo(item.key)}
+                        style={{
+                          width: "100%", display: "flex", alignItems: "center", gap: "9px",
+                          padding: "8px 10px", borderRadius: "8px", border: "none", cursor: "pointer",
+                          fontSize: "0.8125rem", fontWeight: active ? 600 : 500,
+                          color: active ? "#000" : "#555",
+                          background: active ? "#F0EDFF" : "transparent",
+                          marginBottom: "1px", textAlign: "left", transition: "all 0.15s",
+                        }}
+                        onMouseEnter={e => {
+                          if (!active) {
+                            (e.currentTarget as HTMLElement).style.background = "#F5F5F5";
+                            (e.currentTarget as HTMLElement).style.color = "#111";
+                          }
+                        }}
+                        onMouseLeave={e => {
+                          if (!active) {
+                            (e.currentTarget as HTMLElement).style.background = "transparent";
+                            (e.currentTarget as HTMLElement).style.color = "#555";
+                          }
+                        }}
+                      >
+                        <item.icon size={14} style={{ color: active ? "#7C3AED" : "#999", flexShrink: 0 }} />
+                        {item.label}
+                        {active && <span style={{ marginLeft: "auto", width: "5px", height: "5px", borderRadius: "50%", background: "#7C3AED", flexShrink: 0 }} />}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            });
+          })()}
         </nav>
-        <div className="p-4 border-t border-border">
-          <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-none gap-2 text-xs uppercase tracking-wider w-full">
-            <LogOut size={14} /> Выйти
-          </Button>
+
+        {/* Logout */}
+        <div style={{ padding: "10px 8px 14px", borderTop: "1px solid #F0F0F0", flexShrink: 0 }}>
+          <button
+            onClick={handleLogout}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "9px 10px",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "0.8125rem",
+              fontWeight: 500,
+              color: "#888",
+              background: "transparent",
+              transition: "all 0.15s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "#FEF2F2";
+              (e.currentTarget as HTMLElement).style.color = "#EF4444";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "transparent";
+              (e.currentTarget as HTMLElement).style.color = "#888";
+            }}
+          >
+            <LogOut size={14} style={{ flexShrink: 0 }} />
+            Выйти
+          </button>
         </div>
       </aside>
 
-      {/* Mobile overlay */}
-      {sidebarOpen && <div className="fixed inset-0 z-40 bg-foreground/40 md:hidden" onClick={() => setSidebarOpen(false)} />}
+      {/* ── Main content ── */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", overflowX: "hidden" }}>
 
-      {/* Main */}
-      <main className="flex-1 min-w-0">
-        {/* Top bar */}
-        <div className="bg-background border-b border-border px-4 py-3 flex items-center gap-3 md:hidden">
-          <button onClick={() => setSidebarOpen(true)}><Menu size={20} /></button>
-          <span className="font-display text-lg font-light">KiKi <span className="text-primary">Admin</span></span>
-        </div>
+        {/* Top header bar (always visible) */}
+        <header style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 20,
+          background: "#ffffff",
+          borderBottom: "1px solid #EEEEEE",
+          padding: "0 20px",
+          height: "56px",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+          flexShrink: 0,
+        }}>
+          {/* Hamburger on mobile */}
+          <button
+            className="md:hidden"
+            onClick={() => setSidebarOpen(true)}
+            style={{ border: "none", background: "transparent", cursor: "pointer", padding: "6px", borderRadius: "8px", display: "flex", alignItems: "center", color: "#333" }}
+          >
+            <Menu size={20} />
+          </button>
 
-        <div className="p-6">
+          {/* Active section title */}
+          <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#000" }}>
+            {NAV_ITEMS.find(n => n.key === section)?.label ?? "Admin"}
+          </span>
+
+          {/* Spacer */}
+          <div style={{ flex: 1 }} />
+
+          {/* Logo on mobile */}
+          <span className="md:hidden" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: "1.1rem", fontWeight: 700, color: "#000" }}>KiKi</span>
+        </header>
+
+        {/* Page content */}
+        <main style={{ flex: 1, padding: "20px 16px", overflowX: "hidden" }} className="sm:p-6">
           {/* ═══ LEADS ═══ */}
           {section === "leads" && (
             <>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="font-display text-2xl font-light">CRM Pipeline</h2>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
+                <h2 style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: "1.625rem", fontWeight: 700, color: "#000000", margin: 0, letterSpacing: "-0.02em" }}>CRM Pipeline</h2>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mb-4">
-                <div className="flex items-center gap-0 border border-border">
-                  <button onClick={() => setViewMode("pipeline")} className={`px-3 py-2 text-xs transition-colors ${viewMode === "pipeline" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}><LayoutGrid size={14} /></button>
-                  <button onClick={() => setViewMode("table")} className={`px-3 py-2 text-xs transition-colors ${viewMode === "table" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}><List size={14} /></button>
+              <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mb-5">
+                <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "#F5F5F5", borderRadius: "10px", padding: "4px" }}>
+                  <button onClick={() => setViewMode("pipeline")} style={{ padding: "6px 10px", borderRadius: "7px", border: "none", cursor: "pointer", background: viewMode === "pipeline" ? "#000000" : "transparent", color: viewMode === "pipeline" ? "#ffffff" : "#666666", transition: "all 0.15s", display: "flex", alignItems: "center" }}><LayoutGrid size={14} /></button>
+                  <button onClick={() => setViewMode("table")} style={{ padding: "6px 10px", borderRadius: "7px", border: "none", cursor: "pointer", background: viewMode === "table" ? "#000000" : "transparent", color: viewMode === "table" ? "#ffffff" : "#666666", transition: "all 0.15s", display: "flex", alignItems: "center" }}><List size={14} /></button>
                 </div>
                 <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
                   <div className="relative flex-1">
@@ -319,12 +465,7 @@ const Admin = () => {
           {section === "ig-analytics" && <AdminInstagramAnalytics />}
 
           {/* ═══ AI GENERATOR ═══ */}
-          {section === "ai" && (
-            <>
-              <h2 className="font-display text-2xl font-light mb-6">AI Генератор концепций</h2>
-              <AdminAIGenerator />
-            </>
-          )}
+          {section === "ai" && <AdminAIGenerator />}
 
           {/* ═══ VENUE ANALYZER ═══ */}
           {section === "venue" && <AdminVenueAnalyzer />}
@@ -334,8 +475,20 @@ const Admin = () => {
 
           {/* ═══ ANALYTICS ═══ */}
           {section === "analytics" && <AdminAnalytics />}
-        </div>
-      </main>
+
+          {/* ═══ SAVED CONCEPTS ═══ */}
+          {section === "saved-concepts" && <AdminSavedConcepts />}
+
+          {/* ═══ MEDIA MANAGER ═══ */}
+          {section === "media" && <AdminMediaManager />}
+
+          {/* ═══ BRAND DESIGN ═══ */}
+          {section === "brand" && <AdminBrandDesign />}
+
+          {/* ═══ TELEGRAM SETTINGS ═══ */}
+          {section === "telegram" && <AdminTelegramSettings />}
+        </main>
+      </div>
 
       {/* Lead Detail Dialog */}
       <Dialog open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>
@@ -395,7 +548,7 @@ const Admin = () => {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

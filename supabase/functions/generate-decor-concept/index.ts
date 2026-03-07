@@ -1,224 +1,264 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+/**
+ * generate-decor-concept/index.ts  (v3)
+ *
+ * Flow:
+ *   1. gemini-2.5-flash → structured concept via tool_call
+ *   2. gemini-2.0-flash-preview-image-generation → 3 inspiration images in parallel
+ *      - one per key concept keyword
+ *      - if venuePhotoUrl provided → first image uses it as context
+ *
+ * Model used:
+ *   Text/analysis : GEMINI_MODEL env  (default: gemini-2.5-flash)
+ *   Image output  : gemini-2.0-flash-preview-image-generation
+ */
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import {
+  CORS_HEADERS,
+  requireApiKey,
+  getTextModel,
+  IMAGE_GEN_MODEL,
+  geminiChat,
+  geminiNative,
+  geminiGenerateImage,
+  fetchImageAsBase64,
+  extractToolCall,
+  extractNativeImage,
+  okResponse,
+  handleError,
+  GeminiError,
+  errorResponse,
+} from "../_shared/gemini.ts";
+
+// ─── Build image prompt from concept ────────────────────────────────────────
+
+function buildImagePrompt(concept: any, keyword: string): string {
+  const colors = (concept.colorPalette || []).slice(0, 3).join(", ");
+  const style = concept.conceptName || "luxury event";
+  return [
+    `Luxury event decoration photography, professional editorial style.`,
+    `Theme: "${style}".`,
+    `Color palette: ${colors}.`,
+    `Focus: ${keyword}.`,
+    `Style: elegant, sophisticated, high-end wedding/event decor.`,
+    `Lighting: warm golden ambient light.`,
+    `No text, no watermarks, no people. Photorealistic.`,
+  ].join(" ");
+}
+
+// ─── Server ──────────────────────────────────────────────────────────────────
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
 
   try {
-    const { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl } = await req.json();
+    // ── 1. Parse input ─────────────────────────────────────────────────────
+    let body: any;
+    try { body = await req.json(); }
+    catch { return errorResponse("INVALID_INPUT", "Request body must be valid JSON", 400); }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl } = body;
+    if (!eventType || !venueType || !colorPalette || !guestCount) {
+      return errorResponse("INVALID_INPUT", "Required: eventType, venueType, colorPalette, guestCount", 400);
+    }
 
-    const systemPrompt = `You are KiKi Decor Studio's creative director — a luxury event decoration company. You must respond ONLY using the generate_concept tool call.
+    const GEMINI_API_KEY = requireApiKey();
+    const textModel = getTextModel(); // gemini-2.5-flash
+    console.log(`[generate-decor-concept] text=${textModel} | img=${IMAGE_GEN_MODEL} | hasPhoto=${!!venuePhotoUrl}`);
 
-Generate a detailed, creative decor concept based on the provided inputs${venuePhotoUrl ? " and venue photo" : ""}.
+    // ── 2. Optional: fetch venue photo as base64 ───────────────────────────
+    let venueImgBase64: string | null = null;
+    let venueImgMime = "image/jpeg";
+    if (venuePhotoUrl) {
+      try {
+        const img = await fetchImageAsBase64(venuePhotoUrl);
+        venueImgBase64 = img.data;
+        venueImgMime = img.mimeType;
+      } catch (e) {
+        console.warn("[generate-decor-concept] Could not load venue photo:", e);
+      }
+    }
 
-Context:
-- Event type: ${eventType}
-- Venue type: ${venueType}
-- Color palette preference: ${colorPalette}
-- Guest count: ${guestCount}
-- Decor style: ${decorStyle || "Elegant luxury"}
+    // ── 3. Build prompt ────────────────────────────────────────────────────
+    const systemPrompt = `You are KiKi Decor Studio's creative director — a luxury event decoration company. Respond ONLY with the generate_concept tool call. All output text in Russian.
 
-${venuePhotoUrl ? "Analyze the venue photo carefully. Consider the actual space, architecture, existing elements, and lighting when creating the concept. Make specific recommendations that work with THIS venue." : ""}
+Event: ${eventType} | Venue: ${venueType} | Guests: ${guestCount} | Style: ${decorStyle || "Elegant luxury"} | Colors: ${colorPalette}
+${venueImgBase64 ? "A venue photo is attached. Analyze the space and tailor every recommendation specifically to what you see." : ""}
 
-Think like a creative director presenting a mood board to a high-end client. Be specific about materials, textures, flowers, and placement. All text must be in Russian.`;
+Think like a creative director presenting a full mood board concept to an affluent client. Be specific about materials, textures, flowers, and placement.`;
 
     const userContent: any[] = [
-      {
-        type: "text",
-        text: "Please generate a complete decoration concept for this event" + (venuePhotoUrl ? " based on the venue photo provided." : "."),
-      },
+      { type: "text", text: "Generate a complete luxury decoration concept." + (venueImgBase64 ? " Analyze the venue photo." : "") },
     ];
 
-    if (venuePhotoUrl) {
+    // Attach venue photo via image_url (OpenAI-compat supports public URLs)
+    if (venuePhotoUrl && !venueImgBase64) {
+      userContent.push({ type: "image_url", image_url: { url: venuePhotoUrl } });
+    }
+    // If we have base64, attach as image_url data URI (more reliable than URL for private buckets)
+    if (venueImgBase64) {
       userContent.push({
         type: "image_url",
-        image_url: { url: venuePhotoUrl },
+        image_url: { url: `data:${venueImgMime};base64,${venueImgBase64}` },
       });
     }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-pro",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userContent },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "generate_concept",
-            description: "Return a structured decoration concept",
-            parameters: {
-              type: "object",
-              properties: {
-                conceptName: { type: "string", description: "Красивое поэтичное название концепции (на русском)" },
-                conceptDescription: { type: "string", description: "3-4 предложения об атмосфере, настроении и впечатлениях гостей" },
-                colorPalette: { type: "array", items: { type: "string" }, description: "5 названий цветов палитры" },
-                colorHexCodes: { type: "array", items: { type: "string" }, description: "5 hex-кодов цветов (#RRGGBB)" },
-                decorElements: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      name: { type: "string", description: "Название элемента декора" },
-                      description: { type: "string", description: "Описание и как используется" },
-                      category: { type: "string", enum: ["focal", "table", "ambient", "entrance", "ceiling", "wall", "floor"] },
-                    },
-                    required: ["name", "description", "category"],
-                  },
-                  description: "6-10 элементов декора",
-                },
-                flowerArrangements: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      name: { type: "string", description: "Название композиции" },
-                      flowers: { type: "array", items: { type: "string" }, description: "Виды цветов" },
-                      placement: { type: "string", description: "Где размещается" },
-                      style: { type: "string", description: "Стиль аранжировки (каскадный, компактный, свободный)" },
-                    },
-                    required: ["name", "flowers", "placement", "style"],
-                  },
-                  description: "3-5 цветочных композиций",
-                },
-                lightingIdeas: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      element: { type: "string", description: "Тип освещения" },
-                      placement: { type: "string", description: "Расположение" },
-                      effect: { type: "string", description: "Эффект и атмосфера" },
-                    },
-                    required: ["element", "placement", "effect"],
-                  },
-                  description: "3-5 идей освещения",
-                },
-                backdropIdeas: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      name: { type: "string", description: "Название задника/фотозоны" },
-                      description: { type: "string", description: "Описание: материалы, размер, элементы" },
-                      purpose: { type: "string", enum: ["photo_zone", "stage_backdrop", "entrance", "head_table"] },
-                    },
-                    required: ["name", "description", "purpose"],
-                  },
-                  description: "2-4 идеи для задников и фотозон",
-                },
-                tableDecoration: {
+    // ── 4. Generate concept with gemini-2.5-flash ─────────────────────────
+    const chatData = await geminiChat({
+      apiKey: GEMINI_API_KEY,
+      model: textModel,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userContent },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "generate_concept",
+          description: "Return a structured luxury decoration concept",
+          parameters: {
+            type: "object",
+            properties: {
+              conceptName: { type: "string", description: "Красивое поэтичное название концепции (на русском)" },
+              conceptDescription: { type: "string", description: "3-4 предложения об атмосфере, настроении и впечатлениях гостей" },
+              colorPalette: { type: "array", items: { type: "string" }, description: "5 названий цветов на русском" },
+              colorHexCodes: { type: "array", items: { type: "string" }, description: "5 HEX-кодов (#RRGGBB)" },
+              decorElements: {
+                type: "array",
+                items: {
                   type: "object",
                   properties: {
-                    style: { type: "string", description: "Общий стиль сервировки" },
-                    centerpiece: { type: "string", description: "Центральная композиция на столе" },
-                    tableware: { type: "string", description: "Посуда, приборы, текстиль" },
-                    accents: { type: "string", description: "Акценты: свечи, карточки, подставки" },
-                    runner: { type: "string", description: "Дорожка/скатерть" },
+                    name: { type: "string" },
+                    description: { type: "string" },
+                    category: { type: "string", enum: ["focal", "table", "ambient", "entrance", "ceiling", "wall", "floor"] },
                   },
-                  required: ["style", "centerpiece", "tableware", "accents"],
+                  required: ["name", "description", "category"],
                 },
-                estimatedComplexity: { type: "string", enum: ["low", "medium", "high", "ultra"] },
-                venueSpecificNotes: { type: "string", description: "Заметки по конкретной площадке (если фото предоставлено)" },
-                inspirationKeywords: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "5 ключевых слов для генерации вдохновляющих изображений (на английском)",
-                },
+                description: "6-10 декоративных элементов",
               },
-              required: [
-                "conceptName", "conceptDescription", "colorPalette", "colorHexCodes",
-                "decorElements", "flowerArrangements", "lightingIdeas", "backdropIdeas",
-                "tableDecoration", "estimatedComplexity", "inspirationKeywords",
-              ],
+              flowerArrangements: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    flowers: { type: "array", items: { type: "string" } },
+                    placement: { type: "string" },
+                    style: { type: "string" },
+                  },
+                  required: ["name", "flowers", "placement", "style"],
+                },
+                description: "3-5 цветочных композиций",
+              },
+              lightingIdeas: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    element: { type: "string" },
+                    placement: { type: "string" },
+                    effect: { type: "string" },
+                  },
+                  required: ["element", "placement", "effect"],
+                },
+                description: "3-5 идей освещения",
+              },
+              backdropIdeas: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    description: { type: "string" },
+                    purpose: { type: "string", enum: ["photo_zone", "stage_backdrop", "entrance", "head_table"] },
+                  },
+                  required: ["name", "description", "purpose"],
+                },
+                description: "2-4 идеи для фотозон и задников",
+              },
+              tableDecoration: {
+                type: "object",
+                properties: {
+                  style: { type: "string" },
+                  centerpiece: { type: "string" },
+                  tableware: { type: "string" },
+                  accents: { type: "string" },
+                  runner: { type: "string" },
+                },
+                required: ["style", "centerpiece", "tableware", "accents"],
+              },
+              estimatedComplexity: { type: "string", enum: ["low", "medium", "high", "ultra"] },
+              venueSpecificNotes: { type: "string", description: "Примечания к площадке (если фото предоставлено)" },
+              inspirationKeywords: {
+                type: "array",
+                items: { type: "string" },
+                description: "4 ключевых фразы на английском для генерации изображений (e.g. 'cascading flower wall', 'gold table centerpiece')",
+              },
             },
+            required: [
+              "conceptName", "conceptDescription", "colorPalette", "colorHexCodes",
+              "decorElements", "flowerArrangements", "lightingIdeas", "backdropIdeas",
+              "tableDecoration", "estimatedComplexity", "inspirationKeywords",
+            ],
           },
-        }],
-        tool_choice: { type: "function", function: { name: "generate_concept" } },
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "generate_concept" } },
+      timeoutMs: 35_000,
     });
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Слишком много запросов. Подождите немного." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Недостаточно средств для AI-генерации." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
-      throw new Error("AI gateway error");
+    const concept = extractToolCall(chatData);
+    if (!concept?.conceptName || !concept?.decorElements) {
+      console.error("[generate-decor-concept] Bad tool call:", JSON.stringify(chatData).slice(0, 300));
+      throw new GeminiError("INVALID_MODEL_RESPONSE", "AI returned an unexpected format");
     }
 
-    const data = await response.json();
-    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    console.log(`[generate-decor-concept] ✅ Concept: "${concept.conceptName}" | generating images...`);
 
-    let concept: any;
-    if (toolCall?.function?.arguments) {
-      concept = JSON.parse(toolCall.function.arguments);
-    } else {
-      // Fallback: try parsing content as JSON
-      const content = data.choices?.[0]?.message?.content || "";
-      const jsonStr = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      concept = JSON.parse(jsonStr);
-    }
+    // ── 5. Generate 3 inspiration images in parallel ───────────────────────
+    const keywords: string[] = (concept.inspirationKeywords || []).slice(0, 3);
 
-    // Generate 4 inspiration images in parallel
-    const imagePromises = (concept.inspirationKeywords || []).slice(0, 4).map(async (keyword: string, i: number) => {
-      try {
-        const imgResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${LOVABLE_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.5-flash-image",
-            messages: [{
-              role: "user",
-              content: `Generate a beautiful, photorealistic luxury event decor inspiration image: ${concept.conceptName}, ${keyword}. Colors: ${concept.colorPalette?.join(", ")}. Style: high-end editorial event photography, elegant sophisticated decoration.`,
-            }],
-            modalities: ["image", "text"],
-          }),
-        });
+    const imagePromises = keywords.map(async (keyword: string, idx: number) => {
+      const prompt = buildImagePrompt(concept, keyword);
 
-        if (!imgResponse.ok) return null;
-        const imgData = await imgResponse.json();
-        return imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
-      } catch (err) {
-        console.warn(`Image generation ${i} failed:`, err);
-        return null;
+      // First image: if venue photo available, use it as context
+      if (idx === 0 && venueImgBase64) {
+        try {
+          const parts: any[] = [
+            { text: `${prompt} The decoration is installed in this specific venue space. Visualize the complete decorated scene.` },
+            { inlineData: { mimeType: venueImgMime, data: venueImgBase64 } },
+          ];
+          const data = await geminiNative({
+            apiKey: GEMINI_API_KEY,
+            model: IMAGE_GEN_MODEL,
+            parts,
+            generationConfig: { responseModalities: ["IMAGE", "TEXT"] },
+            timeoutMs: 45_000,
+          });
+          const img = extractNativeImage(data);
+          return img ? `data:${img.mimeType};base64,${img.data}` : null;
+        } catch (e) {
+          console.warn(`[generate-decor-concept] Image 0 with venue context failed:`, e);
+          // fall through to plain generation
+        }
       }
+
+      // Plain text-to-image
+      const img = await geminiGenerateImage({
+        apiKey: GEMINI_API_KEY,
+        prompt,
+        timeoutMs: 45_000,
+      });
+      return img ? `data:${img.mimeType};base64,${img.data}` : null;
     });
 
     const images = await Promise.all(imagePromises);
     concept.inspirationImages = images.filter(Boolean);
 
-    return new Response(JSON.stringify(concept), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.log(`[generate-decor-concept] 🎨 Images: ${concept.inspirationImages.length}/${keywords.length}`);
+    return okResponse(concept);
+
   } catch (e) {
-    console.error("generate-decor-concept error:", e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return handleError("generate-decor-concept", e);
   }
 });

@@ -1,26 +1,50 @@
+/**
+ * analyze-style-photo/index.ts
+ * Analyzes user's photo and recommends outfits from KiKi catalog.
+ *
+ * FIXES:
+ * - Uses _shared/gemini.ts
+ * - safeParseJson on all JSON parsing (no more uncaught SyntaxError)
+ * - Structured error responses
+ * - Validates photoUrl
+ */
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import {
+  CORS_HEADERS,
+  requireApiKey,
+  geminiChat,
+  extractToolCall,
+  okResponse,
+  handleError,
+  GeminiError,
+  errorResponse,
+} from "../_shared/gemini.ts";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
 
   try {
-    const { photoUrl, lang } = await req.json();
-    if (!photoUrl) throw new Error("photoUrl is required");
+    let body: any;
+    try { body = await req.json(); } catch {
+      return errorResponse("INVALID_INPUT", "Request body must be valid JSON", 400);
+    }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const { photoUrl, lang } = body;
+    if (!photoUrl) return errorResponse("INVALID_INPUT", "photoUrl is required", 400);
+    try { new URL(photoUrl); } catch {
+      return errorResponse("INVALID_IMAGE", "photoUrl must be a valid URL", 400);
+    }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    console.log(`[analyze-style-photo] Starting | lang=${lang}`);
 
-    // Fetch catalog
+    const GEMINI_API_KEY = requireApiKey();
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
     const { data: products, error } = await supabase
       .from("products")
       .select("id, name, name_en, description, description_en, price, category, colors, sizes, images, compare_at_price")
@@ -29,17 +53,11 @@ serve(async (req) => {
     if (error) throw error;
 
     const catalogSummary = (products || []).map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      name_en: p.name_en,
-      price: p.price,
-      category: p.category,
-      colors: p.colors,
-      sizes: p.sizes,
+      id: p.id, name: p.name, name_en: p.name_en,
+      price: p.price, category: p.category, colors: p.colors, sizes: p.sizes,
     }));
 
     const isRu = lang === "ru";
-
     const systemPrompt = isRu
       ? `Ты — AI-стилист люксового бренда KiKi Showroom. Проанализируй фото человека и подбери образы из каталога.
 
@@ -66,99 +84,68 @@ Tasks:
 
 Use ONLY the tool call to respond.`;
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          {
-            role: "user",
-            content: [
-              { type: "text", text: isRu ? "Проанализируй моё фото и подбери образы." : "Analyze my photo and recommend outfits." },
-              { type: "image_url", image_url: { url: photoUrl } },
-            ],
-          },
-        ],
-        tools: [{
-          type: "function",
-          function: {
-            name: "analyze_and_recommend",
-            description: "Return body analysis and outfit recommendations",
-            parameters: {
-              type: "object",
-              properties: {
-                analysis: {
+    const data = await geminiChat({
+      apiKey: GEMINI_API_KEY,
+      model: "gemini-2.0-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: isRu ? "Проанализируй моё фото и подбери образы." : "Analyze my photo and recommend outfits." },
+            { type: "image_url", image_url: { url: photoUrl } },
+          ],
+        },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "analyze_and_recommend",
+          description: "Return body analysis and outfit recommendations",
+          parameters: {
+            type: "object",
+            properties: {
+              analysis: {
+                type: "object",
+                properties: {
+                  body_type: { type: "string" },
+                  height_estimate: { type: "string" },
+                  silhouette: { type: "string" },
+                  current_style: { type: "string" },
+                  dominant_colors: { type: "array", items: { type: "string" } },
+                  current_clothing: { type: "string" },
+                  style_notes: { type: "string" },
+                },
+                required: ["body_type", "current_style", "dominant_colors", "current_clothing", "style_notes"],
+              },
+              outfits: {
+                type: "array",
+                items: {
                   type: "object",
                   properties: {
-                    body_type: { type: "string", description: "Body type description (e.g. hourglass, rectangle, athletic)" },
-                    height_estimate: { type: "string", description: "Estimated height range" },
-                    silhouette: { type: "string", description: "Overall silhouette description" },
-                    current_style: { type: "string", description: "Detected style preference" },
-                    dominant_colors: { type: "array", items: { type: "string" }, description: "Dominant colors in current outfit" },
-                    current_clothing: { type: "string", description: "Description of clothing currently worn" },
-                    style_notes: { type: "string", description: "Professional notes about what styles would suit best" },
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    product_ids: { type: "array", items: { type: "string" } },
+                    styling_tips: { type: "string" },
+                    total_price: { type: "number" },
+                    mood: { type: "string" },
                   },
-                  required: ["body_type", "current_style", "dominant_colors", "current_clothing", "style_notes"],
-                },
-                outfits: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      title: { type: "string" },
-                      description: { type: "string", description: "Why this outfit suits this person specifically" },
-                      product_ids: { type: "array", items: { type: "string" } },
-                      styling_tips: { type: "string", description: "Personalized styling advice" },
-                      total_price: { type: "number" },
-                      mood: { type: "string" },
-                    },
-                    required: ["title", "description", "product_ids", "styling_tips"],
-                  },
+                  required: ["title", "description", "product_ids", "styling_tips"],
                 },
               },
-              required: ["analysis", "outfits"],
             },
+            required: ["analysis", "outfits"],
           },
-        }],
-        tool_choice: { type: "function", function: { name: "analyze_and_recommend" } },
-      }),
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "analyze_and_recommend" } },
     });
 
-    if (!aiResponse.ok) {
-      const status = aiResponse.status;
-      if (status === 429) {
-        return new Response(JSON.stringify({ error: isRu ? "Слишком много запросов. Подождите." : "Rate limit exceeded." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (status === 402) {
-        return new Response(JSON.stringify({ error: isRu ? "Необходимо пополнить баланс." : "Payment required." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const t = await aiResponse.text();
-      console.error("AI error:", status, t);
-      throw new Error("AI gateway error");
+    const parsed = extractToolCall(data);
+    if (!parsed) {
+      throw new GeminiError("INVALID_MODEL_RESPONSE", "Could not parse AI style analysis response");
     }
 
-    const aiData = await aiResponse.json();
-
-    let parsed: any;
-    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
-    if (toolCall?.function?.arguments) {
-      parsed = JSON.parse(toolCall.function.arguments);
-    } else {
-      const content = aiData.choices?.[0]?.message?.content || "{}";
-      const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      parsed = JSON.parse(cleaned);
-    }
-
-    // Enrich outfits with full product data
     const enrichedOutfits = (parsed.outfits || []).map((outfit: any) => ({
       ...outfit,
       products: (outfit.product_ids || [])
@@ -166,16 +153,10 @@ Use ONLY the tool call to respond.`;
         .filter(Boolean),
     }));
 
-    return new Response(JSON.stringify({
-      analysis: parsed.analysis,
-      outfits: enrichedOutfits,
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.log(`[analyze-style-photo] ✅ Success | outfits=${enrichedOutfits.length}`);
+    return okResponse({ analysis: parsed.analysis, outfits: enrichedOutfits });
+
   } catch (e) {
-    console.error("analyze-style-photo error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return handleError("analyze-style-photo", e);
   }
 });
