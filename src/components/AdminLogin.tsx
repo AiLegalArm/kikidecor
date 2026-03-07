@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Mail, Lock, LogIn, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
+const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -164,8 +164,8 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
           Ki Ki Decor · Панель управления
         </p>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default AdminLogin;

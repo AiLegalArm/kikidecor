@@ -29,7 +29,7 @@ const Services = () => {
             <div className="mb-8 md:mb-10">
               <img src={logoDecor} alt="KiKi Decor" className="mx-auto w-48 sm:w-56 md:w-64 h-auto" />
             </div>
-            <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{s.overline[lang]}</p>
+            <p className="text-[10px] uppercase tracking-[0.35em] font-body mb-4 text-secondary-foreground font-semibold">{s.overline[lang]}</p>
             <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05] text-foreground">{s.title[lang]}</h1>
             <div className="gold-divider" />
             <p className="text-foreground/70 font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{s.subtitle[lang]}</p>
@@ -58,16 +58,16 @@ const Services = () => {
             <h2 className="font-display text-3xl md:text-4xl font-light text-center mb-12">{a.ourServices[lang]}</h2>
           </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {s.items.map((service, i) => (
-              <ScrollReveal key={i} delay={i * 80}>
+            {s.items.map((service, i) =>
+            <ScrollReveal key={i} delay={i * 80}>
                 <div className="group relative overflow-hidden aspect-[3/4] sm:aspect-[4/5] cursor-pointer">
                   <img src={serviceImages[i]} alt={service.title[lang]} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.05]" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-all duration-700 group-hover:from-black/95" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 md:p-8">
                     <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-light text-white mb-1.5 sm:mb-2">{service.title[lang]}</h2>
-                    <p className="text-xs sm:text-sm text-white/70 font-light leading-relaxed mb-3 sm:mb-4 max-w-xs">{service.desc[lang]}</p>
+                    <p className="text-xs sm:text-sm text-white/70 leading-relaxed mb-3 sm:mb-4 max-w-xs font-semibold">{service.desc[lang]}</p>
                     <div className="flex items-center justify-between">
-                      <p className="font-display text-lg sm:text-xl text-primary">{service.price[lang]}</p>
+                      <p className="font-display text-lg sm:text-xl font-semibold text-primary-foreground">{service.price[lang]}</p>
                       <Link to="/booking" className="text-[9px] uppercase tracking-[0.25em] text-white/80 hover:text-white transition-colors duration-300 font-body">
                         {s.order[lang]} →
                       </Link>
@@ -75,7 +75,7 @@ const Services = () => {
                   </div>
                 </div>
               </ScrollReveal>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -93,8 +93,8 @@ const Services = () => {
           </ScrollReveal>
         </div>
       </section>
-    </>
-  );
+    </>);
+
 };
 
 export default Services;
