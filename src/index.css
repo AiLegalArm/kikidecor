@@ -101,7 +101,6 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
     font-weight: 500;
-    color: #111111;
     letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -113,7 +112,7 @@
   h4,
   h5,
   h6 {
-    color: #000000;
+    @apply text-foreground;
     font-weight: 700;
     letter-spacing: -0.01em;
     line-height: 1.2;
@@ -130,7 +129,7 @@
   }
 
   label {
-    color: #111111;
+    @apply text-foreground;
     font-weight: 600;
     font-size: 0.8125rem;
   }
@@ -138,13 +137,13 @@
   input,
   textarea,
   select {
-    color: #111111 !important;
+    @apply text-foreground;
     font-weight: 500;
   }
 
   input::placeholder,
   textarea::placeholder {
-    color: #888888 !important;
+    @apply text-muted-foreground;
     font-weight: 400;
   }
 
@@ -153,17 +152,17 @@
   }
 
   th {
-    color: #000000 !important;
-    font-weight: 700 !important;
+    @apply text-foreground;
+    font-weight: 700;
   }
 
   td {
-    color: #111111;
+    @apply text-foreground;
     font-weight: 500;
   }
 
   p {
-    color: #111111;
+    @apply text-foreground;
     font-weight: 500;
   }
 

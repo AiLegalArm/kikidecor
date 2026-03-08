@@ -28,7 +28,7 @@ const Contact = () => {
     setSubmitting(true);
 
     const { error } = await supabase.from("event_leads").insert({
-      name: form.name, email: form.email, phone: "",
+      name: form.name, email: form.email, phone: "не указан",
       event_type: lang === "ru" ? "Обратная связь" : "Feedback",
       message: `${form.subject ? `[${form.subject}] ` : ""}${form.message}`,
       status: "new",
