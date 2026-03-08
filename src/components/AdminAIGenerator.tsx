@@ -289,7 +289,7 @@ const AdminAIGenerator = () => {
 
                 {/* Parameters */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label style={labelSt}>Тип мероприятия *</label>
                       <select value={eventType} onChange={e => setEventType(e.target.value)} style={sel}>
