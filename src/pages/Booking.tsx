@@ -414,7 +414,7 @@ const Booking = () => {
                   )}
                   {selectedDate && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.dateLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.dateLabel[lang]}</span>
                       <span className="font-medium">{format(selectedDate, "d MMMM yyyy", { locale: dateLocale })}</span>
                     </div>
                   )}
