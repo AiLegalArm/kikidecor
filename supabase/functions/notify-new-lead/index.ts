@@ -20,7 +20,7 @@ serve(async (req) => {
     let adminSubject: string;
     let adminBody: string;
 
-    if (source === "booking") {
+    if (source === "booking" || source === "catalog_request") {
       adminSubject = `🎉 Новая заявка на декор от ${name}`;
       adminBody = `
 Новая заявка на декор мероприятия!

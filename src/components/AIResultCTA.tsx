@@ -43,7 +43,7 @@ const AIResultCTA = ({ toolName, resultSummary, productIds = [], context = {} }:
       await supabase.from("event_leads").insert({
         name: form.name,
         phone: form.phone,
-        email: "—",
+        email: "",
         event_type: "ai_consultation",
         booking_type: "showroom",
         message,

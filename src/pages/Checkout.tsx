@@ -35,7 +35,7 @@ const CheckoutPage = () => {
       const { error: dbError } = await supabase.from("event_leads").insert({
         name: form.name,
         phone: form.phone,
-        email: form.email || "—",
+        email: form.email || "",
         event_type: "showroom_request",
         booking_type: "showroom",
         message: fullMessage,
@@ -53,7 +53,7 @@ const CheckoutPage = () => {
             phone: form.phone,
             eventType: lang === "ru" ? "Запрос из каталога" : "Catalog Request",
             message: fullMessage,
-            source: "booking",
+            source: "catalog_request",
           },
         });
       } catch {
