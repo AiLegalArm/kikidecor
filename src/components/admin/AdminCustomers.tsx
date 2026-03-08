@@ -396,7 +396,9 @@ const AdminCustomers = () => {
                     {bookings.map((b) => (
                       <div key={b.id} className="border border-border p-3 flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium">{b.event_type}</p>
+                          <p className="text-sm font-medium">
+                            {b.event_type === "showroom_request" ? "🛍️ Запрос из каталога" : b.event_type === "ai_consultation" ? "🤖 AI Консультация" : b.event_type}
+                          </p>
                           <p className="text-[11px] text-muted-foreground">
                             {b.event_date ? new Date(b.event_date).toLocaleDateString("ru-RU") : "Дата не указана"}
                           </p>
