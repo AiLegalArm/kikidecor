@@ -219,7 +219,7 @@ const EditorialSection = ({ project, images, index, lang, labels, onImageClick }
 
   return (
     <section className="container mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-28">
-      <div className={cn("grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-6 items-start", !imageOnLeft && "direction-rtl")}>
+      <div className={cn("grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-6 items-start")}>
         {/* Image column */}
         <div className={cn("lg:col-span-7", !imageOnLeft ? "lg:order-2" : "lg:order-1")}>
           <ScrollReveal variant={imageOnLeft ? "slide-left" : "slide-right"}>
