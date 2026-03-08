@@ -546,10 +546,10 @@ const Admin = () => {
               </div>
 
               {/* Quick actions */}
-              <div className="flex gap-2 pt-2 border-t border-border">
-                <a href={`tel:${selectedLead.phone}`} className="flex-1 text-center py-2 text-xs border border-border hover:border-primary hover:text-primary transition-colors"><PhoneIcon size={12} className="inline mr-1" />Позвонить</a>
-                <a href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Здравствуйте, ${selectedLead.name}! Это KiKi.`)}`} target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2 text-xs border border-border hover:border-green-500 hover:text-green-600 transition-colors"><MessageSquare size={12} className="inline mr-1" />WhatsApp</a>
-                <a href={`mailto:${selectedLead.email}`} className="flex-1 text-center py-2 text-xs border border-border hover:border-primary hover:text-primary transition-colors"><MailIcon size={12} className="inline mr-1" />Email</a>
+              <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
+                <a href={`tel:${selectedLead.phone}`} className="flex-1 text-center py-2.5 sm:py-2 text-xs border border-border hover:border-primary hover:text-primary transition-colors"><PhoneIcon size={12} className="inline mr-1" />Позвонить</a>
+                <a href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Здравствуйте, ${selectedLead.name}! Это KiKi.`)}`} target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2.5 sm:py-2 text-xs border border-border hover:border-green-500 hover:text-green-600 transition-colors"><MessageSquare size={12} className="inline mr-1" />WhatsApp</a>
+                <a href={`mailto:${selectedLead.email}`} className="flex-1 text-center py-2.5 sm:py-2 text-xs border border-border hover:border-primary hover:text-primary transition-colors"><MailIcon size={12} className="inline mr-1" />Email</a>
               </div>
             </div>
           )}
