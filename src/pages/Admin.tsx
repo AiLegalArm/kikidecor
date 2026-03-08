@@ -173,29 +173,39 @@ const Admin = () => {
       )}
 
       {/* ── Sidebar ── */}
-      <aside style={{
-        position: "sticky",
-        top: 0,
-        height: "100dvh",
-        width: "220px",
-        minWidth: "220px",
-        background: "#ffffff",
-        borderRight: "1px solid #E8E8E8",
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
-        flexShrink: 0,
-        zIndex: 10,
-      }}
-        className={[
-          "max-md:!fixed max-md:inset-y-0 max-md:left-0 max-md:z-[70]",
-          "max-md:transition-transform max-md:duration-300",
-          "max-md:!w-[260px] max-md:!min-w-[260px]",
-          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full max-md:!pointer-events-none",
-          // Hide from flex flow on mobile when closed
-          !sidebarOpen ? "max-md:!absolute" : "",
-        ].join(" ")}
+      <aside
+        className="hidden md:flex"
+        style={{
+          position: "sticky",
+          top: 0,
+          height: "100dvh",
+          width: "220px",
+          minWidth: "220px",
+          background: "#ffffff",
+          borderRight: "1px solid #E8E8E8",
+          flexDirection: "column",
+          overflowY: "auto",
+          flexShrink: 0,
+          zIndex: 10,
+        }}
       >
+        {renderSidebarContent()}
+      </aside>
+
+      {/* Mobile sidebar */}
+      <aside
+        className={`md:hidden fixed inset-y-0 left-0 z-[70] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        style={{
+          width: "260px",
+          background: "#ffffff",
+          borderRight: "1px solid #E8E8E8",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+        }}
+      >
+        {renderSidebarContent()}
+      </aside>
         {/* Logo */}
         <div style={{ padding: "18px 14px 14px", borderBottom: "1px solid #F0F0F0", flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
