@@ -168,7 +168,7 @@ const AdminBrandDesign = () => {
                     <span style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>Цветовая схема</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={row}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <ColorPicker label="Основной цвет (лавандовый)" value={settings.primaryColor} field="primaryColor" />
                         <ColorPicker label="Второстепенный (шампань)" value={settings.secondaryColor} field="secondaryColor" />
                     </div>
