@@ -306,7 +306,7 @@ const AdminAIGenerator = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label style={labelSt}>Стиль декора</label>
                       <select value={decorStyle} onChange={e => setDecorStyle(e.target.value)} style={sel}>

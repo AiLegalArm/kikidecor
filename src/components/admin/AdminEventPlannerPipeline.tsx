@@ -98,16 +98,28 @@ const AdminEventPlannerPipeline = () => {
             />
           </div>
 
-          <div className="max-w-sm">
+          <div>
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Regenerate from module</p>
             <Select value={regenerateFrom} onValueChange={setRegenerateFrom}>
-              <SelectTrigger className="rounded-none border-border"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="rounded-none border-border max-w-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {MODULE_OPTIONS.map((module) => (
                   <SelectItem key={module.value} value={module.value}>{module.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2 mt-2">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Описание модулей</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {MODULE_OPTIONS.map((module) => (
+                <div key={module.value} className={`p-2.5 border rounded text-xs ${regenerateFrom === module.value ? "border-primary bg-primary/5" : "border-border"}`}>
+                  <p className="font-semibold text-foreground mb-0.5">{module.label}</p>
+                  <p className="text-muted-foreground leading-snug">{module.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex gap-2">

@@ -110,7 +110,7 @@ const AdminBrandDesign = () => {
         padding: "20px", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
     };
     const label: React.CSSProperties = { fontSize: "0.8125rem", fontWeight: 600, color: "#111", display: "block", marginBottom: "6px" };
-    const row: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" };
+    const row: React.CSSProperties = { display: "grid", gap: "16px" };
     const hint: React.CSSProperties = { fontSize: "0.75rem", color: "#888", marginTop: "4px" };
 
     const ColorPicker = ({ label: lbl, value, field }: { label: string; value: string; field: keyof BrandSettings }) => (
