@@ -53,32 +53,34 @@ const AnimatedRoutes = () => {
 
   return (
     <Layout>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/decor" element={<PageTransition><Services /></PageTransition>} />
-          <Route path="/showroom" element={<PageTransition><Showroom /></PageTransition>} />
-          <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
-          <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
-          <Route path="/packages" element={<PageTransition><Packages /></PageTransition>} />
-          <Route path="/calculator" element={<PageTransition><Calculator /></PageTransition>} />
-          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-          <Route path="/booking" element={<PageTransition><Booking /></PageTransition>} />
-          <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-          <Route path="/instagram" element={<PageTransition><InstagramPage /></PageTransition>} />
-          <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-          <Route path="/shop/:id" element={<PageTransition><ProductPage /></PageTransition>} />
-          <Route path="/lookbook" element={<PageTransition><Lookbook /></PageTransition>} />
-          <Route path="/stylist" element={<PageTransition><Stylist /></PageTransition>} />
-          <Route path="/outfits" element={<PageTransition><OutfitGenerator /></PageTransition>} />
-          <Route path="/find-similar" element={<PageTransition><FindSimilar /></PageTransition>} />
-          <Route path="/try-on" element={<PageTransition><VirtualTryOn /></PageTransition>} />
-          <Route path="/showroom-booking" element={<PageTransition><ShowroomBooking /></PageTransition>} />
-          <Route path="/shop-the-look" element={<PageTransition><ShoppableGalleryPage /></PageTransition>} />
-          <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
-          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-        </Routes>
-      </AnimatePresence>
+      <Suspense fallback={<div className="min-h-screen bg-background" />}>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+            <Route path="/decor" element={<PageTransition><Services /></PageTransition>} />
+            <Route path="/showroom" element={<PageTransition><Showroom /></PageTransition>} />
+            <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
+            <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
+            <Route path="/packages" element={<PageTransition><Packages /></PageTransition>} />
+            <Route path="/calculator" element={<PageTransition><Calculator /></PageTransition>} />
+            <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+            <Route path="/booking" element={<PageTransition><Booking /></PageTransition>} />
+            <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+            <Route path="/instagram" element={<PageTransition><InstagramPage /></PageTransition>} />
+            <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
+            <Route path="/shop/:id" element={<PageTransition><ProductPage /></PageTransition>} />
+            <Route path="/lookbook" element={<PageTransition><Lookbook /></PageTransition>} />
+            <Route path="/stylist" element={<PageTransition><Stylist /></PageTransition>} />
+            <Route path="/outfits" element={<PageTransition><OutfitGenerator /></PageTransition>} />
+            <Route path="/find-similar" element={<PageTransition><FindSimilar /></PageTransition>} />
+            <Route path="/try-on" element={<PageTransition><VirtualTryOn /></PageTransition>} />
+            <Route path="/showroom-booking" element={<PageTransition><ShowroomBooking /></PageTransition>} />
+            <Route path="/shop-the-look" element={<PageTransition><ShoppableGalleryPage /></PageTransition>} />
+            <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
+            <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+          </Routes>
+        </AnimatePresence>
+      </Suspense>
     </Layout>
   );
 };
