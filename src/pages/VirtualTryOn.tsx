@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Camera, Loader2, Sparkles, X, ShoppingBag, Shirt } from "lucide-react";
+import AIResultCTA from "@/components/AIResultCTA";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
