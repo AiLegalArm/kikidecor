@@ -183,7 +183,7 @@ const VirtualTryOn = () => {
                       className="rounded-none gap-1.5 text-[9px] uppercase tracking-wider h-9 shrink-0"
                     >
                       <ShoppingBag size={12} />
-                      {isRu ? "Купить" : "Buy"}
+                      {isRu ? "В корзину" : "Add to cart"}
                     </Button>
                   </motion.div>
                 )}
