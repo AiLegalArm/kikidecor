@@ -456,7 +456,7 @@ const Booking = () => {
                       <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
                       <Input type="email" value={formData.email} onChange={update("email")} className={cn("pl-10 h-12 rounded-none border-border/50 bg-transparent focus:border-primary", errors.email && "border-destructive")} />
                     </div>
-                    {errors.email && <p className="text-xs text-destructive mt-1 font-light">{errors.email}</p>}
+                    {errors.email && <p className="text-xs text-destructive mt-1 font-semibold">{errors.email}</p>}
                   </div>
                 </div>
 
