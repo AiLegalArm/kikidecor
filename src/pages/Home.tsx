@@ -54,7 +54,7 @@ const Home = () => {
                 animationDelay: "0.8s",
               }}
             >
-              Роскошь в каждой детали
+              {lang === "ru" ? "Роскошь в каждой детали" : "Luxury in every detail"}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center animate-reveal px-6 sm:px-0" style={{ animationDelay: "1.2s" }}>
               <Link

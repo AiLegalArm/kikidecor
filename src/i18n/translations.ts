@@ -535,6 +535,218 @@ export const translations = {
     title: { ru: "Страница не найдена", en: "Page not found" },
     cta: { ru: "На главную", en: "Return to Home" },
   },
+
+  // ── Index (Decor Studio Landing) ──
+  index: {
+    heroOverline: { ru: "Студия декора", en: "Decor Studio" },
+    heroTagline: { ru: "Творим волшебство", en: "Creating magic" },
+    portfolioBtn: { ru: "Портфолио", en: "Portfolio" },
+    orderBtn: { ru: "Заказать декор", en: "Order Decor" },
+    scroll: { ru: "Листайте", en: "Scroll" },
+    worksOverline: { ru: "Наши работы", en: "Our Work" },
+    worksTitle: { ru: "Избранные проекты", en: "Featured Projects" },
+    worksSubtitle: {
+      ru: "Каждый проект — уникальная история, рассказанная через цветы, свет и внимание к деталям.",
+      en: "Each project is a unique story told through flowers, light, and attention to detail.",
+    },
+    viewAll: { ru: "Смотреть все работы", en: "View All Projects" },
+    testimonialsOverline: { ru: "Отзывы", en: "Testimonials" },
+    testimonialsTitle: { ru: "Что говорят клиенты", en: "What Our Clients Say" },
+    followOverline: { ru: "Подписывайтесь", en: "Follow Us" },
+    ctaOverline: { ru: "Давайте создадим вместе", en: "Let's Create Together" },
+    ctaTitle: { ru: "Готовы преобразить ваше пространство?", en: "Ready to transform your space?" },
+    ctaText: {
+      ru: "Каждое великое преображение начинается с идеи. Расскажите нам свою — и мы воплотим её в жизнь с любовью и вниманием к каждой детали.",
+      en: "Every great transformation starts with an idea. Share yours with us — and we'll bring it to life with love and attention to every detail.",
+    },
+    featured: [
+      { title: { ru: "Свадебная арка", en: "Wedding Arch" }, category: { ru: "Свадьба", en: "Wedding" } },
+      { title: { ru: "Праздник золота", en: "Golden Celebration" }, category: { ru: "День рождения", en: "Birthday" } },
+      { title: { ru: "Предложение мечты", en: "Dream Proposal" }, category: { ru: "Предложение", en: "Proposal" } },
+      { title: { ru: "Декор фасада", en: "Facade Decor" }, category: { ru: "Фасад", en: "Facade" } },
+      { title: { ru: "Цветочная композиция", en: "Floral Composition" }, category: { ru: "Детали", en: "Details" } },
+      { title: { ru: "Сладкий стол", en: "Dessert Table" }, category: { ru: "Фотозона", en: "Photo Zone" } },
+    ],
+    instaAlts: [
+      { ru: "Свадебный декор", en: "Wedding decor" },
+      { ru: "Цветочная композиция", en: "Floral arrangement" },
+      { ru: "Оформление зоны отдыха", en: "Lounge area design" },
+      { ru: "Праздничное оформление", en: "Festive decoration" },
+      { ru: "Сладкий стол", en: "Dessert table" },
+      { ru: "Декор фасада", en: "Facade decoration" },
+    ],
+  },
+
+  // ── Portfolio projects ──
+  portfolioProjects: [
+    {
+      category: { ru: "Свадьба", en: "Wedding" },
+      title: { ru: "Садовая романтика", en: "Garden Romance" },
+      subtitle: { ru: "Волшебная церемония на открытом воздухе", en: "An Enchanted Outdoor Ceremony" },
+      concept: {
+        ru: "Потрясающая садовая свадьба, вдохновлённая романтическими поместьями Тосканы. Каждый элемент был создан для камерной, сказочной атмосферы под открытым небом.",
+        en: "A breathtaking garden wedding inspired by the romantic estates of Tuscany. Every element was designed to create an intimate, fairy-tale atmosphere under the open sky.",
+      },
+      style: {
+        ru: "Органичная роскошь с мягкой, воздушной палитрой цвета слоновой кости, румян и шампанского. Струящиеся ткани и природные текстуры создали сказочную атмосферу.",
+        en: "Organic luxury with a soft, ethereal palette of ivory, blush, and champagne gold. Flowing fabrics and natural textures created a dreamlike setting.",
+      },
+      elements: {
+        ru: "Каскадная арка из белых роз · Каллиграфические книги клятв · Хрустальные канделябры · Дорожка из лепестков · Винтажные золотые стулья",
+        en: "Cascading white rose arch · Hand-calligraphed vow books · Crystal candelabras · Petal-strewn aisle · Vintage gold chairs",
+      },
+    },
+    {
+      category: { ru: "Корпоратив", en: "Corporate" },
+      title: { ru: "Нуар и золото", en: "Noir & Gold Gala" },
+      subtitle: { ru: "Ежегодная церемония награждения", en: "Annual Awards Ceremony" },
+      concept: {
+        ru: "Кинематографичный гала-ужин на 300 гостей, превративший бальный зал в сцену, достойную золотой эры Голливуда. Драматизм, элегантность и театральное освещение повсюду.",
+        en: "A cinematic black-tie gala for 300 guests, transforming a grand ballroom into a stage worthy of Hollywood's golden era. Drama, elegance, and theatrical lighting at every turn.",
+      },
+      style: {
+        ru: "Роскошь арт-деко встречается с современным минимализмом. Глубокие тёмно-синие драпировки, полированные золотые акценты и геометрические узоры создали мощную, утончённую атмосферу.",
+        en: "Art Deco opulence meets modern minimalism. Deep navy drapes, polished gold accents, and geometric patterns created a powerful, sophisticated ambiance.",
+      },
+      elements: {
+        ru: "Высокие цветочные центральные композиции · Драматические сценические драпировки · Монограммные коктейльные салфетки · LED-подсветка · Персонализированная фотозона",
+        en: "Towering floral centerpieces · Dramatic stage draping · Monogrammed cocktail napkins · LED uplighting · Custom step-and-repeat wall",
+      },
+    },
+    {
+      category: { ru: "Предложение", en: "Proposal" },
+      title: { ru: "Шёпот заката", en: "Sunset Whisper" },
+      subtitle: { ru: "Приватное предложение на крыше", en: "A Private Rooftop Proposal" },
+      concept: {
+        ru: "Ультра-интимное предложение для двоих на фоне заката. Каждая деталь была подобрана для ощущения непринуждённой романтики — словно вселенная сговорилась ради этого момента.",
+        en: "An ultra-intimate proposal designed for two, set against a golden-hour sky. Every detail was curated to feel effortlessly romantic — as if the universe conspired for this moment.",
+      },
+      style: {
+        ru: "Тёплый минимализм с уютом свечей. Сдержанная палитра кремового, терракотового и пыльной розы позволила закату стать естественным фоном.",
+        en: "Warm minimalism with candlelit warmth. A restrained palette of cream, terracotta, and dusty rose allowed the natural sunset to become the backdrop.",
+      },
+      elements: {
+        ru: "200 плавающих свечей · Композиции из свежих пионов · Шёлковая лаунж-зона · Шампанское · Персонализированная экспозиция любовных писем",
+        en: "200 floating candles · Fresh peony arrangements · Silk cushion lounge · Champagne station · Personalized love letter display",
+      },
+    },
+    {
+      category: { ru: "День рождения", en: "Birthday" },
+      title: { ru: "Золотой юбилей", en: "Golden Jubilee" },
+      subtitle: { ru: "Знаковое празднование 50-летия", en: "A Milestone 50th Celebration" },
+      concept: {
+        ru: "Роскошный вечер в честь 50-летия, чествующий жизнь, полную элегантности. Дизайн сочетал ностальгическое тепло с современной роскошью.",
+        en: "A lavish 50th birthday soirée that honored a lifetime of elegance. The design balanced nostalgic warmth with contemporary luxury, creating an unforgettable evening.",
+      },
+      style: {
+        ru: "Богатые, тёплые тона — тёмное золото, глубокий бордо и шампанское. Бархатные текстуры и хрустальные акценты добавили слои тактильной роскоши.",
+        en: "Rich, warm tones of burnished gold, deep burgundy, and champagne. Velvet textures and crystal accents added layers of tactile luxury throughout the venue.",
+      },
+      elements: {
+        ru: "Многоуровневые цветочные инсталляции · Авторский сладкий стол · Золотые скульптуры из шаров · Монограммная сервировка · Декор сцены для живой музыки",
+        en: "Multi-tiered floral installations · Custom dessert table · Gold balloon sculptures · Monogrammed table settings · Live music stage décor",
+      },
+    },
+    {
+      category: { ru: "День рождения", en: "Birthday" },
+      title: { ru: "Фантазия единорога", en: "Unicorn Fantasia" },
+      subtitle: { ru: "Волшебный детский праздник", en: "A Whimsical Children's Party" },
+      concept: {
+        ru: "Пастельный сказочный мир для первого дня рождения малышки, где воображение встречается с утончённым дизайном. В каждом уголке — сюрприз: от тоннелей из шаров до конфетного леса.",
+        en: "A pastel dreamscape for a little one's first birthday, where imagination meets refined design. Every corner held a surprise — from balloon tunnels to a custom candy forest.",
+      },
+      style: {
+        ru: "Мягкие пастельные тона — лавандовый, мятный и румяный — в сочетании с переливающимися акцентами и органичными формами. Игриво и в то же время изысканно.",
+        en: "Soft pastels — lavender, mint, and blush — layered with iridescent accents and organic shapes. Playful yet polished, designed to delight both children and adults.",
+      },
+      elements: {
+        ru: "Радужная арка из шаров · Цветочная стена для фото · Авторская подача торта · Потолочная гирлянда из шаров · Интерактивные зоны для игр",
+        en: "Rainbow balloon arch · Flower wall photo backdrop · Custom cake display · Balloon garland ceiling · Interactive play stations",
+      },
+    },
+    {
+      category: { ru: "Свадьба", en: "Wedding" },
+      title: { ru: "Вилла Серена", en: "Villa Serena" },
+      subtitle: { ru: "Свадьба в средиземноморском стиле", en: "Mediterranean Estate Wedding" },
+      concept: {
+        ru: "Свадебная концепция, привносящая тепло побережья Амальфи в частное поместье. Пышная зелень, терракотовые тона и аромат жасмина определили это торжество любви.",
+        en: "A destination wedding concept bringing the warmth of the Amalfi Coast to a private estate. Lush greenery, terracotta tones, and the scent of jasmine defined this celebration of love.",
+      },
+      style: {
+        ru: "Средиземноморский романтизм — выбеленный белый, оливково-зелёный и тёплые каменные текстуры. Дизайн уважал архитектуру, добавляя слои ботанической роскоши.",
+        en: "Mediterranean romanticism — sun-bleached whites, olive greens, and warm stone textures. The design honored the architecture while adding layers of botanical luxury.",
+      },
+      elements: {
+        ru: "Живая зелёная инсталляция на фасаде · Подвесные цветочные люстры · Терракотовая посуда · Оливковые раннеры · Каменный фонтан в центре",
+        en: "Living green façade installation · Hanging floral chandeliers · Terracotta tableware · Olive branch table runners · Stone fountain centerpiece",
+      },
+    },
+  ],
+
+  // ── Packages (detailed items) ──
+  packagesData: {
+    items: [
+      {
+        name: { ru: "Базовый", en: "Basic" },
+        subtitle: { ru: "Для небольших праздников", en: "For small celebrations" },
+        price: { ru: "15 000 ₽", en: "₽15,000" },
+        decor: { ru: "Стандартное оформление стола и акцентные элементы", en: "Standard table decoration and accent elements" },
+        balloons: { ru: "Однотонная связка шаров (до 30 шт.)", en: "Solid-color balloon bundle (up to 30 pcs)" },
+        flowers: { ru: "3 небольших цветочных композиции", en: "3 small floral arrangements" },
+        backdrop: { ru: "Тканевый задник (2.5×2 м)", en: "Fabric backdrop (2.5×2 m)" },
+        setup: { ru: "Монтаж и демонтаж включены", en: "Setup and teardown included" },
+        extras: {
+          ru: ["Подбор цветовой гаммы", "1 консультация", "Команда монтажа (2 чел.)"],
+          en: ["Color palette selection", "1 consultation", "Setup team (2 people)"],
+        },
+      },
+      {
+        name: { ru: "Стандарт", en: "Standard" },
+        subtitle: { ru: "Самый популярный", en: "Most popular" },
+        price: { ru: "40 000 ₽", en: "₽40,000" },
+        decor: { ru: "Премиальное оформление столов с центральными композициями и свечами", en: "Premium table decoration with centerpieces and candles" },
+        balloons: { ru: "Гирлянда и арка из шаров (до 80 шт.)", en: "Balloon garland and arch (up to 80 pcs)" },
+        flowers: { ru: "6 средних цветочных композиций + букет", en: "6 medium floral arrangements + bouquet" },
+        backdrop: { ru: "Декорированный задник с цветами и подсветкой (3×2.5 м)", en: "Decorated backdrop with flowers and lighting (3×2.5 m)" },
+        setup: { ru: "Полный монтаж, стилизация и демонтаж", en: "Full setup, styling and teardown" },
+        extras: {
+          ru: ["Мудборд и цветовая палитра", "2 консультации + выезд на площадку", "Команда монтажа (4 чел.)", "Приветственная табличка и нумерация столов", "Свечи и световые акценты"],
+          en: ["Moodboard and color palette", "2 consultations + venue visit", "Setup team (4 people)", "Welcome sign and table numbering", "Candles and lighting accents"],
+        },
+      },
+      {
+        name: { ru: "Премиум", en: "Premium" },
+        subtitle: { ru: "Полный люкс", en: "Full luxury" },
+        price: { ru: "100 000 ₽", en: "₽100,000" },
+        decor: { ru: "Авторские инсталляции, лаунж-зона и полное оформление площадки", en: "Custom installations, lounge area and full venue design" },
+        balloons: { ru: "Масштабная инсталляция и несколько арок (150+ шт.)", en: "Large-scale installation and multiple arches (150+ pcs)" },
+        flowers: { ru: "10+ премиальных цветочных композиций и подвесные инсталляции", en: "10+ premium floral arrangements and hanging installations" },
+        backdrop: { ru: "Индивидуальный дизайнерский задник (3.5×3 м)", en: "Custom designer backdrop (3.5×3 m)" },
+        setup: { ru: "Полный дизайн, монтаж, координация и демонтаж", en: "Full design, setup, coordination and teardown" },
+        extras: {
+          ru: ["Неограниченные консультации и правки", "Полный дизайн-проект от идеи до реализации", "Команда монтажа (6+ чел.)", "Оформление сладкого стола", "Фотозона / селфи-уголок", "Световой дизайн (гирлянды, подсветка)", "Координация подрядчиков", "Полная уборка после мероприятия"],
+          en: ["Unlimited consultations and revisions", "Full design project from concept to execution", "Setup team (6+ people)", "Dessert table decoration", "Photo zone / selfie corner", "Lighting design (garlands, uplighting)", "Contractor coordination", "Full cleanup after event"],
+        },
+      },
+    ],
+    comparison: [
+      { label: { ru: "Консультации", en: "Consultations" }, basic: { ru: "1", en: "1" }, standard: { ru: "2 + выезд", en: "2 + visit" }, premium: { ru: "Без ограничений", en: "Unlimited" } },
+      { label: { ru: "Шары", en: "Balloons" }, basic: { ru: "Связка (30 шт.)", en: "Bundle (30 pcs)" }, standard: { ru: "Гирлянда и арка (80)", en: "Garland and arch (80)" }, premium: { ru: "Масштабная инсталляция (150+)", en: "Large installation (150+)" } },
+      { label: { ru: "Цветочные композиции", en: "Floral arrangements" }, basic: { ru: "3 небольших", en: "3 small" }, standard: { ru: "6 средних + букет", en: "6 medium + bouquet" }, premium: { ru: "10+ премиум + подвесные", en: "10+ premium + hanging" } },
+      { label: { ru: "Задник", en: "Backdrop" }, basic: { ru: "Ткань 2.5×2 м", en: "Fabric 2.5×2 m" }, standard: { ru: "Декорированный 3×2.5 м", en: "Decorated 3×2.5 m" }, premium: { ru: "Авторский 3.5×3 м", en: "Custom 3.5×3 m" } },
+      { label: { ru: "Оформление столов", en: "Table decoration" }, basic: { ru: "Базовые акценты", en: "Basic accents" }, standard: { ru: "Центральные композиции и свечи", en: "Centerpieces and candles" }, premium: { ru: "Полная авторская стилизация", en: "Full custom styling" } },
+      { label: { ru: "Команда монтажа", en: "Setup team" }, basic: { ru: "2 чел.", en: "2 people" }, standard: { ru: "4 чел.", en: "4 people" }, premium: { ru: "6+ чел.", en: "6+ people" } },
+      { label: { ru: "Мудборд и палитра", en: "Moodboard & palette" }, basic: false, standard: true, premium: true },
+      { label: { ru: "Приветственная табличка", en: "Welcome sign" }, basic: false, standard: true, premium: true },
+      { label: { ru: "Световой дизайн", en: "Lighting design" }, basic: false, standard: false, premium: true },
+      { label: { ru: "Сладкий стол", en: "Dessert table" }, basic: false, standard: false, premium: true },
+      { label: { ru: "Фотозона", en: "Photo zone" }, basic: false, standard: false, premium: true },
+      { label: { ru: "Лаунж-зона", en: "Lounge area" }, basic: false, standard: false, premium: true },
+      { label: { ru: "Координация подрядчиков", en: "Contractor coordination" }, basic: false, standard: false, premium: true },
+      { label: { ru: "Уборка после мероприятия", en: "Post-event cleanup" }, basic: { ru: "Базовый демонтаж", en: "Basic teardown" }, standard: { ru: "Полный демонтаж", en: "Full teardown" }, premium: { ru: "Полная уборка", en: "Full cleanup" } },
+    ],
+    newRequest: { ru: "Новая заявка", en: "New Request" },
+  },
 } as const;
 
 export type Translations = typeof translations;
