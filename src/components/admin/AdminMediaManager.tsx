@@ -72,11 +72,15 @@ const AdminMediaManager = () => {
     const deleteSelected = async () => {
         if (!selected.size) return;
         if (!confirm(`Удалить ${selected.size} файл(ов)?`)) return;
-        const { error } = await supabase.storage.from(activeBucket).remove(Array.from(selected));
-        if (error) { toast.error("Ошибка удаления"); return; }
-        toast.success("Удалено");
+        const toDelete = Array.from(selected);
+        const { error } = await supabase.storage.from(activeBucket).remove(toDelete);
+        if (error) { toast.error("Ошибка удаления: " + error.message); return; }
+        // Optimistically remove from UI
+        setFiles(prev => prev.filter(f => !toDelete.includes(f.name)));
         setSelected(new Set());
-        loadFiles();
+        toast.success("Удалено");
+        // Reload after delay to confirm server state
+        setTimeout(() => loadFiles(), 1500);
     };
 
     const copyUrl = (url: string) => {
