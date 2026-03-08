@@ -171,7 +171,7 @@ const Booking = () => {
             <ScrollReveal>
               <CheckCircle size={48} className="text-primary mx-auto mb-6" strokeWidth={1} />
               <h1 className="font-display text-4xl md:text-5xl font-light mb-4">{b.successTitle[lang]}</h1>
-              <p className="text-muted-foreground font-light leading-relaxed mb-8">{b.successMsg[lang]}</p>
+              <p className="text-muted-foreground font-semibold leading-relaxed mb-8">{b.successMsg[lang]}</p>
               <div className="border border-border/50 p-6 text-left space-y-3 mb-8">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{b.eventTypeLabel[lang]}</span>
