@@ -532,9 +532,9 @@ const Admin = () => {
 
               <div>
                 <span className="text-xs uppercase tracking-wider text-muted-foreground block mb-2">Статус</span>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {STATUSES.map((s) => (
-                    <button key={s.value} onClick={() => updateStatus(selectedLead.id, s.value)} className={`px-3 py-1.5 text-xs border transition-all ${selectedLead.status === s.value ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary text-muted-foreground hover:text-foreground"}`}>{s.label}</button>
+                    <button key={s.value} onClick={() => updateStatus(selectedLead.id, s.value)} className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs border transition-all ${selectedLead.status === s.value ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary text-muted-foreground hover:text-foreground"}`}>{s.label}</button>
                   ))}
                 </div>
               </div>
