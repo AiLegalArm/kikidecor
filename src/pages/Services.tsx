@@ -1,3 +1,5 @@
+// @ts-ignore
+import "@fontsource/great-vibes";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";

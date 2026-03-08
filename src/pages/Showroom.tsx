@@ -1,4 +1,6 @@
 import { useState } from "react";
+// @ts-ignore
+import "@fontsource/great-vibes";
 import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
 import heroShowroom from "@/assets/hero-showroom.jpg";
