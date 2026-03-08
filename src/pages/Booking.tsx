@@ -284,7 +284,7 @@ const Booking = () => {
                     <option value="">{b.selectPlaceholder[lang]}</option>
                     {eventTypes.map((et) => <option key={et} value={et}>{et}</option>)}
                   </select>
-                  {errors.eventType && <p className="text-xs text-destructive mt-1 font-light">{errors.eventType}</p>}
+                  {errors.eventType && <p className="text-xs text-destructive mt-1 font-semibold">{errors.eventType}</p>}
                 </div>
 
                 {/* Guests + Location */}
