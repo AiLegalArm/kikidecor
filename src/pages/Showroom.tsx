@@ -264,9 +264,28 @@ const Showroom = () => {
         <div className="container mx-auto text-center max-w-2xl">
           <ScrollReveal>
             <CalendarDays size={32} className="mx-auto text-primary mb-5" strokeWidth={1.5} />
-            <h2 className="font-display text-4xl md:text-6xl font-semibold mb-5">
+            <h2 className="font-display text-4xl md:text-6xl font-semibold mb-3">
               {s.bookVisit[lang]}
             </h2>
+            <p className="font-display text-lg md:text-xl text-primary/80 italic mb-8">
+              {lang === "ru" ? "Ростов / Геленджик" : "Rostov / Gelendzhik"}
+            </p>
+
+            <div className="flex flex-col items-center gap-4 mb-10 text-foreground/70 text-sm">
+              <div className="flex items-center gap-3">
+                <Phone size={16} className="text-primary" strokeWidth={1.5} />
+                <a href="tel:+79882598522" className="hover:text-primary transition-colors">+7 (988) 259-85-22</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <MapPin size={16} className="text-primary" strokeWidth={1.5} />
+                <span>{lang === "ru" ? "Ростов, Северный, ТЦ Орбита, 2 этаж" : "Rostov, Severny, TC Orbita, 2nd floor"}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Clock size={16} className="text-primary" strokeWidth={1.5} />
+                <span>10:30 – 20:30</span>
+              </div>
+            </div>
+
             <p className="text-foreground/70 font-medium text-base mb-10 leading-relaxed max-w-md mx-auto">
               {lang === "ru" ?
               "Запишитесь на визит в шоурум для персональной консультации и примерки" :
