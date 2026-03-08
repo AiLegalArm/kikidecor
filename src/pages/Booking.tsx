@@ -408,7 +408,7 @@ const Booking = () => {
                 <div className="border border-border/40 p-5 space-y-2 mb-2">
                   {formData.eventType && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.eventTypeLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.eventTypeLabel[lang]}</span>
                       <span className="font-medium">{formData.eventType}</span>
                     </div>
                   )}
