@@ -180,7 +180,7 @@ const Admin = () => {
                 {items.map(item => {
                   const active = section === item.key;
                   return (
-                    <button key={item.key} onClick={() => navigateTo(item.key)} style={{ width: "100%", display: "flex", alignItems: "center", gap: "9px", padding: "8px 10px", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "0.8125rem", fontWeight: active ? 600 : 500, color: active ? "#000" : "#555", background: active ? "#F0EDFF" : "transparent", marginBottom: "1px", textAlign: "left", transition: "all 0.15s" }}>
+                    <button key={item.key} onClick={() => navigateTo(item.key)} style={{ width: "100%", display: "flex", alignItems: "center", gap: "9px", padding: "8px 10px", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "0.8125rem", fontWeight: active ? 700 : 600, color: active ? "#000" : "#444", background: active ? "#F0EDFF" : "transparent", marginBottom: "1px", textAlign: "left", transition: "all 0.15s" }}>
                       <item.icon size={14} style={{ color: active ? "#7C3AED" : "#999", flexShrink: 0 }} />
                       {item.label}
                       {active && <span style={{ marginLeft: "auto", width: "5px", height: "5px", borderRadius: "50%", background: "#7C3AED", flexShrink: 0 }} />}
