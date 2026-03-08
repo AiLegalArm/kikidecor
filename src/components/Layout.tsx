@@ -56,10 +56,14 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               key={link.path}
               to={link.path}
               className={cn(
-                "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 hover:text-primary relative py-1",
-                location.pathname === link.path ?
-                "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary" :
-                "text-foreground/70"
+                "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 relative py-1",
+                scrolled
+                  ? (location.pathname === link.path
+                    ? "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary"
+                    : "text-foreground/70 hover:text-primary")
+                  : (location.pathname === link.path
+                    ? "text-white after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white"
+                    : "text-white/80 hover:text-white")
               )}>
               
                 {link.name}
@@ -82,10 +86,14 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               key={link.path}
               to={link.path}
               className={cn(
-                "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 hover:text-primary relative py-1",
-                location.pathname === link.path ?
-                "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary" :
-                "text-foreground/70"
+                "text-[12px] uppercase tracking-[0.2em] font-body font-semibold transition-all duration-300 relative py-1",
+                scrolled
+                  ? (location.pathname === link.path
+                    ? "text-foreground after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-primary"
+                    : "text-foreground/70 hover:text-primary")
+                  : (location.pathname === link.path
+                    ? "text-white after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white"
+                    : "text-white/80 hover:text-white")
               )}>
               
                 {link.name}
@@ -93,7 +101,10 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
             )}
             <button
               onClick={toggleLang}
-              className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 ml-2 font-semibold"
+              className={cn(
+                "flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] transition-colors duration-300 ml-2 font-semibold",
+                scrolled ? "text-foreground/70 hover:text-primary" : "text-white/80 hover:text-white"
+              )}
               aria-label="Switch language">
               
               <Globe size={16} strokeWidth={2} />
@@ -101,7 +112,10 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
             </button>
             <button
               onClick={() => setCartOpen(true)}
-              className="relative text-foreground/70 hover:text-primary transition-colors duration-300 ml-2"
+              className={cn(
+                "relative transition-colors duration-300 ml-2",
+                scrolled ? "text-foreground/70 hover:text-primary" : "text-white/80 hover:text-white"
+              )}
               aria-label="Cart">
               
               <ShoppingBag size={22} strokeWidth={2} />
@@ -137,7 +151,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="text-foreground p-1 transition-transform duration-300"
+              className={cn("p-1 transition-transform duration-300", scrolled ? "text-foreground" : "text-white")}
               aria-label="Menu">
               
               {menuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
