@@ -139,7 +139,7 @@ const AdminBrandDesign = () => {
     );
 
     return (
-        <div style={{ maxWidth: "720px" }}>
+        <div style={{ maxWidth: "720px", width: "100%" }}>
             <div style={{ marginBottom: "24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
                 <div>
                     <h2 style={{ fontSize: "1.375rem", fontWeight: 700, color: "#000", margin: "0 0 4px" }}>Brand Design</h2>
