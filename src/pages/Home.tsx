@@ -23,12 +23,12 @@ const Home = () => {
 
       {/* ═══ HERO ═══ */}
       <section className="relative h-screen overflow-hidden">
-        <div className="absolute inset-0 flex">
-          <div className="w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 flex flex-col md:flex-row">
+          <div className="h-1/2 md:h-full md:w-1/2 relative overflow-hidden">
             <img src={heroDecor} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-in" loading="eager" />
             <div className="absolute inset-0 bg-foreground/45" />
           </div>
-          <div className="w-1/2 relative overflow-hidden">
+          <div className="h-1/2 md:h-full md:w-1/2 relative overflow-hidden">
             <img src={heroShowroom} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-out" loading="eager" />
             <div className="absolute inset-0 bg-foreground/45" />
           </div>
