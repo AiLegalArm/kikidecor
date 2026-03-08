@@ -9,12 +9,12 @@ import { Copy, Loader2, Workflow } from "lucide-react";
 import { toast } from "sonner";
 
 const MODULE_OPTIONS = [
-  { value: "module_1", label: "Module 1 · Orchestrator" },
-  { value: "module_2", label: "Module 2 · Feasibility + Market" },
-  { value: "module_3", label: "Module 3 · Concept + Decor + Spatial" },
-  { value: "module_4", label: "Module 4 · Program + Timeline + Team" },
-  { value: "module_5", label: "Module 5 · Budget + Vendors" },
-  { value: "module_6", label: "Module 6 · Commercial + Visuals" },
+  { value: "module_1", label: "Module 1 · Orchestrator", description: "Анализ брифа, определение типа события и запуск цепочки модулей" },
+  { value: "module_2", label: "Module 2 · Feasibility + Market", description: "Оценка реализуемости, анализ рынка и конкурентов" },
+  { value: "module_3", label: "Module 3 · Concept + Decor + Spatial", description: "Генерация концепции, декор-решений и пространственного плана" },
+  { value: "module_4", label: "Module 4 · Program + Timeline + Team", description: "Программа мероприятия, тайминг и распределение команды" },
+  { value: "module_5", label: "Module 5 · Budget + Vendors", description: "Расчёт бюджета и подбор подрядчиков" },
+  { value: "module_6", label: "Module 6 · Commercial + Visuals", description: "Коммерческое предложение и визуальные материалы" },
 ];
 
 const GLOBAL_SCHEMA = {
