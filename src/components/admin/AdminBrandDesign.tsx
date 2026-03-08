@@ -186,7 +186,7 @@ const AdminBrandDesign = () => {
                     <span style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>Типографика</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={row}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label style={label}>Шрифт заголовков</label>
                             <select value={settings.headingFont} onChange={e => update("headingFont", e.target.value)}
