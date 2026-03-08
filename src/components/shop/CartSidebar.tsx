@@ -108,7 +108,7 @@ const CartSidebar = ({ open, onClose }: CartSidebarProps) => {
                 onClick={onClose}
                 className="w-full flex items-center justify-center gap-2 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-body font-medium hover:bg-primary transition-colors duration-500"
               >
-                {lang === "ru" ? "Оформить заказ" : "Checkout"}
+                {lang === "ru" ? "Оформить заявку" : "Submit Request"}
                 <ArrowRight size={14} strokeWidth={1.5} />
               </Link>
             </div>

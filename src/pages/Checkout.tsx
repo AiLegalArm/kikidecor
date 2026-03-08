@@ -3,28 +3,71 @@ import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/hooks/useCart";
-import { Minus, Plus, X, ArrowLeft, ArrowRight, ShoppingBag } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { Minus, Plus, X, ArrowLeft, ArrowRight, Sparkles, Send } from "lucide-react";
 import { toast } from "sonner";
 
 const CheckoutPage = () => {
   const { lang } = useLanguage();
   const { items, total, updateQuantity, removeItem, clearCart } = useCart();
   const [step, setStep] = useState<string>("cart");
-  const [form, setForm] = useState({ name: "", phone: "", email: "", address: "", comment: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", comment: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     if (!form.name || !form.phone) {
-      toast.error(lang === "ru" ? "Заполните обязательные поля" : "Please fill required fields");
+      toast.error(lang === "ru" ? "Заполните имя и телефон" : "Please fill in name and phone");
       return;
     }
+
     setSubmitting(true);
-    // Simulate order placement
-    await new Promise((r) => setTimeout(r, 1500));
-    clearCart.mutate();
-    setStep("done");
-    setSubmitting(false);
+    try {
+      // Build product summary for the lead message
+      const productSummary = items.map(i => {
+        const name = i.product?.name || "—";
+        const details = [i.size, i.color].filter(Boolean).join("/");
+        return `${name}${details ? ` (${details})` : ""} × ${i.quantity} — ${((i.product?.price || 0) * i.quantity).toLocaleString()} ₽`;
+      }).join("\n");
+
+      const fullMessage = `${lang === "ru" ? "Запрос на подбор из каталога" : "Catalog selection request"}:\n${productSummary}\n\n${lang === "ru" ? "Итого" : "Total"}: ${total.toLocaleString()} ₽\n\n${form.comment || ""}`.trim();
+
+      // Save into existing CRM pipeline (event_leads)
+      const { error: dbError } = await supabase.from("event_leads").insert({
+        name: form.name,
+        phone: form.phone,
+        email: form.email || "—",
+        event_type: "showroom_request",
+        booking_type: "showroom",
+        message: fullMessage,
+        status: "new",
+      });
+
+      if (dbError) throw dbError;
+
+      // Trigger admin notifications (Telegram, email)
+      try {
+        await supabase.functions.invoke("notify-new-lead", {
+          body: {
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            eventType: lang === "ru" ? "Запрос из каталога" : "Catalog Request",
+            message: fullMessage,
+            source: "booking",
+          },
+        });
+      } catch {
+        // Non-critical — lead is already saved
+      }
+
+      clearCart.mutate();
+      setStep("done");
+    } catch (err) {
+      console.error(err);
+      toast.error(lang === "ru" ? "Ошибка отправки. Попробуйте ещё раз." : "Submission error. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (step === "done") {
@@ -33,21 +76,21 @@ const CheckoutPage = () => {
         <div className="text-center max-w-md">
           <ScrollReveal>
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-              <ShoppingBag size={32} strokeWidth={1.2} className="text-primary" />
+              <Sparkles size={32} strokeWidth={1.2} className="text-primary" />
             </div>
             <h1 className="font-display text-3xl md:text-4xl font-light mb-4">
-              {lang === "ru" ? "Заказ оформлен!" : "Order Placed!"}
+              {lang === "ru" ? "Заявка отправлена!" : "Request Submitted!"}
             </h1>
             <p className="text-muted-foreground font-light mb-8">
               {lang === "ru"
-                ? "Спасибо за заказ! Мы свяжемся с вами для подтверждения."
-                : "Thank you for your order! We'll contact you for confirmation."}
+                ? "Спасибо! Мы свяжемся с вами в ближайшее время для обсуждения деталей и подтверждения наличия."
+                : "Thank you! We'll contact you shortly to discuss details and confirm availability."}
             </p>
             <Link
               to="/shop"
               className="inline-flex items-center gap-2 px-8 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-body font-medium hover:bg-primary transition-colors duration-500"
             >
-              {lang === "ru" ? "Продолжить покупки" : "Continue Shopping"}
+              {lang === "ru" ? "Вернуться в каталог" : "Back to Catalog"}
             </Link>
           </ScrollReveal>
         </div>
@@ -57,7 +100,7 @@ const CheckoutPage = () => {
 
   return (
     <>
-      <title>{lang === "ru" ? "Оформление заказа" : "Checkout"} — KiKi Showroom</title>
+      <title>{lang === "ru" ? "Оформить заявку" : "Submit Request"} — KiKi Showroom</title>
 
       <section className="pt-28 pb-20 md:pt-36 md:pb-28 px-6 md:px-10">
         <div className="container mx-auto max-w-4xl">
@@ -67,15 +110,20 @@ const CheckoutPage = () => {
           </Link>
 
           <ScrollReveal>
-            <h1 className="font-display text-4xl md:text-5xl font-light mb-12">
-              {lang === "ru" ? "Оформление заказа" : "Checkout"}
+            <h1 className="font-display text-4xl md:text-5xl font-light mb-4">
+              {lang === "ru" ? "Оформить заявку" : "Submit Request"}
             </h1>
+            <p className="text-muted-foreground font-light mb-12 max-w-lg">
+              {lang === "ru"
+                ? "Оставьте заявку — мы свяжемся с вами, подтвердим наличие и подберём лучший вариант."
+                : "Submit your request — we'll contact you, confirm availability and find the best option."}
+            </p>
           </ScrollReveal>
 
           {items.length === 0 && step !== "done" ? (
             <div className="text-center py-20">
               <p className="text-muted-foreground font-light mb-6">
-                {lang === "ru" ? "Корзина пуста" : "Your cart is empty"}
+                {lang === "ru" ? "Вы ещё ничего не выбрали" : "You haven't selected anything yet"}
               </p>
               <Link to="/shop" className="text-primary hover:underline font-body text-sm">
                 {lang === "ru" ? "Перейти в каталог" : "Browse Catalog"}
@@ -168,22 +216,13 @@ const CheckoutPage = () => {
                     </div>
                     <div>
                       <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-body font-medium block mb-2">
-                        {lang === "ru" ? "Адрес доставки" : "Delivery Address"}
-                      </label>
-                      <input
-                        value={form.address}
-                        onChange={(e) => setForm({ ...form, address: e.target.value })}
-                        className="w-full px-4 py-3 border border-border bg-transparent text-sm font-body focus:border-primary focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-body font-medium block mb-2">
-                        {lang === "ru" ? "Комментарий" : "Comment"}
+                        {lang === "ru" ? "Комментарий или пожелания" : "Comment or preferences"}
                       </label>
                       <textarea
                         value={form.comment}
                         onChange={(e) => setForm({ ...form, comment: e.target.value })}
                         rows={3}
+                        placeholder={lang === "ru" ? "Хотели бы примерить в шоуруме, интересует доставка и т.д." : "Would like to try in showroom, interested in delivery, etc."}
                         className="w-full px-4 py-3 border border-border bg-transparent text-sm font-body focus:border-primary focus:outline-none transition-colors resize-none"
                       />
                     </div>
@@ -194,11 +233,12 @@ const CheckoutPage = () => {
                       <button
                         onClick={handleSubmit}
                         disabled={submitting}
-                        className="flex-1 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-body font-medium hover:bg-primary transition-colors duration-500 disabled:opacity-50"
+                        className="flex-1 py-4 bg-foreground text-background text-[10px] uppercase tracking-[0.25em] font-body font-medium hover:bg-primary transition-colors duration-500 disabled:opacity-50 flex items-center justify-center gap-2"
                       >
+                        <Send size={14} strokeWidth={1.5} />
                         {submitting
-                          ? (lang === "ru" ? "Оформление..." : "Processing...")
-                          : (lang === "ru" ? "Оформить заказ" : "Place Order")}
+                          ? (lang === "ru" ? "Отправляем..." : "Submitting...")
+                          : (lang === "ru" ? "Отправить заявку" : "Submit Request")}
                       </button>
                     </div>
                   </div>
@@ -209,7 +249,7 @@ const CheckoutPage = () => {
               <div className="lg:col-span-2">
                 <div className="bg-secondary/30 p-6 md:p-8 sticky top-32">
                   <h3 className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-body font-medium mb-6">
-                    {lang === "ru" ? "Ваш заказ" : "Order Summary"}
+                    {lang === "ru" ? "Ваш выбор" : "Your Selection"}
                   </h3>
                   <div className="space-y-3 mb-6">
                     {items.map((item) => (
@@ -220,12 +260,17 @@ const CheckoutPage = () => {
                     ))}
                   </div>
                   <div className="h-px bg-border mb-4" />
-                  <div className="flex justify-between items-baseline">
+                  <div className="flex justify-between items-baseline mb-6">
                     <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-body font-medium">
                       {lang === "ru" ? "Итого" : "Total"}
                     </span>
                     <span className="font-display text-2xl">{total.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")} ₽</span>
                   </div>
+                  <p className="text-[11px] text-muted-foreground font-light leading-relaxed">
+                    {lang === "ru"
+                      ? "Цены указаны ориентировочно. Мы подтвердим наличие и финальную стоимость при обратной связи."
+                      : "Prices are approximate. We'll confirm availability and final pricing when we follow up."}
+                  </p>
                 </div>
               </div>
             </div>
