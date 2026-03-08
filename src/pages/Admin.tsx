@@ -31,6 +31,7 @@ import AdminMediaManager from "@/components/admin/AdminMediaManager";
 import AdminSavedConcepts from "@/components/admin/AdminSavedConcepts";
 import AdminEventPlannerPipeline from "@/components/admin/AdminEventPlannerPipeline";
 import type { Session } from "@supabase/supabase-js";
+import { isAdminUser } from "@/lib/admin";
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
