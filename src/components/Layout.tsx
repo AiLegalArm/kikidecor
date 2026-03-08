@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send, ShoppingBag } from "lucide-react";
+import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send, ShoppingBag, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCart } from "@/hooks/useCart";
@@ -200,7 +200,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
         <div className="container mx-auto px-5 sm:px-6 md:px-10 py-10 md:py-28">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 mb-10 md:mb-20">
             {/* Brand */}
-            <div className="sm:col-span-2 lg:col-span-4">
+            <div className="sm:col-span-2 lg:col-span-3">
               <img src={logoImg} alt="KiKi" className="h-20 w-auto brightness-0 invert opacity-80 mb-6 block mx-auto" />
               <p className="font-display italic text-background/60 leading-relaxed mb-8 text-center font-medium text-2xl">
                 {t.footer.tagline[lang]}
@@ -224,30 +224,54 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
             {/* Decor */}
             <div className="lg:col-span-2">
               <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.decorStudio[lang]}</h4>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 mb-5">
                 {[
                 { to: "/decor", label: t.footer.decorServices[lang] },
                 { to: "/portfolio", label: t.footer.portfolio[lang] },
                 { to: "/packages", label: t.footer.packages[lang] },
                 { to: "/booking", label: t.footer.booking[lang] }].
                 map((l) =>
-                <Link key={l.to} to={l.to} className="text-sm font-light text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
+                <Link key={l.to} to={l.to} className="text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
                 )}
               </div>
+              <a href="https://instagram.com/ki_ki_decor" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
+                <Instagram size={14} strokeWidth={1.5} /> @ki_ki_decor
+              </a>
             </div>
 
             {/* Showroom */}
             <div className="lg:col-span-2">
               <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.showroom[lang]}</h4>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-3 mb-5">
                 {[
                 { to: "/showroom", label: t.footer.collection[lang] },
                 { to: "/shop", label: lang === "ru" ? "Каталог" : "Catalog" },
                 { to: "/lookbook", label: "Lookbook" },
                 { to: "/calculator", label: t.footer.calculator[lang] }].
                 map((l) =>
-                <Link key={l.to} to={l.to} className="text-sm font-light text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
+                <Link key={l.to} to={l.to} className="text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
                 )}
+              </div>
+              <a href="https://instagram.com/ki_ki_showroom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
+                <Instagram size={14} strokeWidth={1.5} /> @ki_ki_showroom
+              </a>
+            </div>
+
+            {/* Contacts */}
+            <div className="lg:col-span-3">
+              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{lang === "ru" ? "Контакты" : "Contacts"}</h4>
+              <div className="flex flex-col gap-3">
+                <p className="text-sm font-semibold text-background/70">{lang === "ru" ? "Шоу Рум Ростов / Геленджик" : "Showroom Rostov / Gelendzhik"}</p>
+                <a href="tel:+79882598522" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
+                  <Phone size={14} strokeWidth={1.5} /> +7 988 259-85-22
+                </a>
+                <div className="flex items-start gap-2 text-sm font-semibold text-background/70">
+                  <MapPin size={14} strokeWidth={1.5} className="shrink-0 mt-0.5" />
+                  <span>{lang === "ru" ? "Ростов: Северный, ТЦ Орбита, 2 эт." : "Rostov: Severny, TC Orbita, 2nd fl."}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-background/70">
+                  <Clock size={14} strokeWidth={1.5} /> 10:30 – 20:30
+                </div>
               </div>
             </div>
 
