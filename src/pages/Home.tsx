@@ -46,6 +46,9 @@ const Home = () => {
                 className="relative w-full h-auto drop-shadow-[0_4px_40px_rgba(0,0,0,0.35)]"
               />
             </div>
+            <p className="animate-reveal text-background/70 drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)]" style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1rem, 2.5vw, 1.5rem)", animationDelay: "0.65s" }}>
+              By Kris
+            </p>
             <p
               className="animate-reveal text-background/90 tracking-wide mb-8 md:mb-12 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
               style={{
