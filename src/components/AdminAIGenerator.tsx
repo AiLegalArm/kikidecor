@@ -237,7 +237,7 @@ const AdminAIGenerator = () => {
             </div>
 
             <div style={{ padding: "24px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: "24px" }} className="max-sm:grid-cols-1">
+              <div style={{ display: "grid", gap: "24px" }} className="grid-cols-1 md:grid-cols-[300px_1fr]">
 
                 {/* Upload zone */}
                 <div
@@ -289,7 +289,7 @@ const AdminAIGenerator = () => {
 
                 {/* Parameters */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label style={labelSt}>Тип мероприятия *</label>
                       <select value={eventType} onChange={e => setEventType(e.target.value)} style={sel}>
@@ -306,7 +306,7 @@ const AdminAIGenerator = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label style={labelSt}>Стиль декора</label>
                       <select value={decorStyle} onChange={e => setDecorStyle(e.target.value)} style={sel}>

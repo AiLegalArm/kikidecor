@@ -293,11 +293,11 @@ const Admin = () => {
               </div>
 
               {viewMode === "pipeline" && (
-                <div ref={pipelineRef} className="flex gap-2 sm:gap-3 overflow-x-auto pb-4 -mx-3 px-3 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "thin" }}>
+                <div ref={pipelineRef} className="flex flex-col md:flex-row gap-2 sm:gap-3 md:overflow-x-auto pb-4 md:-mx-3 md:px-3 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "thin" }}>
                   {STATUSES.map((stage) => {
                     const sl = allLeads.filter((l) => l.status === stage.value);
                     return (
-                      <div key={stage.value} className="min-w-[200px] sm:min-w-[240px] w-[200px] sm:w-[240px] flex-shrink-0 bg-background border border-border flex flex-col max-h-[60vh] sm:max-h-[65vh]">
+                      <div key={stage.value} className="w-full md:min-w-[240px] md:w-[240px] md:flex-shrink-0 bg-background border border-border flex flex-col max-h-[40vh] md:max-h-[65vh]">
                         <div className="px-2.5 sm:px-3 py-2 sm:py-2.5 border-b border-border flex items-center justify-between">
                           <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold ${stage.color}`}>{stage.label}</span>
                           <span className="text-[9px] sm:text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5">{sl.length}</span>

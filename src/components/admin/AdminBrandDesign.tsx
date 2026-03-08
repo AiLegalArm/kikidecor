@@ -110,7 +110,7 @@ const AdminBrandDesign = () => {
         padding: "20px", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
     };
     const label: React.CSSProperties = { fontSize: "0.8125rem", fontWeight: 600, color: "#111", display: "block", marginBottom: "6px" };
-    const row: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" };
+    const row: React.CSSProperties = { display: "grid", gap: "16px" };
     const hint: React.CSSProperties = { fontSize: "0.75rem", color: "#888", marginTop: "4px" };
 
     const ColorPicker = ({ label: lbl, value, field }: { label: string; value: string; field: keyof BrandSettings }) => (
@@ -139,7 +139,7 @@ const AdminBrandDesign = () => {
     );
 
     return (
-        <div style={{ maxWidth: "720px" }}>
+        <div style={{ maxWidth: "720px", width: "100%" }}>
             <div style={{ marginBottom: "24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
                 <div>
                     <h2 style={{ fontSize: "1.375rem", fontWeight: 700, color: "#000", margin: "0 0 4px" }}>Brand Design</h2>
@@ -168,11 +168,11 @@ const AdminBrandDesign = () => {
                     <span style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>Цветовая схема</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={row}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <ColorPicker label="Основной цвет (лавандовый)" value={settings.primaryColor} field="primaryColor" />
                         <ColorPicker label="Второстепенный (шампань)" value={settings.secondaryColor} field="secondaryColor" />
                     </div>
-                    <div style={row}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <ColorPicker label="Цвет текста" value={settings.textColor} field="textColor" />
                         <ColorPicker label="Цвет фона" value={settings.bgColor} field="bgColor" />
                     </div>
@@ -186,7 +186,7 @@ const AdminBrandDesign = () => {
                     <span style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>Типографика</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    <div style={row}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label style={label}>Шрифт заголовков</label>
                             <select value={settings.headingFont} onChange={e => update("headingFont", e.target.value)}
