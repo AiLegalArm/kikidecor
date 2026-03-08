@@ -171,7 +171,7 @@ const Booking = () => {
             <ScrollReveal>
               <CheckCircle size={48} className="text-primary mx-auto mb-6" strokeWidth={1} />
               <h1 className="font-display text-4xl md:text-5xl font-light mb-4">{b.successTitle[lang]}</h1>
-              <p className="text-muted-foreground font-light leading-relaxed mb-8">{b.successMsg[lang]}</p>
+              <p className="text-muted-foreground font-semibold leading-relaxed mb-8">{b.successMsg[lang]}</p>
               <div className="border border-border/50 p-6 text-left space-y-3 mb-8">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{b.eventTypeLabel[lang]}</span>
@@ -223,7 +223,7 @@ const Booking = () => {
             <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{b.overline[lang]}</p>
             <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{b.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{b.subtitle[lang]}</p>
+            <p className="text-muted-foreground font-semibold text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{b.subtitle[lang]}</p>
           </ScrollReveal>
         </div>
       </section>
@@ -279,12 +279,12 @@ const Booking = () => {
                   <select
                     value={formData.eventType}
                     onChange={update("eventType")}
-                    className={cn("w-full h-12 px-4 border bg-transparent text-sm font-body font-light focus:outline-none focus:border-primary transition-colors", errors.eventType ? "border-destructive" : "border-border/50")}
+                    className={cn("w-full h-12 px-4 border bg-transparent text-sm font-body font-semibold focus:outline-none focus:border-primary transition-colors", errors.eventType ? "border-destructive" : "border-border/50")}
                   >
                     <option value="">{b.selectPlaceholder[lang]}</option>
                     {eventTypes.map((et) => <option key={et} value={et}>{et}</option>)}
                   </select>
-                  {errors.eventType && <p className="text-xs text-destructive mt-1 font-light">{errors.eventType}</p>}
+                  {errors.eventType && <p className="text-xs text-destructive mt-1 font-semibold">{errors.eventType}</p>}
                 </div>
 
                 {/* Guests + Location */}
@@ -384,7 +384,7 @@ const Booking = () => {
                 </div>
 
                 {selectedDate && (
-                  <p className="text-sm text-foreground mb-6 flex items-center gap-2 font-light">
+                  <p className="text-sm text-foreground mb-6 flex items-center gap-2 font-semibold">
                     <CalendarDays size={14} className="text-primary" />
                     {format(selectedDate, "d MMMM yyyy, EEEE", { locale: dateLocale })}
                   </p>
@@ -408,25 +408,25 @@ const Booking = () => {
                 <div className="border border-border/40 p-5 space-y-2 mb-2">
                   {formData.eventType && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.eventTypeLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.eventTypeLabel[lang]}</span>
                       <span className="font-medium">{formData.eventType}</span>
                     </div>
                   )}
                   {selectedDate && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.dateLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.dateLabel[lang]}</span>
                       <span className="font-medium">{format(selectedDate, "d MMMM yyyy", { locale: dateLocale })}</span>
                     </div>
                   )}
                   {formData.budget && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.budgetLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.budgetLabel[lang]}</span>
                       <span className="font-medium">{formData.budget}</span>
                     </div>
                   )}
                   {formData.decorStyle && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.decorStyleLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.decorStyleLabel[lang]}</span>
                       <span className="font-medium">{formData.decorStyle}</span>
                     </div>
                   )}
@@ -438,7 +438,7 @@ const Booking = () => {
                     <User size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
                     <Input value={formData.name} onChange={update("name")} className={cn("pl-10 h-12 rounded-none border-border/50 bg-transparent focus:border-primary", errors.name && "border-destructive")} />
                   </div>
-                  {errors.name && <p className="text-xs text-destructive mt-1 font-light">{errors.name}</p>}
+                  {errors.name && <p className="text-xs text-destructive mt-1 font-semibold">{errors.name}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -448,7 +448,7 @@ const Booking = () => {
                       <Phone size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
                       <Input value={formData.phone} onChange={update("phone")} className={cn("pl-10 h-12 rounded-none border-border/50 bg-transparent focus:border-primary", errors.phone && "border-destructive")} />
                     </div>
-                    {errors.phone && <p className="text-xs text-destructive mt-1 font-light">{errors.phone}</p>}
+                    {errors.phone && <p className="text-xs text-destructive mt-1 font-semibold">{errors.phone}</p>}
                   </div>
                   <div>
                     <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 block font-body">{b.emailLabel[lang]} *</label>
@@ -456,7 +456,7 @@ const Booking = () => {
                       <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
                       <Input type="email" value={formData.email} onChange={update("email")} className={cn("pl-10 h-12 rounded-none border-border/50 bg-transparent focus:border-primary", errors.email && "border-destructive")} />
                     </div>
-                    {errors.email && <p className="text-xs text-destructive mt-1 font-light">{errors.email}</p>}
+                    {errors.email && <p className="text-xs text-destructive mt-1 font-semibold">{errors.email}</p>}
                   </div>
                 </div>
 
