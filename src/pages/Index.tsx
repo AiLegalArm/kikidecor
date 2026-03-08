@@ -51,7 +51,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-fade-up" style={{ animationDelay: "0.6s", opacity: 0 }}>
               <Link to="/portfolio">
-                <Button variant="outline" size="lg" className="btn-glow border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500">
+                <Button variant="outline" size="lg" className="btn-glow border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-8 sm:px-10 py-6 sm:py-7 min-w-0 sm:min-w-[220px] w-full sm:w-auto transition-all duration-500">
                   {idx.portfolioBtn[lang]} <ArrowRight size={14} className="ml-3" />
                 </Button>
               </Link>
