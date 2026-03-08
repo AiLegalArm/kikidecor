@@ -279,7 +279,7 @@ const Booking = () => {
                   <select
                     value={formData.eventType}
                     onChange={update("eventType")}
-                    className={cn("w-full h-12 px-4 border bg-transparent text-sm font-body font-light focus:outline-none focus:border-primary transition-colors", errors.eventType ? "border-destructive" : "border-border/50")}
+                    className={cn("w-full h-12 px-4 border bg-transparent text-sm font-body font-semibold focus:outline-none focus:border-primary transition-colors", errors.eventType ? "border-destructive" : "border-border/50")}
                   >
                     <option value="">{b.selectPlaceholder[lang]}</option>
                     {eventTypes.map((et) => <option key={et} value={et}>{et}</option>)}
