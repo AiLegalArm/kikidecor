@@ -168,13 +168,13 @@ const Showroom = () => {
           </ScrollReveal>
 
           {/* Category filters */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div className="flex overflow-x-auto pb-2 sm:flex-wrap sm:overflow-visible justify-start sm:justify-center gap-2 sm:gap-3 mb-12 -mx-6 px-6 sm:mx-0 sm:px-0 scrollbar-hide">
             {categories.map((cat) =>
             <button
               key={cat.value}
               onClick={() => setCategory(cat.value)}
               className={cn(
-                "text-[11px] uppercase tracking-[0.2em] px-5 py-2.5 border transition-all duration-300 font-body font-medium",
+                "text-[10px] sm:text-[11px] uppercase tracking-[0.15em] sm:tracking-[0.2em] px-4 sm:px-5 py-2 sm:py-2.5 border transition-all duration-300 font-body font-medium whitespace-nowrap flex-shrink-0",
                 category === cat.value ?
                 "bg-foreground text-background border-foreground" :
                 "border-border text-foreground/60 hover:border-foreground hover:text-foreground"

@@ -183,8 +183,8 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
       <footer className="bg-foreground text-background/80">
         <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
-        <div className="container mx-auto px-6 md:px-10 md:py-28 py-[20px]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 mb-12 md:mb-20">
+        <div className="container mx-auto px-5 sm:px-6 md:px-10 py-10 md:py-28">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 mb-10 md:mb-20">
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-4">
               <img src={logoImg} alt="KiKi" className="h-20 w-auto brightness-0 invert opacity-80 mb-6 block mx-auto" />

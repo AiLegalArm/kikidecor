@@ -650,6 +650,14 @@
 }
 
 @layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .animate-reveal {
     animation: reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
@@ -784,6 +792,11 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {

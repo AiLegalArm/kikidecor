@@ -43,7 +43,7 @@ const Index = () => {
             <p className="overline text-background/60 mb-6 animate-fade-up" style={{ animationDelay: "0.15s", opacity: 0 }}>
               {idx.heroOverline[lang]}
             </p>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-[6rem] font-light text-background leading-[1.02] mb-6 animate-fade-up" style={{ animationDelay: "0.3s", opacity: 0 }}>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-[6rem] font-light text-background leading-[1.02] mb-6 animate-fade-up" style={{ animationDelay: "0.3s", opacity: 0 }}>
               Ki Ki Decor
             </h1>
             <p className="font-display text-xl md:text-2xl font-light italic text-background/70 mb-12 animate-fade-up" style={{ animationDelay: "0.45s", opacity: 0 }}>
@@ -51,12 +51,12 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-fade-up" style={{ animationDelay: "0.6s", opacity: 0 }}>
               <Link to="/portfolio">
-                <Button variant="outline" size="lg" className="btn-glow border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500">
+                <Button variant="outline" size="lg" className="btn-glow border-background/30 text-background bg-transparent hover:bg-background/10 font-body text-[10px] uppercase tracking-luxury rounded-none px-8 sm:px-10 py-6 sm:py-7 min-w-0 sm:min-w-[220px] w-full sm:w-auto transition-all duration-500">
                   {idx.portfolioBtn[lang]} <ArrowRight size={14} className="ml-3" />
                 </Button>
               </Link>
               <Link to="/booking">
-                <Button size="lg" className="btn-glow bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]">
+                <Button size="lg" className="btn-glow bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-8 sm:px-10 py-6 sm:py-7 min-w-0 sm:min-w-[220px] w-full sm:w-auto transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]">
                   {idx.orderBtn[lang]}
                 </Button>
               </Link>
