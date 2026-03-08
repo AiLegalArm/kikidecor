@@ -28,6 +28,9 @@ const Services = () => {
             {/* Logo */}
             <div className="mb-8 md:mb-10">
               <img src={logoDecor} alt="KiKi Decor" className="mx-auto w-48 sm:w-56 md:w-64 h-auto" />
+              <p className="mt-2 text-foreground/60" style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.1rem, 2.5vw, 1.6rem)" }}>
+                By Kris
+              </p>
             </div>
             <p className="text-[10px] uppercase tracking-[0.35em] font-body mb-4 text-secondary-foreground font-semibold">{s.overline[lang]}</p>
             <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05] text-foreground">{s.title[lang]}</h1>
