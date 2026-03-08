@@ -237,22 +237,6 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               </div>
             </div>
 
-            {/* Contact */}
-            <div className="sm:col-span-2 lg:col-span-4">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.contacts[lang]}</h4>
-              <div className="flex flex-col gap-4 text-sm font-light text-background/70">
-                <a href="mailto:info@kikidecor.ru" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
-                  <Mail size={14} strokeWidth={1.5} className="opacity-50" /> info@kikidecor.ru
-                </a>
-                <a href="tel:+79001234567" className="flex items-center gap-3 hover:text-primary transition-colors duration-500">
-                  <Phone size={14} strokeWidth={1.5} className="opacity-50" /> +7 (900) 123-45-67
-                </a>
-                <span className="flex items-center gap-3">
-                  <MapPin size={14} strokeWidth={1.5} className="opacity-50" />
-                  {lang === "ru" ? "Ростов-на-Дону · Геленджик" : "Rostov-on-Don · Gelendzhik"}
-                </span>
-              </div>
-            </div>
           </div>
 
           {/* Bottom */}
