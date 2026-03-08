@@ -483,16 +483,24 @@
 
   /* ── Pipeline Card ── */
   .admin-pipeline-col {
-    min-width: 240px;
-    width: 240px;
+    min-width: 200px;
+    width: 200px;
     flex-shrink: 0;
     background: #ffffff;
     border: 1px solid #EAEAEA;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
-    max-height: 68vh;
+    max-height: 60vh;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  @media (min-width: 640px) {
+    .admin-pipeline-col {
+      min-width: 240px;
+      width: 240px;
+      max-height: 68vh;
+    }
   }
 
   .admin-pipeline-card {
