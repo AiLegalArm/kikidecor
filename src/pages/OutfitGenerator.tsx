@@ -251,6 +251,15 @@ const OutfitGenerator = () => {
                     );
                   })}
                 </div>
+
+                {/* AI-to-CRM conversion CTA */}
+                <div className="mt-10 max-w-3xl mx-auto">
+                  <AIResultCTA
+                    toolName={isRu ? "Генератор образов" : "Outfit Generator"}
+                    resultSummary={outfits.map(o => `${o.title}: ${o.items.map(i => i.product.name).join(", ")}`).join(" | ")}
+                    productIds={outfits.flatMap(o => o.items.map(i => i.product.id))}
+                  />
+                </div>
               )}
             </div>
           </motion.section>

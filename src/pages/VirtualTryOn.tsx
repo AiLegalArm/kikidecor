@@ -188,6 +188,16 @@ const VirtualTryOn = () => {
                   </motion.div>
                 )}
 
+                {/* AI-to-CRM conversion CTA */}
+                <div className="max-w-md mx-auto mt-6">
+                  <AIResultCTA
+                    toolName={isRu ? "Виртуальная примерка" : "Virtual Try-On"}
+                    resultSummary={`${isRu ? "Примерка" : "Try-on"}: ${isRu ? product?.name : (product?.name_en || product?.name)} — ${product?.price?.toLocaleString()} ₽`}
+                    productIds={product ? [product.id] : []}
+                  />
+                </div>
+                )}
+
                 <div className="flex items-center justify-center gap-4">
                   <button
                     onClick={() => setResultUrl(null)}
