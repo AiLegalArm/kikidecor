@@ -162,6 +162,7 @@ const OutfitGenerator = () => {
                   {isRu ? "Недостаточно товаров для создания образов." : "Not enough products to build outfits."}
                 </p>
               ) : (
+                <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                   {outfits.map((outfit, i) => {
                     const total = outfit.items.reduce((s, item) => s + item.product.price, 0);
@@ -260,7 +261,7 @@ const OutfitGenerator = () => {
                     productIds={outfits.flatMap(o => o.items.map(i => i.product.id))}
                   />
                 </div>
-              </>
+                </>
               )}
             </div>
           </motion.section>
