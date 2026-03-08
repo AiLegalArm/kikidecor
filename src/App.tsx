@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,27 +10,29 @@ import { LanguageProvider } from "@/i18n/LanguageContext";
 import Layout from "./components/Layout";
 import PageTransition from "./components/PageTransition";
 import Home from "./pages/Home";
-import Portfolio from "./pages/Portfolio";
-import Services from "./pages/Services";
-import Packages from "./pages/Packages";
-import Calculator from "./pages/Calculator";
-import About from "./pages/About";
-import Booking from "./pages/Booking";
-import Contact from "./pages/Contact";
-import InstagramPage from "./pages/Instagram";
-import Admin from "./pages/Admin";
-import Showroom from "./pages/Showroom";
-import Shop from "./pages/Shop";
-import ProductPage from "./pages/ProductPage";
-import CheckoutPage from "./pages/Checkout";
-import Lookbook from "./pages/Lookbook";
-import Stylist from "./pages/Stylist";
-import OutfitGenerator from "./pages/OutfitGenerator";
-import FindSimilar from "./pages/FindSimilar";
-import VirtualTryOn from "./pages/VirtualTryOn";
-import ShowroomBooking from "./pages/ShowroomBooking";
-import ShoppableGalleryPage from "./pages/ShoppableGalleryPage";
-import NotFound from "./pages/NotFound";
+
+// Lazy-loaded pages for performance
+const Portfolio = lazy(() => import("./pages/Portfolio"));
+const Services = lazy(() => import("./pages/Services"));
+const Packages = lazy(() => import("./pages/Packages"));
+const Calculator = lazy(() => import("./pages/Calculator"));
+const About = lazy(() => import("./pages/About"));
+const Booking = lazy(() => import("./pages/Booking"));
+const Contact = lazy(() => import("./pages/Contact"));
+const InstagramPage = lazy(() => import("./pages/Instagram"));
+const Admin = lazy(() => import("./pages/Admin"));
+const Showroom = lazy(() => import("./pages/Showroom"));
+const Shop = lazy(() => import("./pages/Shop"));
+const ProductPage = lazy(() => import("./pages/ProductPage"));
+const CheckoutPage = lazy(() => import("./pages/Checkout"));
+const Lookbook = lazy(() => import("./pages/Lookbook"));
+const Stylist = lazy(() => import("./pages/Stylist"));
+const OutfitGenerator = lazy(() => import("./pages/OutfitGenerator"));
+const FindSimilar = lazy(() => import("./pages/FindSimilar"));
+const VirtualTryOn = lazy(() => import("./pages/VirtualTryOn"));
+const ShowroomBooking = lazy(() => import("./pages/ShowroomBooking"));
+const ShoppableGalleryPage = lazy(() => import("./pages/ShoppableGalleryPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
