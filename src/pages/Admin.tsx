@@ -186,12 +186,12 @@ const Admin = () => {
         overflowY: "auto",
         flexShrink: 0,
         zIndex: 10,
-        // Mobile: fixed slide-in
       }}
         className={[
-          "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-[70]",
+          "max-md:!fixed max-md:inset-y-0 max-md:left-0 max-md:z-[70]",
           "max-md:transition-transform max-md:duration-300",
-          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+          "max-md:!w-[260px] max-md:!min-w-[260px]",
+          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full max-md:!hidden",
         ].join(" ")}
       >
         {/* Logo */}
