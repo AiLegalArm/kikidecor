@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import AIResultCTA from "@/components/AIResultCTA";
 import { Sparkles, Loader2, Shirt, ShoppingBag, Plus, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
