@@ -156,144 +156,67 @@ const Admin = () => {
 
   const navigateTo = (s: Section) => { setSection(s); setSidebarOpen(false); };
 
+  const sidebarInner = (
+    <>
+      <div style={{ padding: "18px 14px 14px", borderBottom: "1px solid #F0F0F0", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ width: "36px", height: "36px", background: "linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 4px 12px rgba(124,58,237,0.3)" }}>
+            <span style={{ color: "#fff", fontSize: "15px", fontWeight: 700, fontFamily: "serif" }}>K</span>
+          </div>
+          <div>
+            <p style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#000", fontFamily: '"Cormorant Garamond", Georgia, serif', lineHeight: 1.15 }}>KiKi</p>
+            <p style={{ margin: 0, fontSize: "0.65rem", color: "#999", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase" }}>Admin</p>
+          </div>
+        </div>
+      </div>
+      <nav style={{ flex: 1, padding: "8px 8px", overflowY: "auto" }}>
+        {(() => {
+          const groups = Array.from(new Set(NAV_ITEMS.map(i => i.group)));
+          return groups.map(group => {
+            const items = NAV_ITEMS.filter(i => i.group === group);
+            return (
+              <div key={group} style={{ marginBottom: "6px" }}>
+                <p style={{ fontSize: "0.625rem", fontWeight: 700, color: "#BBB", textTransform: "uppercase", letterSpacing: "0.08em", padding: "6px 10px 2px", margin: 0 }}>{group}</p>
+                {items.map(item => {
+                  const active = section === item.key;
+                  return (
+                    <button key={item.key} onClick={() => navigateTo(item.key)} style={{ width: "100%", display: "flex", alignItems: "center", gap: "9px", padding: "8px 10px", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "0.8125rem", fontWeight: active ? 600 : 500, color: active ? "#000" : "#555", background: active ? "#F0EDFF" : "transparent", marginBottom: "1px", textAlign: "left", transition: "all 0.15s" }}>
+                      <item.icon size={14} style={{ color: active ? "#7C3AED" : "#999", flexShrink: 0 }} />
+                      {item.label}
+                      {active && <span style={{ marginLeft: "auto", width: "5px", height: "5px", borderRadius: "50%", background: "#7C3AED", flexShrink: 0 }} />}
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          });
+        })()}
+      </nav>
+      <div style={{ padding: "10px 8px 14px", borderTop: "1px solid #F0F0F0", flexShrink: 0 }}>
+        <button onClick={handleLogout} style={{ width: "100%", display: "flex", alignItems: "center", gap: "8px", padding: "9px 10px", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 500, color: "#888", background: "transparent", transition: "all 0.15s" }}>
+          <LogOut size={14} style={{ flexShrink: 0 }} />
+          Выйти
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <div style={{ minHeight: "100dvh", display: "flex", background: "#F3F4F6", fontFamily: "'Montserrat', 'Inter', system-ui, sans-serif" }}>
       <title>Admin — KiKi</title>
 
-      {/* ── Mobile overlay ── */}
       {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          style={{
-            position: "fixed", inset: 0, zIndex: 60,
-            background: "rgba(0,0,0,0.4)",
-            backdropFilter: "blur(3px)",
-          }}
-        />
+        <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.4)", backdropFilter: "blur(3px)" }} />
       )}
 
-      {/* ── Sidebar ── */}
-      <aside style={{
-        position: "sticky",
-        top: 0,
-        height: "100dvh",
-        width: "220px",
-        minWidth: "220px",
-        background: "#ffffff",
-        borderRight: "1px solid #E8E8E8",
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
-        flexShrink: 0,
-        zIndex: 10,
-        // Mobile: fixed slide-in
-      }}
-        className={[
-          "max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-[70]",
-          "max-md:transition-transform max-md:duration-300",
-          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
-        ].join(" ")}
-      >
-        {/* Logo */}
-        <div style={{ padding: "18px 14px 14px", borderBottom: "1px solid #F0F0F0", flexShrink: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{
-              width: "36px", height: "36px",
-              background: "linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)",
-              borderRadius: "10px",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
-              boxShadow: "0 4px 12px rgba(124,58,237,0.3)",
-            }}>
-              <span style={{ color: "#fff", fontSize: "15px", fontWeight: 700, fontFamily: "serif" }}>K</span>
-            </div>
-            <div>
-              <p style={{ margin: 0, fontSize: "1rem", fontWeight: 700, color: "#000", fontFamily: '"Cormorant Garamond", Georgia, serif', lineHeight: 1.15 }}>KiKi</p>
-              <p style={{ margin: 0, fontSize: "0.65rem", color: "#999", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase" }}>Admin</p>
-            </div>
-          </div>
-        </div>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex" style={{ position: "sticky", top: 0, height: "100dvh", width: "220px", minWidth: "220px", background: "#ffffff", borderRight: "1px solid #E8E8E8", flexDirection: "column", overflowY: "auto", flexShrink: 0, zIndex: 10 }}>
+        {sidebarInner}
+      </aside>
 
-        {/* Nav items with groups */}
-        <nav style={{ flex: 1, padding: "8px 8px", overflowY: "auto" }}>
-          {(() => {
-            const groups = Array.from(new Set(NAV_ITEMS.map(i => i.group)));
-            return groups.map(group => {
-              const items = NAV_ITEMS.filter(i => i.group === group);
-              return (
-                <div key={group} style={{ marginBottom: "6px" }}>
-                  <p style={{ fontSize: "0.625rem", fontWeight: 700, color: "#BBB", textTransform: "uppercase", letterSpacing: "0.08em", padding: "6px 10px 2px", margin: 0 }}>{group}</p>
-                  {items.map(item => {
-                    const active = section === item.key;
-                    return (
-                      <button
-                        key={item.key}
-                        onClick={() => navigateTo(item.key)}
-                        style={{
-                          width: "100%", display: "flex", alignItems: "center", gap: "9px",
-                          padding: "8px 10px", borderRadius: "8px", border: "none", cursor: "pointer",
-                          fontSize: "0.8125rem", fontWeight: active ? 600 : 500,
-                          color: active ? "#000" : "#555",
-                          background: active ? "#F0EDFF" : "transparent",
-                          marginBottom: "1px", textAlign: "left", transition: "all 0.15s",
-                        }}
-                        onMouseEnter={e => {
-                          if (!active) {
-                            (e.currentTarget as HTMLElement).style.background = "#F5F5F5";
-                            (e.currentTarget as HTMLElement).style.color = "#111";
-                          }
-                        }}
-                        onMouseLeave={e => {
-                          if (!active) {
-                            (e.currentTarget as HTMLElement).style.background = "transparent";
-                            (e.currentTarget as HTMLElement).style.color = "#555";
-                          }
-                        }}
-                      >
-                        <item.icon size={14} style={{ color: active ? "#7C3AED" : "#999", flexShrink: 0 }} />
-                        {item.label}
-                        {active && <span style={{ marginLeft: "auto", width: "5px", height: "5px", borderRadius: "50%", background: "#7C3AED", flexShrink: 0 }} />}
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            });
-          })()}
-        </nav>
-
-        {/* Logout */}
-        <div style={{ padding: "10px 8px 14px", borderTop: "1px solid #F0F0F0", flexShrink: 0 }}>
-          <button
-            onClick={handleLogout}
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "9px 10px",
-              borderRadius: "8px",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "0.8125rem",
-              fontWeight: 500,
-              color: "#888",
-              background: "transparent",
-              transition: "all 0.15s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "#FEF2F2";
-              (e.currentTarget as HTMLElement).style.color = "#EF4444";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "transparent";
-              (e.currentTarget as HTMLElement).style.color = "#888";
-            }}
-          >
-            <LogOut size={14} style={{ flexShrink: 0 }} />
-            Выйти
-          </button>
-        </div>
+      {/* Mobile Sidebar */}
+      <aside className={`md:hidden fixed inset-y-0 left-0 z-[70] transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`} style={{ width: "260px", background: "#ffffff", borderRight: "1px solid #E8E8E8", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+        {sidebarInner}
       </aside>
 
       {/* ── Main content ── */}
