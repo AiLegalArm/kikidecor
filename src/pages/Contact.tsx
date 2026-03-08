@@ -15,13 +15,13 @@ const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const contactInfo = [
-    { icon: Phone, label: c.phone[lang], value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
-    { icon: MessageCircle, label: "WhatsApp", value: "+7 (900) 123-45-67", href: "https://wa.me/79001234567" },
-    { icon: Instagram, label: "Instagram", value: "@ki_ki_decor", href: "https://instagram.com/ki_ki_decor" },
-    { icon: Mail, label: "Email", value: "info@kikidecor.ru", href: "mailto:info@kikidecor.ru" },
-    { icon: MapPin, label: c.geography[lang], value: c.geographyValue[lang] },
-    { icon: Clock, label: c.workHoursLabel[lang], value: c.workHoursValue[lang] },
-  ];
+  { icon: Phone, label: c.phone[lang], value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
+  { icon: MessageCircle, label: "WhatsApp", value: "+7 (900) 123-45-67", href: "https://wa.me/79001234567" },
+  { icon: Instagram, label: "Instagram", value: "@ki_ki_decor", href: "https://instagram.com/ki_ki_decor" },
+  { icon: Mail, label: "Email", value: "info@kikidecor.ru", href: "mailto:info@kikidecor.ru" },
+  { icon: MapPin, label: c.geography[lang], value: c.geographyValue[lang] },
+  { icon: Clock, label: c.workHoursLabel[lang], value: c.workHoursValue[lang] }];
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +31,14 @@ const Contact = () => {
       name: form.name, email: form.email, phone: "не указан",
       event_type: lang === "ru" ? "Обратная связь" : "Feedback",
       message: `${form.subject ? `[${form.subject}] ` : ""}${form.message}`,
-      status: "new",
+      status: "new"
     });
 
     try {
       await supabase.functions.invoke("notify-new-lead", {
-        body: { name: form.name, email: form.email, subject: form.subject, message: form.message, source: "contact" },
+        body: { name: form.name, email: form.email, subject: form.subject, message: form.message, source: "contact" }
       });
-    } catch (err) { console.warn("Email notification failed:", err); }
+    } catch (err) {console.warn("Email notification failed:", err);}
 
     setSubmitting(false);
     if (error) {
@@ -51,7 +51,7 @@ const Contact = () => {
   };
 
   const update = (f: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm(p => ({ ...p, [f]: e.target.value }));
+  setForm((p) => ({ ...p, [f]: e.target.value }));
 
   return (
     <>
@@ -64,7 +64,7 @@ const Contact = () => {
             <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-body mb-4">{c.overline[lang]}</p>
             <h1 className="font-display text-5xl md:text-7xl font-light mb-5 leading-[1.05]">{c.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{c.subtitle[lang]}</p>
+            <p className="text-muted-foreground text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed font-semibold">{c.subtitle[lang]}</p>
           </ScrollReveal>
         </div>
       </section>
@@ -75,17 +75,17 @@ const Contact = () => {
           <ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: c.callBtn[lang], icon: Phone, href: "tel:+79001234567", cls: "bg-foreground text-background hover:bg-foreground/90" },
-                { label: c.whatsappBtn[lang], icon: MessageCircle, href: "https://wa.me/79001234567", cls: "bg-[hsl(142,70%,40%)] text-white hover:opacity-90" },
-                { label: c.instagramBtn[lang], icon: Instagram, href: "https://instagram.com/ki_ki_decor", cls: "bg-gradient-to-br from-[hsl(330,70%,55%)] to-[hsl(25,90%,55%)] text-white hover:opacity-90" },
-                { label: c.emailBtn[lang], icon: Mail, href: "mailto:info@kikidecor.ru", cls: "bg-primary text-primary-foreground hover:bg-primary/90" },
-              ].map((btn) => (
-                <a key={btn.label} href={btn.href} target={btn.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-                  className={`flex flex-col items-center gap-2 py-5 px-4 transition-all duration-300 hover:scale-[1.02] ${btn.cls}`}>
+              { label: c.callBtn[lang], icon: Phone, href: "tel:+79001234567", cls: "bg-foreground text-background hover:bg-foreground/90" },
+              { label: c.whatsappBtn[lang], icon: MessageCircle, href: "https://wa.me/79001234567", cls: "bg-[hsl(142,70%,40%)] text-white hover:opacity-90" },
+              { label: c.instagramBtn[lang], icon: Instagram, href: "https://instagram.com/ki_ki_decor", cls: "bg-gradient-to-br from-[hsl(330,70%,55%)] to-[hsl(25,90%,55%)] text-white hover:opacity-90" },
+              { label: c.emailBtn[lang], icon: Mail, href: "mailto:info@kikidecor.ru", cls: "bg-primary text-primary-foreground hover:bg-primary/90" }].
+              map((btn) =>
+              <a key={btn.label} href={btn.href} target={btn.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+              className={`flex flex-col items-center gap-2 py-5 px-4 transition-all duration-300 hover:scale-[1.02] ${btn.cls}`}>
                   <btn.icon size={20} strokeWidth={1.5} />
                   <span className="text-[10px] uppercase tracking-[0.15em] font-medium font-body">{btn.label}</span>
                 </a>
-              ))}
+              )}
             </div>
           </ScrollReveal>
         </div>
@@ -97,22 +97,22 @@ const Contact = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-20">
             <ScrollReveal>
               <div className="space-y-8">
-                <p className="text-foreground/60 font-light text-sm leading-[2]">{c.formIntro[lang]}</p>
-                {contactInfo.map(({ icon: Icon, label, value, href }) => (
-                  <div key={label} className="flex items-start gap-4">
+                <p className="text-foreground/60 text-sm leading-[2] font-semibold">{c.formIntro[lang]}</p>
+                {contactInfo.map(({ icon: Icon, label, value, href }) =>
+                <div key={label} className="flex items-start gap-4">
                     <div className="w-10 h-10 border border-border flex items-center justify-center shrink-0">
                       <Icon size={15} className="text-primary" strokeWidth={1.5} />
                     </div>
                     <div>
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1 font-body">{label}</p>
-                      {href ? (
-                        <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-sm text-foreground hover:text-primary transition-colors font-light">{value}</a>
-                      ) : (
-                        <p className="text-sm text-foreground font-light">{value}</p>
-                      )}
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1 font-body font-semibold">{label}</p>
+                      {href ?
+                    <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-sm text-foreground hover:text-primary transition-colors font-semibold">{value}</a> :
+
+                    <p className="text-sm text-foreground font-semibold">{value}</p>
+                    }
                     </div>
                   </div>
-                ))}
+                )}
               </div>
             </ScrollReveal>
 
@@ -156,13 +156,13 @@ const Contact = () => {
           <div className="w-full h-[350px] md:h-[450px] grayscale hover:grayscale-0 transition-all duration-700">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2709.5!2d39.7!3d47.23!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDfCsDEzJzQ4LjAiTiAzOcKwNDInMDAuMCJF!5e0!3m2!1sru!2sru!4v1700000000000!5m2!1sru!2sru"
-              width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Map"
-            />
+              width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Map" />
+            
           </div>
         </ScrollReveal>
       </section>
-    </>
-  );
+    </>);
+
 };
 
 export default Contact;
