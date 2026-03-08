@@ -131,19 +131,19 @@ const Portfolio = () => {
       {/* Lightbox */}
       <AnimatePresence>
         {currentItem && currentImages && modalIndex !== null && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 backdrop-blur-md" onClick={closeModal}>
-            <button onClick={closeModal} className="absolute top-6 right-6 md:top-10 md:right-10 text-background/40 hover:text-background transition-colors duration-300 z-10" aria-label="Close"><X size={24} strokeWidth={1} /></button>
-            {modalIndex > 0 && (<button onClick={(e) => { e.stopPropagation(); navigate(-1); }} className="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 text-background/30 hover:text-background transition-colors duration-300 z-10" aria-label="Previous"><ChevronLeft size={32} strokeWidth={1} /></button>)}
-            {modalIndex < projects.length - 1 && (<button onClick={(e) => { e.stopPropagation(); navigate(1); }} className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 text-background/30 hover:text-background transition-colors duration-300 z-10" aria-label="Next"><ChevronRight size={32} strokeWidth={1} /></button>)}
-            <div className="flex flex-col items-center max-w-6xl w-full mx-6 md:mx-12" onClick={(e) => e.stopPropagation()}>
-              <motion.div key={modalIndex} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }} className="w-full max-h-[72vh] flex items-center justify-center">
-                <img src={currentImages.img} alt={currentItem.title[lang]} className="max-w-full max-h-[72vh] object-contain" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 backdrop-blur-md px-4 sm:px-6" onClick={closeModal}>
+            <button onClick={closeModal} className="absolute top-4 right-4 md:top-10 md:right-10 text-background/40 hover:text-background transition-colors duration-300 z-10" aria-label="Close"><X size={24} strokeWidth={1} /></button>
+            {modalIndex > 0 && (<button onClick={(e) => { e.stopPropagation(); navigate(-1); }} className="absolute left-2 md:left-10 top-1/2 -translate-y-1/2 text-background/30 hover:text-background transition-colors duration-300 z-10" aria-label="Previous"><ChevronLeft size={28} strokeWidth={1} /></button>)}
+            {modalIndex < projects.length - 1 && (<button onClick={(e) => { e.stopPropagation(); navigate(1); }} className="absolute right-2 md:right-10 top-1/2 -translate-y-1/2 text-background/30 hover:text-background transition-colors duration-300 z-10" aria-label="Next"><ChevronRight size={28} strokeWidth={1} /></button>)}
+            <div className="flex flex-col items-center max-w-6xl w-full" onClick={(e) => e.stopPropagation()}>
+              <motion.div key={modalIndex} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }} className="w-full max-h-[60vh] sm:max-h-[72vh] flex items-center justify-center">
+                <img src={currentImages.img} alt={currentItem.title[lang]} className="max-w-full max-h-[60vh] sm:max-h-[72vh] object-contain" />
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }} className="text-center mt-8">
-                <p className="text-[9px] uppercase tracking-[0.35em] text-background/30 mb-2.5">{currentItem.category[lang]}</p>
-                <p className="font-display text-xl md:text-3xl text-background font-light tracking-tight mb-2">{currentItem.title[lang]}</p>
-                <p className="text-xs text-background/40 font-light max-w-md mx-auto">{currentItem.subtitle[lang]}</p>
-                <div className="flex items-center justify-center gap-2 mt-5">
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.15 }} className="text-center mt-4 sm:mt-8 px-4">
+                <p className="text-[9px] uppercase tracking-[0.35em] text-background/30 mb-2">{currentItem.category[lang]}</p>
+                <p className="font-display text-lg sm:text-xl md:text-3xl text-background font-light tracking-tight mb-1.5">{currentItem.title[lang]}</p>
+                <p className="text-[11px] sm:text-xs text-background/40 font-light max-w-md mx-auto">{currentItem.subtitle[lang]}</p>
+                <div className="flex items-center justify-center gap-2 mt-4">
                   <div className="w-8 h-px bg-background/15" />
                   <p className="text-[10px] text-background/20 tracking-[0.2em]">{modalIndex + 1} / {projects.length}</p>
                   <div className="w-8 h-px bg-background/15" />

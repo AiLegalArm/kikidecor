@@ -56,7 +56,7 @@ const Index = () => {
                 </Button>
               </Link>
               <Link to="/booking">
-                <Button size="lg" className="btn-glow bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-10 py-7 min-w-[220px] transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]">
+                <Button size="lg" className="btn-glow bg-primary hover:bg-primary/90 text-primary-foreground font-body text-[10px] uppercase tracking-luxury rounded-none px-8 sm:px-10 py-6 sm:py-7 min-w-0 sm:min-w-[220px] w-full sm:w-auto transition-all duration-500 shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.4)]">
                   {idx.orderBtn[lang]}
                 </Button>
               </Link>
