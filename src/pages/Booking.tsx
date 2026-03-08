@@ -420,7 +420,7 @@ const Booking = () => {
                   )}
                   {formData.budget && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.budgetLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.budgetLabel[lang]}</span>
                       <span className="font-medium">{formData.budget}</span>
                     </div>
                   )}
