@@ -35,7 +35,7 @@ const CheckoutPage = () => {
       const { error: dbError } = await supabase.from("event_leads").insert({
         name: form.name,
         phone: form.phone,
-        email: form.email || "—",
+        email: form.email || "",
         event_type: "showroom_request",
         booking_type: "showroom",
         message: fullMessage,
