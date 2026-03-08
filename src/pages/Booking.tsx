@@ -438,7 +438,7 @@ const Booking = () => {
                     <User size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
                     <Input value={formData.name} onChange={update("name")} className={cn("pl-10 h-12 rounded-none border-border/50 bg-transparent focus:border-primary", errors.name && "border-destructive")} />
                   </div>
-                  {errors.name && <p className="text-xs text-destructive mt-1 font-light">{errors.name}</p>}
+                  {errors.name && <p className="text-xs text-destructive mt-1 font-semibold">{errors.name}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
