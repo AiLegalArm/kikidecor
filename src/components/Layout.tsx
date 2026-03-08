@@ -164,7 +164,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="text-foreground p-1 transition-transform duration-300"
+              className={cn("p-1 transition-transform duration-300", scrolled ? "text-foreground" : "text-white")}
               aria-label="Menu">
               
               {menuOpen ? <X size={24} strokeWidth={2} /> : <Menu size={24} strokeWidth={2} />}
