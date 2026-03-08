@@ -499,7 +499,7 @@ const Admin = () => {
 
       {/* Lead Detail Dialog */}
       <Dialog open={!!selectedLead} onOpenChange={(open) => !open && setSelectedLead(null)}>
-        <DialogContent className="max-w-lg rounded-none max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-lg rounded-none max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="font-display text-xl font-light">Детали заявки</DialogTitle>
           </DialogHeader>
