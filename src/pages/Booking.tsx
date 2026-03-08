@@ -448,7 +448,7 @@ const Booking = () => {
                       <Phone size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
                       <Input value={formData.phone} onChange={update("phone")} className={cn("pl-10 h-12 rounded-none border-border/50 bg-transparent focus:border-primary", errors.phone && "border-destructive")} />
                     </div>
-                    {errors.phone && <p className="text-xs text-destructive mt-1 font-light">{errors.phone}</p>}
+                    {errors.phone && <p className="text-xs text-destructive mt-1 font-semibold">{errors.phone}</p>}
                   </div>
                   <div>
                     <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-2 block font-body">{b.emailLabel[lang]} *</label>
