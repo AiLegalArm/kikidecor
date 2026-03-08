@@ -15,8 +15,8 @@ const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const contactInfo = [
-  { icon: Phone, label: c.phone[lang], value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
-  { icon: MessageCircle, label: "WhatsApp", value: "+7 (900) 123-45-67", href: "https://wa.me/79001234567" },
+  { icon: Phone, label: c.phone[lang], value: "+7 988 259-85-22", href: "tel:+79882598522" },
+  { icon: MessageCircle, label: "WhatsApp", value: "+7 988 259-85-22", href: "https://wa.me/79882598522" },
   { icon: Instagram, label: "Instagram", value: "@ki_ki_decor", href: "https://instagram.com/ki_ki_decor" },
   { icon: Mail, label: "Email", value: "info@kikidecor.ru", href: "mailto:info@kikidecor.ru" },
   { icon: MapPin, label: c.geography[lang], value: c.geographyValue[lang] },
@@ -75,8 +75,8 @@ const Contact = () => {
           <ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-              { label: c.callBtn[lang], icon: Phone, href: "tel:+79001234567", cls: "bg-foreground text-background hover:bg-foreground/90" },
-              { label: c.whatsappBtn[lang], icon: MessageCircle, href: "https://wa.me/79001234567", cls: "bg-[hsl(142,70%,40%)] text-white hover:opacity-90" },
+              { label: c.callBtn[lang], icon: Phone, href: "tel:+79882598522", cls: "bg-foreground text-background hover:bg-foreground/90" },
+              { label: c.whatsappBtn[lang], icon: MessageCircle, href: "https://wa.me/79882598522", cls: "bg-[hsl(142,70%,40%)] text-white hover:opacity-90" },
               { label: c.instagramBtn[lang], icon: Instagram, href: "https://instagram.com/ki_ki_decor", cls: "bg-gradient-to-br from-[hsl(330,70%,55%)] to-[hsl(25,90%,55%)] text-white hover:opacity-90" },
               { label: c.emailBtn[lang], icon: Mail, href: "mailto:info@kikidecor.ru", cls: "bg-primary text-primary-foreground hover:bg-primary/90" }].
               map((btn) =>
