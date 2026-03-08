@@ -34,14 +34,14 @@ export async function trackAIInteraction({
   try {
     const sessionId = getSessionId();
 
-    await supabase.from("ai_interactions" as any).insert({
+    await supabase.from("ai_interactions").insert({
       session_id: sessionId,
       interaction_type: type,
       input_data: inputData || {},
       output_data: outputData || {},
       selected_product_ids: selectedProductIds || [],
       photo_url: photoUrl || null,
-    } as any);
+    });
   } catch (e) {
     console.error("Failed to track AI interaction:", e);
   }
