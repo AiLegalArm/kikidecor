@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Search, Camera, Upload, Loader2, Sparkles, X, Plus, Shirt, Eye, Palette, ShoppingBag } from "lucide-react";
+import AIResultCTA from "@/components/AIResultCTA";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -311,6 +312,68 @@ const FindSimilar = () => {
                             </button>
                           </motion.div>
                         ))}
+                        {items.map((item, i) => (
+                          <motion.div
+                            key={item.product.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.08 }}
+                            className="border border-border/50 flex items-stretch group hover:border-primary/30 transition-colors"
+                          >
+                            <Link to={`/shop/${item.product.id}`} className="flex items-center gap-4 flex-1 min-w-0 p-3 sm:p-4">
+                              <div className="w-20 h-24 sm:w-24 sm:h-28 bg-secondary/40 overflow-hidden shrink-0">
+                                {item.product.images?.[0] ? (
+                                  <img
+                                    src={item.product.images[0]}
+                                    alt={isRu ? item.product.name : (item.product.name_en || item.product.name)}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <Shirt className="w-6 h-6 text-muted-foreground/30" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                  <span className={cn("text-[10px] font-semibold px-2 py-0.5 border rounded-sm", getScoreColor(item.similarity_score))}>
+                                    {item.similarity_score}%
+                                  </span>
+                                  {item.product.category && (
+                                    <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{item.product.category}</span>
+                                  )}
+                                </div>
+                                <p className="text-sm font-medium truncate">
+                                  {isRu ? item.product.name : (item.product.name_en || item.product.name)}
+                                </p>
+                                <p className="text-xs text-muted-foreground font-light mt-0.5 line-clamp-2">{item.match_reason}</p>
+                                <div className="flex items-center gap-2 mt-1.5">
+                                  <span className="text-sm font-display text-primary">{item.product.price.toLocaleString()} ₽</span>
+                                  {item.product.compare_at_price && item.product.compare_at_price > item.product.price && (
+                                    <span className="text-[11px] text-muted-foreground line-through">{item.product.compare_at_price.toLocaleString()} ₽</span>
+                                  )}
+                                </div>
+                              </div>
+                            </Link>
+                            <button
+                              onClick={() => handleAddOne(item.product.id, isRu ? item.product.name : (item.product.name_en || item.product.name))}
+                              className="px-4 border-l border-border/30 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
+                              title={isRu ? "В корзину" : "Add to cart"}
+                            >
+                              <Plus size={16} />
+                            </button>
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      {/* AI-to-CRM conversion CTA */}
+                      <div className="mt-8">
+                        <AIResultCTA
+                          toolName={isRu ? "Поиск похожих" : "Find Similar"}
+                          resultSummary={`${detected?.clothing_type || ""} ${detected?.style || ""}: ${items.map(i => i.product.name).join(", ")}`}
+                          productIds={items.map(i => i.product.id)}
+                          context={{ detected }}
+                        />
                       </div>
                     </>
                   )}

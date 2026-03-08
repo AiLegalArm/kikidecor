@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import AIResultCTA from "@/components/AIResultCTA";
 import { Sparkles, ArrowRight, Loader2, Shirt, ShoppingBag, Plus, Heart, Camera } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -220,6 +221,7 @@ const AIStylist = () => {
                   {isRu ? "Не удалось подобрать образ. Попробуйте другие параметры." : "No outfits found. Try different preferences."}
                 </p> :
 
+            <>
             <div className="space-y-12 sm:space-y-16">
                   {outfits.map((outfit, i) => {
                 const totalPrice = outfit.total_price || outfit.products.reduce((s, p) => s + p.price, 0);
@@ -272,7 +274,6 @@ const AIStylist = () => {
                               alt={isRu ? product.name : product.name_en || product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" /> :
 
-
                             <div className="w-full h-full flex items-center justify-center">
                                       <Shirt className="w-8 h-8 text-muted-foreground/30" />
                                     </div>
@@ -303,6 +304,17 @@ const AIStylist = () => {
 
               })}
                 </div>
+
+                {/* AI-to-CRM conversion CTA */}
+                <div className="mt-12 max-w-3xl mx-auto">
+                  <AIResultCTA
+                    toolName={isRu ? "AI Стилист" : "AI Stylist"}
+                    resultSummary={outfits.map(o => `${o.title}: ${o.products.map(p => p.name).join(", ")}`).join(" | ")}
+                    productIds={outfits.flatMap(o => o.products.map(p => p.id))}
+                    context={{ occasion, style, colors, budget }}
+                  />
+                </div>
+            </>
             }
             </div>
           </motion.section>

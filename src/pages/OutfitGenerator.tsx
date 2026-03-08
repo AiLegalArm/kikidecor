@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import AIResultCTA from "@/components/AIResultCTA";
 import { Sparkles, Loader2, Shirt, ShoppingBag, Plus, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -161,6 +162,7 @@ const OutfitGenerator = () => {
                   {isRu ? "Недостаточно товаров для создания образов." : "Not enough products to build outfits."}
                 </p>
               ) : (
+                <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                   {outfits.map((outfit, i) => {
                     const total = outfit.items.reduce((s, item) => s + item.product.price, 0);
@@ -250,6 +252,16 @@ const OutfitGenerator = () => {
                     );
                   })}
                 </div>
+
+                {/* AI-to-CRM conversion CTA */}
+                <div className="mt-10 max-w-3xl mx-auto">
+                  <AIResultCTA
+                    toolName={isRu ? "Генератор образов" : "Outfit Generator"}
+                    resultSummary={outfits.map(o => `${o.title}: ${o.items.map(i => i.product.name).join(", ")}`).join(" | ")}
+                    productIds={outfits.flatMap(o => o.items.map(i => i.product.id))}
+                  />
+                </div>
+                </>
               )}
             </div>
           </motion.section>

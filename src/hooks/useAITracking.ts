@@ -16,7 +16,8 @@ export type AIInteractionType =
   | "find_similar"
   | "virtual_tryon"
   | "venue_analysis"
-  | "decor_concept";
+  | "decor_concept"
+  | "consultation_request";
 
 export async function trackAIInteraction({
   type,

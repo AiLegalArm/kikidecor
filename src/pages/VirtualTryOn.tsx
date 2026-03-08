@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Camera, Loader2, Sparkles, X, ShoppingBag, Shirt } from "lucide-react";
+import AIResultCTA from "@/components/AIResultCTA";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -182,10 +183,19 @@ const VirtualTryOn = () => {
                       className="rounded-none gap-1.5 text-[9px] uppercase tracking-wider h-9 shrink-0"
                     >
                       <ShoppingBag size={12} />
-                      {isRu ? "Купить" : "Buy"}
+                      {isRu ? "В корзину" : "Add to cart"}
                     </Button>
                   </motion.div>
                 )}
+
+                {/* AI-to-CRM conversion CTA */}
+                <div className="max-w-md mx-auto mt-6">
+                  <AIResultCTA
+                    toolName={isRu ? "Виртуальная примерка" : "Virtual Try-On"}
+                    resultSummary={`${isRu ? "Примерка" : "Try-on"}: ${isRu ? product?.name : (product?.name_en || product?.name)} — ${product?.price?.toLocaleString()} ₽`}
+                    productIds={product ? [product.id] : []}
+                  />
+                </div>
 
                 <div className="flex items-center justify-center gap-4">
                   <button

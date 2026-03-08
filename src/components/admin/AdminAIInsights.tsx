@@ -23,6 +23,7 @@ const TYPE_CONFIG: Record<string, { label: string; icon: any; color: string }> =
   virtual_tryon: { label: "Виртуальная примерка", icon: Eye, color: "bg-green-100 text-green-800 border-green-200" },
   venue_analysis: { label: "Анализ площадки", icon: BarChart3, color: "bg-yellow-100 text-yellow-800 border-yellow-200" },
   decor_concept: { label: "Концепция декора", icon: Palette, color: "bg-orange-100 text-orange-800 border-orange-200" },
+  consultation_request: { label: "Заявка на консультацию", icon: Users, color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
 };
 
 const AdminAIInsights = () => {
