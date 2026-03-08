@@ -39,26 +39,30 @@ const AIResultCTA = ({ toolName, resultSummary, productIds = [], context = {} }:
         form.comment ? `\n💬 ${form.comment}` : "",
       ].filter(Boolean).join("\n");
 
-      // Save into CRM pipeline
-      await supabase.from("event_leads").insert({
+      // Save into CRM pipeline — must succeed
+      const { error: dbError } = await supabase.from("event_leads").insert({
         name: form.name,
         phone: form.phone,
         email: "",
         event_type: "ai_consultation",
-        booking_type: "showroom",
+        booking_type: "ai",
         message,
         status: "new",
       });
 
-      // Track as AI conversion
-      trackAIInteraction({
-        type: "consultation_request",
-        inputData: { toolName, ...context },
-        outputData: { resultSummary: resultSummary.slice(0, 500) },
-        selectedProductIds: productIds,
-      });
+      if (dbError) throw dbError;
 
-      // Notify admin via Telegram
+      // Track as AI conversion (non-blocking)
+      try {
+        trackAIInteraction({
+          type: "consultation_request",
+          inputData: { toolName, ...context },
+          outputData: { resultSummary: resultSummary.slice(0, 500) },
+          selectedProductIds: productIds,
+        });
+      } catch { /* non-critical */ }
+
+      // Notify admin via Telegram (non-blocking)
       try {
         await supabase.functions.invoke("notify-new-lead", {
           body: {
@@ -67,7 +71,7 @@ const AIResultCTA = ({ toolName, resultSummary, productIds = [], context = {} }:
             email: "",
             eventType: `AI Консультация (${toolName})`,
             message,
-            source: "booking",
+            source: "ai_consultation",
           },
         });
       } catch { /* non-critical */ }
