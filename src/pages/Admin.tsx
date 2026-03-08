@@ -336,56 +336,58 @@ const Admin = () => {
         </header>
 
         {/* Page content */}
-        <main style={{ flex: 1, padding: "20px 16px", overflowX: "hidden" }} className="sm:p-6">
+        <main style={{ flex: 1, padding: "16px 12px", overflowX: "hidden" }} className="sm:p-6">
           {/* ═══ LEADS ═══ */}
           {section === "leads" && (
             <>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "24px" }}>
-                <h2 style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: "1.625rem", fontWeight: 700, color: "#000000", margin: 0, letterSpacing: "-0.02em" }}>CRM Pipeline</h2>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px", flexWrap: "wrap", gap: "8px" }}>
+                <h2 style={{ fontFamily: '"Cormorant Garamond", Georgia, serif', fontSize: "1.5rem", fontWeight: 700, color: "#000000", margin: 0, letterSpacing: "-0.02em" }}>CRM Pipeline</h2>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-3 items-start md:items-center mb-5">
-                <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "#F5F5F5", borderRadius: "10px", padding: "4px" }}>
-                  <button onClick={() => setViewMode("pipeline")} style={{ padding: "6px 10px", borderRadius: "7px", border: "none", cursor: "pointer", background: viewMode === "pipeline" ? "#000000" : "transparent", color: viewMode === "pipeline" ? "#ffffff" : "#666666", transition: "all 0.15s", display: "flex", alignItems: "center" }}><LayoutGrid size={14} /></button>
-                  <button onClick={() => setViewMode("table")} style={{ padding: "6px 10px", borderRadius: "7px", border: "none", cursor: "pointer", background: viewMode === "table" ? "#000000" : "transparent", color: viewMode === "table" ? "#ffffff" : "#666666", transition: "all 0.15s", display: "flex", alignItems: "center" }}><List size={14} /></button>
+              <div className="flex flex-col gap-3 items-stretch mb-5">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", background: "#F5F5F5", borderRadius: "10px", padding: "4px", flexShrink: 0 }}>
+                    <button onClick={() => setViewMode("pipeline")} style={{ padding: "6px 10px", borderRadius: "7px", border: "none", cursor: "pointer", background: viewMode === "pipeline" ? "#000000" : "transparent", color: viewMode === "pipeline" ? "#ffffff" : "#666666", transition: "all 0.15s", display: "flex", alignItems: "center" }}><LayoutGrid size={14} /></button>
+                    <button onClick={() => setViewMode("table")} style={{ padding: "6px 10px", borderRadius: "7px", border: "none", cursor: "pointer", background: viewMode === "table" ? "#000000" : "transparent", color: viewMode === "table" ? "#ffffff" : "#666666", transition: "all 0.15s", display: "flex", alignItems: "center" }}><List size={14} /></button>
+                  </div>
+                  {viewMode === "table" && (
+                    <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(0); }}>
+                      <SelectTrigger className="w-[140px] sm:w-[160px] rounded-none border-border"><SelectValue placeholder="Все" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Все статусы</SelectItem>
+                        {STATUSES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
-                <form onSubmit={handleSearch} className="flex gap-2 flex-1 max-w-md">
+                <form onSubmit={handleSearch} className="flex gap-2 w-full max-w-md">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                     <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Поиск..." className="pl-9 rounded-none border-border" />
                   </div>
                   <Button type="submit" variant="outline" className="rounded-none"><Search size={16} /></Button>
                 </form>
-                {viewMode === "table" && (
-                  <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(0); }}>
-                    <SelectTrigger className="w-[160px] rounded-none border-border"><SelectValue placeholder="Все" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Все статусы</SelectItem>
-                      {STATUSES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                )}
               </div>
 
               {viewMode === "pipeline" && (
-                <div ref={pipelineRef} className="flex gap-3 overflow-x-auto pb-4" style={{ scrollbarWidth: "thin" }}>
+                <div ref={pipelineRef} className="flex gap-2 sm:gap-3 overflow-x-auto pb-4 -mx-3 px-3 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "thin" }}>
                   {STATUSES.map((stage) => {
                     const sl = allLeads.filter((l) => l.status === stage.value);
                     return (
-                      <div key={stage.value} className="min-w-[240px] w-[240px] flex-shrink-0 bg-background border border-border flex flex-col max-h-[65vh]">
-                        <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
-                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${stage.color}`}>{stage.label}</span>
-                          <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5">{sl.length}</span>
+                      <div key={stage.value} className="min-w-[200px] sm:min-w-[240px] w-[200px] sm:w-[240px] flex-shrink-0 bg-background border border-border flex flex-col max-h-[60vh] sm:max-h-[65vh]">
+                        <div className="px-2.5 sm:px-3 py-2 sm:py-2.5 border-b border-border flex items-center justify-between">
+                          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold ${stage.color}`}>{stage.label}</span>
+                          <span className="text-[9px] sm:text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5">{sl.length}</span>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                        <div className="flex-1 overflow-y-auto p-1.5 sm:p-2 space-y-1.5 sm:space-y-2">
                           {sl.length === 0 ? (
                             <div className="text-center py-6 text-muted-foreground/40 text-[10px] uppercase tracking-wider">Пусто</div>
                           ) : sl.map((lead) => (
-                            <button key={lead.id} onClick={() => openDetail(lead)} className="w-full text-left p-2.5 border border-border/60 bg-card hover:border-primary/40 transition-colors group">
-                              <p className="text-sm font-medium truncate">{lead.name}</p>
-                              <p className="text-[11px] text-muted-foreground">{lead.event_type}</p>
-                              {lead.event_date && <p className="text-[10px] text-muted-foreground mt-1">{new Date(lead.event_date).toLocaleDateString("ru-RU")}</p>}
-                              <div className="flex gap-1.5 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button key={lead.id} onClick={() => openDetail(lead)} className="w-full text-left p-2 sm:p-2.5 border border-border/60 bg-card hover:border-primary/40 transition-colors group">
+                              <p className="text-xs sm:text-sm font-medium truncate">{lead.name}</p>
+                              <p className="text-[10px] sm:text-[11px] text-muted-foreground">{lead.event_type}</p>
+                              {lead.event_date && <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-1">{new Date(lead.event_date).toLocaleDateString("ru-RU")}</p>}
+                              <div className="flex gap-1.5 mt-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                 <a href={`tel:${lead.phone}`} onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-primary hover:text-primary transition-colors rounded-sm"><PhoneIcon size={10} /></a>
                                 <a href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Здравствуйте, ${lead.name}! Это KiKi.`)}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-green-500 hover:text-green-600 transition-colors rounded-sm"><MessageSquare size={10} /></a>
                                 <a href={`mailto:${lead.email}`} onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-primary hover:text-primary transition-colors rounded-sm"><MailIcon size={10} /></a>
