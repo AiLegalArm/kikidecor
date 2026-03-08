@@ -1,25 +1,14 @@
 /**
- * analyze-style-photo/index.ts
- * Analyzes user's photo and recommends outfits from KiKi catalog.
- *
- * FIXES:
- * - Uses _shared/gemini.ts
- * - safeParseJson on all JSON parsing (no more uncaught SyntaxError)
- * - Structured error responses
- * - Validates photoUrl
+ * analyze-style-photo/index.ts  (v3 — Lovable AI Gateway)
+ * Analyzes user's photo and recommends outfits.
+ * Model: gemini-2.5-pro (REASONING) for deep body/style analysis.
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
-  CORS_HEADERS,
-  requireApiKey,
-  geminiChat,
-  extractToolCall,
-  okResponse,
-  handleError,
-  GeminiError,
-  errorResponse,
+  CORS_HEADERS, AI_MODELS, requireApiKey, aiChat, extractToolCall,
+  fetchImageAsBase64, okResponse, handleError, GeminiError, errorResponse,
 } from "../_shared/gemini.ts";
 
 serve(async (req) => {
@@ -37,9 +26,9 @@ serve(async (req) => {
       return errorResponse("INVALID_IMAGE", "photoUrl must be a valid URL", 400);
     }
 
-    console.log(`[analyze-style-photo] Starting | lang=${lang}`);
+    const API_KEY = requireApiKey();
+    console.log(`[analyze-style-photo] model=${AI_MODELS.REASONING} | lang=${lang}`);
 
-    const GEMINI_API_KEY = requireApiKey();
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -57,43 +46,58 @@ serve(async (req) => {
       price: p.price, category: p.category, colors: p.colors, sizes: p.sizes,
     }));
 
+    // Fetch image as base64 for reliable vision
+    let imageContent: any;
+    try {
+      const img = await fetchImageAsBase64(photoUrl);
+      imageContent = { type: "image_url", image_url: { url: `data:${img.mimeType};base64,${img.data}` } };
+    } catch {
+      imageContent = { type: "image_url", image_url: { url: photoUrl } };
+    }
+
     const isRu = lang === "ru";
     const systemPrompt = isRu
-      ? `Ты — AI-стилист люксового бренда KiKi Showroom. Проанализируй фото человека и подбери образы из каталога.
+      ? `Ты — персональный AI-стилист KiKi Showroom с экспертизой в анализе типов фигур и цветотипов.
 
-Каталог товаров: ${JSON.stringify(catalogSummary)}
+КАТАЛОГ: ${JSON.stringify(catalogSummary)}
 
-Задачи:
-1. Определи пропорции тела (тип фигуры, рост, силуэт)
-2. Определи текущий стиль одежды на фото
-3. Определи доминирующие цвета в образе
-4. Определи тип одежды, надетой сейчас
-5. На основе анализа подбери 2-3 образа из каталога, которые подойдут этому человеку
+ПОРЯДОК АНАЛИЗА:
+1. Тип фигуры (песочные часы, груша, яблоко, прямоугольник, перевёрнутый треугольник)
+2. Примерный рост и пропорции
+3. Цветотип (весна, лето, осень, зима)
+4. Текущий стиль одежды на фото
+5. Доминирующие цвета в образе
+6. Сильные стороны фигуры для акцентирования
 
-Используй ТОЛЬКО tool call для ответа.`
-      : `You are KiKi Showroom's luxury AI stylist. Analyze the person's photo and recommend outfits from the catalog.
+На основе анализа подбери 2-3 идеальных образа из каталога с объяснением, ПОЧЕМУ именно эти вещи подходят данному типу фигуры и цветотипу.
 
-Product catalog: ${JSON.stringify(catalogSummary)}
+Используй ТОЛЬКО tool call.`
+      : `You are KiKi Showroom's personal AI stylist with expertise in body type and color analysis.
 
-Tasks:
-1. Detect body proportions (body type, height estimate, silhouette)
-2. Detect current style preferences from the photo
-3. Detect dominant colors in their current outfit
-4. Detect clothing type currently worn
-5. Based on analysis, recommend 2-3 outfits from the catalog that would suit this person
+CATALOG: ${JSON.stringify(catalogSummary)}
 
-Use ONLY the tool call to respond.`;
+ANALYSIS ORDER:
+1. Body type (hourglass, pear, apple, rectangle, inverted triangle)
+2. Estimated height and proportions
+3. Color type (spring, summer, autumn, winter)
+4. Current style on photo
+5. Dominant colors in outfit
+6. Figure strengths to accentuate
 
-    const data = await geminiChat({
-      apiKey: GEMINI_API_KEY,
-      model: "gemini-2.0-flash",
+Based on analysis, create 2-3 perfect outfits from catalog with explanations WHY each item suits this body type and color type.
+
+Use ONLY the tool call.`;
+
+    const data = await aiChat({
+      apiKey: API_KEY,
+      model: AI_MODELS.REASONING,
       messages: [
         { role: "system", content: systemPrompt },
         {
           role: "user",
           content: [
             { type: "text", text: isRu ? "Проанализируй моё фото и подбери образы." : "Analyze my photo and recommend outfits." },
-            { type: "image_url", image_url: { url: photoUrl } },
+            imageContent,
           ],
         },
       ],
@@ -101,7 +105,7 @@ Use ONLY the tool call to respond.`;
         type: "function",
         function: {
           name: "analyze_and_recommend",
-          description: "Return body analysis and outfit recommendations",
+          description: "Return body analysis and personalized outfit recommendations",
           parameters: {
             type: "object",
             properties: {
@@ -110,13 +114,16 @@ Use ONLY the tool call to respond.`;
                 properties: {
                   body_type: { type: "string" },
                   height_estimate: { type: "string" },
+                  proportions: { type: "string" },
+                  color_type: { type: "string" },
                   silhouette: { type: "string" },
                   current_style: { type: "string" },
                   dominant_colors: { type: "array", items: { type: "string" } },
                   current_clothing: { type: "string" },
+                  figure_strengths: { type: "array", items: { type: "string" } },
                   style_notes: { type: "string" },
                 },
-                required: ["body_type", "current_style", "dominant_colors", "current_clothing", "style_notes"],
+                required: ["body_type", "color_type", "current_style", "dominant_colors", "style_notes"],
               },
               outfits: {
                 type: "array",
@@ -126,6 +133,19 @@ Use ONLY the tool call to respond.`;
                     title: { type: "string" },
                     description: { type: "string" },
                     product_ids: { type: "array", items: { type: "string" } },
+                    items_explanation: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          product_id: { type: "string" },
+                          slot: { type: "string" },
+                          why_fits_body: { type: "string" },
+                          why_fits_style: { type: "string" },
+                        },
+                        required: ["product_id", "why_fits_body"],
+                      },
+                    },
                     styling_tips: { type: "string" },
                     total_price: { type: "number" },
                     mood: { type: "string" },
@@ -139,12 +159,11 @@ Use ONLY the tool call to respond.`;
         },
       }],
       tool_choice: { type: "function", function: { name: "analyze_and_recommend" } },
+      timeoutMs: 50_000,
     });
 
     const parsed = extractToolCall(data);
-    if (!parsed) {
-      throw new GeminiError("INVALID_MODEL_RESPONSE", "Could not parse AI style analysis response");
-    }
+    if (!parsed) throw new GeminiError("INVALID_MODEL_RESPONSE", "Could not parse style analysis");
 
     const enrichedOutfits = (parsed.outfits || []).map((outfit: any) => ({
       ...outfit,
@@ -153,7 +172,7 @@ Use ONLY the tool call to respond.`;
         .filter(Boolean),
     }));
 
-    console.log(`[analyze-style-photo] ✅ Success | outfits=${enrichedOutfits.length}`);
+    console.log(`[analyze-style-photo] ✅ outfits=${enrichedOutfits.length}`);
     return okResponse({ analysis: parsed.analysis, outfits: enrichedOutfits });
 
   } catch (e) {

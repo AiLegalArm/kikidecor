@@ -1,25 +1,14 @@
 /**
- * find-similar/index.ts
- * Finds similar catalog items given a clothing photo.
- *
- * FIXES:
- * - Uses _shared/gemini.ts
- * - safeParseJson
- * - Structured errors
- * - URL validation
+ * find-similar/index.ts  (v3 — Lovable AI Gateway)
+ * Visual similarity search using Gemini Vision.
+ * Model: gemini-2.5-flash (VISION) for fast image analysis.
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
-  CORS_HEADERS,
-  requireApiKey,
-  geminiChat,
-  extractToolCall,
-  okResponse,
-  handleError,
-  GeminiError,
-  errorResponse,
+  CORS_HEADERS, AI_MODELS, requireApiKey, aiChat, extractToolCall,
+  fetchImageAsBase64, okResponse, handleError, GeminiError, errorResponse,
 } from "../_shared/gemini.ts";
 
 serve(async (req) => {
@@ -37,9 +26,9 @@ serve(async (req) => {
       return errorResponse("INVALID_IMAGE", "photoUrl must be a valid URL", 400);
     }
 
-    console.log(`[find-similar] Starting | lang=${lang}`);
+    const API_KEY = requireApiKey();
+    console.log(`[find-similar] model=${AI_MODELS.VISION} | lang=${lang}`);
 
-    const GEMINI_API_KEY = requireApiKey();
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -54,45 +43,70 @@ serve(async (req) => {
 
     const catalog = (products || []).map((p: any) => ({
       id: p.id, name: p.name, name_en: p.name_en,
-      description: p.description, description_en: p.description_en,
+      description: p.description?.slice(0, 60), description_en: p.description_en?.slice(0, 60),
       price: p.price, category: p.category, colors: p.colors,
     }));
 
+    // Fetch image as base64 for reliable vision input
+    let imageContent: any;
+    try {
+      const img = await fetchImageAsBase64(photoUrl);
+      imageContent = { type: "image_url", image_url: { url: `data:${img.mimeType};base64,${img.data}` } };
+    } catch {
+      imageContent = { type: "image_url", image_url: { url: photoUrl } };
+    }
+
     const isRu = lang === "ru";
     const systemPrompt = isRu
-      ? `Ты — AI-система визуального поиска люксового бренда KiKi Showroom. Проанализируй фото одежды и найди похожие товары в каталоге.
+      ? `Ты — AI-система визуального поиска KiKi Showroom. Проанализируй фото одежды и найди максимально похожие товары в каталоге.
 
-Каталог: ${JSON.stringify(catalog)}
+КАТАЛОГ: ${JSON.stringify(catalog)}
 
-Задачи:
-1. Определи тип одежды на фото (платье, блузка, юбка и т.д.)
-2. Определи цвет, фактуру, силуэт, стиль
-3. Найди похожие товары из каталога, ранжируя по степени сходства (0-100)
-4. Объясни почему каждый товар похож
+АЛГОРИТМ АНАЛИЗА:
+1. Определи тип одежды (платье, блузка, юбка, брюки и т.д.)
+2. Извлеки визуальные атрибуты: цвет, фактура, силуэт, длина, стиль, декор
+3. Сопоставь с каждым товаром каталога по множеству параметров
+4. Присвой similarity_score (0-100) на основе совпадения атрибутов
+5. Объясни причину сходства для каждого товара
+
+КРИТЕРИИ СХОДСТВА (вес):
+• Тип одежды: 30%
+• Цвет/паттерн: 25%
+• Силуэт/крой: 20%
+• Стиль/настроение: 15%
+• Детали/декор: 10%
 
 Используй ТОЛЬКО tool call.`
-      : `You are KiKi Showroom's visual search AI. Analyze the clothing photo and find similar items in the catalog.
+      : `You are KiKi Showroom's visual search AI. Analyze the clothing photo and find similar catalog items.
 
-Catalog: ${JSON.stringify(catalog)}
+CATALOG: ${JSON.stringify(catalog)}
 
-Tasks:
-1. Identify clothing type in the photo (dress, blouse, skirt, etc.)
-2. Detect color, texture, silhouette, style
-3. Find similar products from catalog, ranked by similarity score (0-100)
-4. Explain why each product is similar
+ANALYSIS ALGORITHM:
+1. Identify clothing type (dress, blouse, skirt, pants, etc.)
+2. Extract visual attributes: color, texture, silhouette, length, style, decoration
+3. Match against each catalog item on multiple parameters
+4. Assign similarity_score (0-100) based on attribute matching
+5. Explain match reasoning for each item
+
+SIMILARITY CRITERIA (weight):
+• Clothing type: 30%
+• Color/pattern: 25%
+• Silhouette/cut: 20%
+• Style/mood: 15%
+• Details/decoration: 10%
 
 Use ONLY the tool call.`;
 
-    const data = await geminiChat({
-      apiKey: GEMINI_API_KEY,
-      model: "gemini-2.0-flash",
+    const data = await aiChat({
+      apiKey: API_KEY,
+      model: AI_MODELS.VISION,
       messages: [
         { role: "system", content: systemPrompt },
         {
           role: "user",
           content: [
-            { type: "text", text: isRu ? "Найди похожие товары из каталога." : "Find similar items from the catalog." },
-            { type: "image_url", image_url: { url: photoUrl } },
+            { type: "text", text: isRu ? "Найди похожие товары." : "Find similar items." },
+            imageContent,
           ],
         },
       ],
@@ -100,7 +114,7 @@ Use ONLY the tool call.`;
         type: "function",
         function: {
           name: "find_similar",
-          description: "Return detected clothing details and similar catalog items ranked by similarity",
+          description: "Return detected attributes and similar catalog items",
           parameters: {
             type: "object",
             properties: {
@@ -109,10 +123,13 @@ Use ONLY the tool call.`;
                 properties: {
                   clothing_type: { type: "string" },
                   color: { type: "string" },
+                  pattern: { type: "string" },
                   texture: { type: "string" },
                   silhouette: { type: "string" },
+                  length: { type: "string" },
                   style: { type: "string" },
                   details: { type: "string" },
+                  occasion: { type: "string" },
                 },
                 required: ["clothing_type", "color", "silhouette", "style"],
               },
@@ -124,6 +141,7 @@ Use ONLY the tool call.`;
                     product_id: { type: "string" },
                     similarity_score: { type: "number" },
                     match_reason: { type: "string" },
+                    matching_attributes: { type: "array", items: { type: "string" } },
                   },
                   required: ["product_id", "similarity_score", "match_reason"],
                 },
@@ -134,12 +152,11 @@ Use ONLY the tool call.`;
         },
       }],
       tool_choice: { type: "function", function: { name: "find_similar" } },
+      timeoutMs: 40_000,
     });
 
     const parsed = extractToolCall(data);
-    if (!parsed) {
-      throw new GeminiError("INVALID_MODEL_RESPONSE", "Could not parse AI visual search response");
-    }
+    if (!parsed) throw new GeminiError("INVALID_MODEL_RESPONSE", "Could not parse visual search response");
 
     const enriched = (parsed.similar_items || [])
       .map((item: any) => {
@@ -149,7 +166,7 @@ Use ONLY the tool call.`;
       .filter(Boolean)
       .sort((a: any, b: any) => b.similarity_score - a.similarity_score);
 
-    console.log(`[find-similar] ✅ Success | matches=${enriched.length}`);
+    console.log(`[find-similar] ✅ matches=${enriched.length}`);
     return okResponse({ detected: parsed.detected, similar_items: enriched });
 
   } catch (e) {

@@ -1,25 +1,14 @@
 /**
- * ai-stylist/index.ts
- * Recommends outfits based on occasion/style preferences (no photo).
- *
- * STATUS: Was working. Refactored to use _shared/gemini.ts for consistency.
- * FIXES:
- * - Uses shared layer (timeout, structured errors)
- * - Safe extractToolCall
- * - gemini-2.0-flash
+ * ai-stylist/index.ts  (v3 — Lovable AI Gateway)
+ * Hybrid AI recommendation: preferences + optional photo analysis.
+ * Model: gemini-2.5-pro (REASONING) for deep style analysis.
  */
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import {
-  CORS_HEADERS,
-  requireApiKey,
-  geminiChat,
-  extractToolCall,
-  okResponse,
-  handleError,
-  GeminiError,
-  errorResponse,
+  CORS_HEADERS, AI_MODELS, requireApiKey, aiChat, extractToolCall,
+  okResponse, handleError, GeminiError, errorResponse,
 } from "../_shared/gemini.ts";
 
 serve(async (req) => {
@@ -31,14 +20,14 @@ serve(async (req) => {
       return errorResponse("INVALID_INPUT", "Request body must be valid JSON", 400);
     }
 
-    const { occasion, style, colors, budget, lang } = body;
+    const { occasion, style, colors, budget, lang, photoUrl } = body;
     if (!occasion || !style) {
       return errorResponse("INVALID_INPUT", "occasion and style are required", 400);
     }
 
-    console.log(`[ai-stylist] Starting | occasion=${occasion} | style=${style} | lang=${lang}`);
+    const API_KEY = requireApiKey();
+    console.log(`[ai-stylist] model=${AI_MODELS.REASONING} | occasion=${occasion} | hasPhoto=${!!photoUrl}`);
 
-    const GEMINI_API_KEY = requireApiKey();
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -54,48 +43,83 @@ serve(async (req) => {
     const catalogSummary = (products || []).map((p: any) => ({
       id: p.id, name: p.name, name_en: p.name_en,
       price: p.price, category: p.category, colors: p.colors, sizes: p.sizes,
+      description: p.description?.slice(0, 80),
     }));
 
     const isRu = lang === "ru";
+
     const systemPrompt = isRu
-      ? `Ты — AI-стилист люксового бренда KiKi Showroom. Подбираешь образы ТОЛЬКО из предоставленного каталога.
+      ? `Ты — ведущий AI-стилист люксового бренда KiKi Showroom с 15-летним опытом в моде.
 
-Каталог товаров: ${JSON.stringify(catalogSummary)}
+КАТАЛОГ ТОВАРОВ:
+${JSON.stringify(catalogSummary)}
 
-Запрос клиента:
-- Повод: ${occasion}
-- Стиль: ${style}
-- Цветовая гамма: ${colors || "любая"}
-- Бюджет: ${budget || "не указан"}
+ЗАПРОС КЛИЕНТА:
+• Повод: ${occasion}
+• Стиль: ${style}
+• Цветовая гамма: ${colors || "любая"}
+• Бюджет: ${budget || "не указан"}
+${photoUrl ? "• Фото клиента прилагается — учти пропорции, цветотип и текущий стиль при подборе." : ""}
 
-Подбери 1-3 комплексных образа. Каждый образ — это комбинация реальных товаров из каталога (используй точные id). Дай профессиональные советы по стилю. Используй ТОЛЬКО tool call для ответа.`
-      : `You are KiKi Showroom's luxury AI stylist. Recommend outfits ONLY from the provided catalog.
+ПРАВИЛА:
+1. Подбери 2-3 полноценных образа из РЕАЛЬНЫХ товаров каталога (используй точные id)
+2. Каждый образ = комбинация: верх + низ (или платье) + обувь + аксессуары
+3. Объясни ПОЧЕМУ каждый элемент подходит клиенту
+4. Дай конкретные советы по стилизации (как носить, с чем сочетать)
+5. Учитывай сочетаемость цветов, пропорций, текстур
+6. Используй ТОЛЬКО tool call для ответа.`
 
-Product catalog: ${JSON.stringify(catalogSummary)}
+      : `You are KiKi Showroom's lead AI stylist with 15 years of luxury fashion experience.
 
-Client request:
-- Occasion: ${occasion}
-- Style: ${style}
-- Color palette: ${colors || "any"}
-- Budget: ${budget || "not specified"}
+PRODUCT CATALOG:
+${JSON.stringify(catalogSummary)}
 
-Create 1-3 complete outfit recommendations using real product IDs from the catalog. Provide professional styling tips. Use ONLY the tool call to respond.`;
+CLIENT REQUEST:
+• Occasion: ${occasion}
+• Style: ${style}
+• Color palette: ${colors || "any"}
+• Budget: ${budget || "not specified"}
+${photoUrl ? "• Client photo attached — consider proportions, color type, and current style." : ""}
 
-    const data = await geminiChat({
-      apiKey: GEMINI_API_KEY,
-      model: "gemini-2.0-flash",
+RULES:
+1. Create 2-3 complete outfits from REAL catalog products (use exact IDs)
+2. Each outfit = combination: top + bottom (or dress) + shoes + accessories
+3. Explain WHY each item suits the client
+4. Give specific styling tips
+5. Consider color harmony, proportions, textures
+6. Use ONLY the tool call to respond.`;
+
+    const userContent: any[] = [
+      { type: "text", text: isRu ? "Подбери мне образы по указанным параметрам." : "Find me outfits based on the given preferences." },
+    ];
+    if (photoUrl) {
+      userContent.push({ type: "image_url", image_url: { url: photoUrl } });
+    }
+
+    const data = await aiChat({
+      apiKey: API_KEY,
+      model: AI_MODELS.REASONING,
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: isRu ? "Подбери мне образы по указанным параметрам." : "Find me outfits based on the given preferences." },
+        { role: "user", content: userContent },
       ],
       tools: [{
         type: "function",
         function: {
           name: "recommend_outfits",
-          description: "Return outfit recommendations from the catalog",
+          description: "Return outfit recommendations with detailed explanations",
           parameters: {
             type: "object",
             properties: {
+              style_profile: {
+                type: "object",
+                properties: {
+                  detected_body_type: { type: "string" },
+                  color_type: { type: "string" },
+                  style_direction: { type: "string" },
+                  key_notes: { type: "string" },
+                },
+              },
               outfits: {
                 type: "array",
                 items: {
@@ -104,11 +128,24 @@ Create 1-3 complete outfit recommendations using real product IDs from the catal
                     title: { type: "string" },
                     description: { type: "string" },
                     product_ids: { type: "array", items: { type: "string" } },
+                    items_explanation: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          product_id: { type: "string" },
+                          slot: { type: "string", enum: ["top", "bottom", "dress", "shoes", "accessories", "outerwear"] },
+                          why: { type: "string" },
+                        },
+                        required: ["product_id", "slot", "why"],
+                      },
+                    },
                     styling_tips: { type: "string" },
                     total_price: { type: "number" },
                     mood: { type: "string" },
+                    occasion_fit: { type: "string" },
                   },
-                  required: ["title", "description", "product_ids", "styling_tips"],
+                  required: ["title", "description", "product_ids", "items_explanation", "styling_tips"],
                 },
               },
             },
@@ -117,6 +154,7 @@ Create 1-3 complete outfit recommendations using real product IDs from the catal
         },
       }],
       tool_choice: { type: "function", function: { name: "recommend_outfits" } },
+      timeoutMs: 50_000,
     });
 
     const parsed = extractToolCall(data);
@@ -131,8 +169,11 @@ Create 1-3 complete outfit recommendations using real product IDs from the catal
         .filter(Boolean),
     }));
 
-    console.log(`[ai-stylist] ✅ Success | outfits=${enrichedOutfits.length}`);
-    return okResponse({ outfits: enrichedOutfits });
+    console.log(`[ai-stylist] ✅ outfits=${enrichedOutfits.length}`);
+    return okResponse({
+      style_profile: parsed.style_profile || null,
+      outfits: enrichedOutfits,
+    });
 
   } catch (e) {
     return handleError("ai-stylist", e);
