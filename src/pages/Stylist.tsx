@@ -221,6 +221,7 @@ const AIStylist = () => {
                   {isRu ? "Не удалось подобрать образ. Попробуйте другие параметры." : "No outfits found. Try different preferences."}
                 </p> :
 
+            <>
             <div className="space-y-12 sm:space-y-16">
                   {outfits.map((outfit, i) => {
                 const totalPrice = outfit.total_price || outfit.products.reduce((s, p) => s + p.price, 0);
@@ -273,7 +274,6 @@ const AIStylist = () => {
                               alt={isRu ? product.name : product.name_en || product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" /> :
 
-
                             <div className="w-full h-full flex items-center justify-center">
                                       <Shirt className="w-8 h-8 text-muted-foreground/30" />
                                     </div>
@@ -314,6 +314,7 @@ const AIStylist = () => {
                     context={{ occasion, style, colors, budget }}
                   />
                 </div>
+            </>
             }
             </div>
           </motion.section>
