@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { useScrollReveal, useParallax } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 
@@ -37,14 +38,14 @@ const variantStyles = {
   }
 };
 
-const ScrollReveal = ({
+const ScrollReveal = forwardRef<HTMLDivElement, ScrollRevealProps>(({
   children,
   className,
   delay = 0,
   variant = "fade-up",
   parallax = false,
   parallaxSpeed = 0.1
-}: ScrollRevealProps) => {
+}, _forwardedRef) => {
   const { ref, isVisible } = useScrollReveal();
   const { ref: parallaxRef, offset } = useParallax(parallaxSpeed);
 
@@ -61,19 +62,19 @@ const ScrollReveal = ({
     <div
       ref={setRef}
       className={cn("transition-all duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)] px-[3px]",
-
-      isVisible ? styles.visible : styles.hidden,
-      className
+        isVisible ? styles.visible : styles.hidden,
+        className
       )}
       style={{
         transitionDelay: `${delay}ms`,
         willChange: isVisible ? "auto" : "transform, opacity, filter",
         ...(parallax && isVisible ? { transform: `translateY(${offset}px)` } : {})
       }}>
-      
       {children}
-    </div>);
+    </div>
+  );
+});
 
-};
+ScrollReveal.displayName = "ScrollReveal";
 
 export default ScrollReveal;
