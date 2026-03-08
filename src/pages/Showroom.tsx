@@ -80,85 +80,17 @@ const Showroom = () => {
         </div>
       </section>
 
-      {/* About + Info */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 min-h-[40vh]">
-        <div className="flex items-center px-6 md:px-10 lg:px-16 py-16 lg:py-0">
-          <div className="max-w-md">
-            <ScrollReveal>
-              <p className="overline text-primary mb-4 font-semibold">{s.aboutOverline[lang]}</p>
-              <h2 className="font-display text-3xl md:text-5xl font-light mb-6 leading-tight">
-                {s.aboutTitle[lang]} <span className="italic">{s.aboutTitleItalic[lang]}</span>
-              </h2>
-              <p className="text-foreground/75 leading-[2] text-sm mb-4 font-normal">{s.aboutP1[lang]}</p>
-              <p className="text-foreground/75 leading-[2] text-sm font-normal">{s.aboutP2[lang]}</p>
-            </ScrollReveal>
-          </div>
-        </div>
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-      </section>
-
-      {/* AI Features */}
-      <section className="px-6 md:px-10 py-20 md:py-28 bg-secondary/20">
-        <div className="container mx-auto max-w-6xl">
+      {/* About */}
+      <section className="px-6 md:px-10 py-16 md:py-24">
+        <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="overline text-primary mb-4 text-center font-normal">{lang === "ru" ? "Умный шоппинг" : "Smart Shopping"}</p>
-            <h2 className="font-display text-3xl md:text-5xl font-light text-center mb-4">
-              {lang === "ru" ? "AI-инструменты" : "AI Tools"}
+            <p className="overline text-primary mb-4 font-semibold">{s.aboutOverline[lang]}</p>
+            <h2 className="font-display text-3xl md:text-5xl font-light mb-6 leading-tight">
+              {s.aboutTitle[lang]} <span className="italic">{s.aboutTitleItalic[lang]}</span>
             </h2>
-            <p className="text-center text-foreground/60 text-sm max-w-lg mx-auto mb-14 leading-relaxed font-medium">
-              {lang === "ru" ?
-              "Технологии, которые делают подбор идеального образа простым и увлекательным" :
-              "Technologies that make finding your perfect look easy and exciting"}
-            </p>
+            <p className="text-foreground/75 leading-[2] text-sm mb-4 font-normal">{s.aboutP1[lang]}</p>
+            <p className="text-foreground/75 leading-[2] text-sm font-normal">{s.aboutP2[lang]}</p>
           </ScrollReveal>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {aiFeatures.map((feature, i) =>
-            <ScrollReveal key={feature.title} delay={i * 100}>
-                <Link
-                to={feature.link}
-                className="group block luxury-card p-7 h-full hover:shadow-lg transition-all duration-500 hover:-translate-y-1">
-                
-                  <div className={cn("w-12 h-12 rounded-full bg-gradient-to-br flex items-center justify-center mb-5", feature.color)}>
-                    <feature.icon size={20} className="text-primary" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="font-display text-lg mb-2 group-hover:text-primary transition-colors duration-300 font-bold">
-                    {feature.title}
-                  </h3>
-                  <p className="text-foreground/60 text-sm leading-relaxed mb-4 font-medium">{feature.desc}</p>
-                  <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-primary font-semibold">
-                    {lang === "ru" ? "Попробовать" : "Try it"}
-                    <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-                  </span>
-                </Link>
-              </ScrollReveal>
-            )}
-          </div>
         </div>
       </section>
 
@@ -184,7 +116,6 @@ const Showroom = () => {
                 "bg-foreground text-background border-foreground" :
                 "border-border text-foreground/60 hover:border-foreground hover:text-foreground"
               )}>
-              
                 {cat[lang]}
               </button>
             )}
@@ -204,7 +135,6 @@ const Showroom = () => {
                 {lang === "ru" ? "Товары скоро появятся" : "Products coming soon"}
               </p>
             </div> :
-
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
               {products.map((product, i) =>
             <ScrollReveal key={product.id} delay={i * 60}>
@@ -220,13 +150,51 @@ const Showroom = () => {
                 <Link
                 to="/shop"
                 className="inline-flex items-center gap-3 px-10 py-4 border border-foreground/15 text-foreground text-[11px] uppercase tracking-[0.2em] font-semibold hover:bg-foreground hover:text-background transition-all duration-500 font-body">
-                
                   {lang === "ru" ? "Весь каталог" : "Full Catalog"}
                   <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
             </ScrollReveal>
           }
+        </div>
+      </section>
+
+      {/* AI Features */}
+      <section className="px-6 md:px-10 py-20 md:py-28 bg-secondary/20">
+        <div className="container mx-auto max-w-6xl">
+          <ScrollReveal>
+            <p className="overline text-primary mb-4 text-center font-normal">{lang === "ru" ? "Умный шоппинг" : "Smart Shopping"}</p>
+            <h2 className="font-display text-3xl md:text-5xl font-light text-center mb-4">
+              {lang === "ru" ? "AI-инструменты" : "AI Tools"}
+            </h2>
+            <p className="text-center text-foreground/60 text-sm max-w-lg mx-auto mb-14 leading-relaxed font-medium">
+              {lang === "ru" ?
+              "Технологии, которые делают подбор идеального образа простым и увлекательным" :
+              "Technologies that make finding your perfect look easy and exciting"}
+            </p>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {aiFeatures.map((feature, i) =>
+            <ScrollReveal key={feature.title} delay={i * 100}>
+                <Link
+                to={feature.link}
+                className="group block luxury-card p-7 h-full hover:shadow-lg transition-all duration-500 hover:-translate-y-1">
+                  <div className={cn("w-12 h-12 rounded-full bg-gradient-to-br flex items-center justify-center mb-5", feature.color)}>
+                    <feature.icon size={20} className="text-primary" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="font-display text-lg mb-2 group-hover:text-primary transition-colors duration-300 font-bold">
+                    {feature.title}
+                  </h3>
+                  <p className="text-foreground/60 text-sm leading-relaxed mb-4 font-medium">{feature.desc}</p>
+                  <span className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-primary font-semibold">
+                    {lang === "ru" ? "Попробовать" : "Try it"}
+                    <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </ScrollReveal>
+            )}
+          </div>
         </div>
       </section>
 
