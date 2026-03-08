@@ -3,8 +3,6 @@ import App from "./App.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import "./index.css";
 
-// Force env reload
-
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
     <App />
