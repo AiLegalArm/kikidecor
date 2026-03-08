@@ -237,7 +237,7 @@ const AdminAIGenerator = () => {
             </div>
 
             <div style={{ padding: "24px" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: "24px" }} className="max-sm:grid-cols-1">
+              <div style={{ display: "grid", gap: "24px" }} className="grid-cols-1 md:grid-cols-[300px_1fr]">
 
                 {/* Upload zone */}
                 <div
