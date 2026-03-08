@@ -126,19 +126,6 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               }
             </button>
           </div>
-            <button
-              onClick={() => setCartOpen(true)}
-              className="relative text-foreground/70 hover:text-primary transition-colors duration-300 ml-2"
-              aria-label="Cart">
-              
-              <ShoppingBag size={22} strokeWidth={2} />
-              {count > 0 &&
-              <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-primary text-primary-foreground text-[9px] font-body font-bold rounded-full flex items-center justify-center">
-                  {count}
-                </span>
-              }
-            </button>
-          </div>
 
           {/* Mobile */}
           <div className="flex items-center gap-3 lg:hidden">
