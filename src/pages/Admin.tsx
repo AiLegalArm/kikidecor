@@ -319,7 +319,7 @@ const Admin = () => {
                           ) : sl.map((lead) => (
                             <button key={lead.id} onClick={() => openDetail(lead)} className="w-full text-left p-2 sm:p-2.5 border border-border/60 bg-card hover:border-primary/40 transition-colors group">
                               <p className="text-xs sm:text-sm font-medium truncate">{lead.name}</p>
-                              <p className="text-[10px] sm:text-[11px] text-muted-foreground">{lead.event_type}</p>
+                              <p className="text-[10px] sm:text-[11px] text-muted-foreground">{lead.event_type === "showroom_request" ? "🛍️ Запрос из каталога" : lead.event_type === "ai_consultation" ? "🤖 AI Консультация" : lead.event_type}</p>
                               {lead.event_date && <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-1">{new Date(lead.event_date).toLocaleDateString("ru-RU")}</p>}
                               <div className="flex gap-1.5 mt-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                 <a href={`tel:${lead.phone}`} onClick={(e) => e.stopPropagation()} className="p-1 border border-border hover:border-primary hover:text-primary transition-colors rounded-sm"><PhoneIcon size={10} /></a>
