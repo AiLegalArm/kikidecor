@@ -426,7 +426,7 @@ const Booking = () => {
                   )}
                   {formData.decorStyle && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground font-light">{b.decorStyleLabel[lang]}</span>
+                      <span className="text-muted-foreground font-semibold">{b.decorStyleLabel[lang]}</span>
                       <span className="font-medium">{formData.decorStyle}</span>
                     </div>
                   )}
