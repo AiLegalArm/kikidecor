@@ -360,7 +360,7 @@ const Admin = () => {
                             <td className="px-4 py-3 font-medium">{lead.name}</td>
                             <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{lead.phone}</td>
                             <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{lead.email}</td>
-                            <td className="px-4 py-3">{lead.event_type}</td>
+                            <td className="px-4 py-3">{lead.event_type === "showroom_request" ? "🛍️ Запрос из каталога" : lead.event_type === "ai_consultation" ? "🤖 AI Консультация" : lead.event_type}</td>
                             <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{lead.event_date ? new Date(lead.event_date).toLocaleDateString("ru-RU") : "—"}</td>
                             <td className="px-4 py-3">{getStatusBadge(lead.status)}</td>
                             <td className="px-4 py-3"><Button variant="ghost" size="sm" onClick={() => openDetail(lead)}><Eye size={16} /></Button></td>
