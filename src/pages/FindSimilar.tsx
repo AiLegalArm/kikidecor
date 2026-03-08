@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Search, Camera, Upload, Loader2, Sparkles, X, Plus, Shirt, Eye, Palette, ShoppingBag } from "lucide-react";
+import AIResultCTA from "@/components/AIResultCTA";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
