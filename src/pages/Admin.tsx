@@ -191,7 +191,9 @@ const Admin = () => {
           "max-md:!fixed max-md:inset-y-0 max-md:left-0 max-md:z-[70]",
           "max-md:transition-transform max-md:duration-300",
           "max-md:!w-[260px] max-md:!min-w-[260px]",
-          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full max-md:!hidden",
+          sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full max-md:!pointer-events-none",
+          // Hide from flex flow on mobile when closed
+          !sidebarOpen ? "max-md:!absolute" : "",
         ].join(" ")}
       >
         {/* Logo */}
