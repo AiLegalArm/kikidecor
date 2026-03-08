@@ -129,7 +129,7 @@
   }
 
   label {
-    color: #111111;
+    @apply text-foreground;
     font-weight: 600;
     font-size: 0.8125rem;
   }
@@ -137,13 +137,13 @@
   input,
   textarea,
   select {
-    color: #111111 !important;
+    @apply text-foreground;
     font-weight: 500;
   }
 
   input::placeholder,
   textarea::placeholder {
-    color: #888888 !important;
+    @apply text-muted-foreground;
     font-weight: 400;
   }
 
@@ -152,17 +152,17 @@
   }
 
   th {
-    color: #000000 !important;
-    font-weight: 700 !important;
+    @apply text-foreground;
+    font-weight: 700;
   }
 
   td {
-    color: #111111;
+    @apply text-foreground;
     font-weight: 500;
   }
 
   p {
-    color: #111111;
+    @apply text-foreground;
     font-weight: 500;
   }
 
