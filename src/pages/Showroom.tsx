@@ -1,4 +1,6 @@
 import { useState } from "react";
+// @ts-ignore
+import "@fontsource/great-vibes";
 import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
 import heroShowroom from "@/assets/hero-showroom.jpg";
@@ -71,6 +73,9 @@ const Showroom = () => {
             <h1 className="font-display text-5xl md:text-8xl font-light text-background leading-[1.05] animate-reveal" style={{ animationDelay: "0.5s" }}>
               KiKi <span className="italic">Showroom</span>
             </h1>
+            <p className="animate-reveal text-background/70 mt-3" style={{ fontFamily: "'Great Vibes', cursive", fontSize: "clamp(1.2rem, 3vw, 1.8rem)", animationDelay: "0.7s" }}>
+              By Kris
+            </p>
           </div>
         </div>
       </section>
