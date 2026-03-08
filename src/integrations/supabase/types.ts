@@ -447,6 +447,41 @@ export type Database = {
         }
         Relationships: []
       }
+      product_embeddings: {
+        Row: {
+          created_at: string
+          embedding: string | null
+          feature_text: string | null
+          id: string
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          embedding?: string | null
+          feature_text?: string | null
+          id?: string
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          embedding?: string | null
+          feature_text?: string | null
+          id?: string
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_embeddings_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category: string | null
@@ -535,7 +570,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_products: {
+        Args: {
+          match_count?: number
+          match_threshold?: number
+          query_embedding: string
+        }
+        Returns: {
+          product_id: string
+          similarity: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
