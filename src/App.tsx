@@ -43,9 +43,11 @@ const AnimatedRoutes = () => {
   // Admin route renders WITHOUT public Layout
   if (location.pathname === "/admin") {
     return (
-      <Routes location={location} key={location.pathname}>
-        <Route path="/admin" element={<Admin />} />
-      </Routes>
+      <Suspense fallback={<div className="min-h-screen bg-background" />}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </Suspense>
     );
   }
 
