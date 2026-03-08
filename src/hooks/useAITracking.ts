@@ -50,8 +50,8 @@ export async function trackAIInteraction({
 export function trackProductSelection(interactionId: string, productIds: string[]) {
   // Fire and forget
   supabase
-    .from("ai_interactions" as any)
-    .update({ selected_product_ids: productIds } as any)
+    .from("ai_interactions")
+    .update({ selected_product_ids: productIds })
     .eq("id", interactionId)
     .then(() => {});
 }

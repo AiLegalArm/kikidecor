@@ -38,13 +38,13 @@ const AdminAIInsights = () => {
   const fetchInteractions = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("ai_interactions" as any)
+      .from("ai_interactions")
       .select("*")
       .order("created_at", { ascending: false })
       .limit(200);
 
     if (!error && data) {
-      setInteractions(data as any as AIInteraction[]);
+      setInteractions(data as AIInteraction[]);
     }
     setLoading(false);
   };
