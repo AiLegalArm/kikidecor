@@ -241,6 +241,9 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               <a href="https://instagram.com/ki_ki_showroom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
                 <Instagram size={14} strokeWidth={1.5} /> @ki_ki_showroom
               </a>
+              <a href="https://t.me/ki_ki_showroom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
+                <Send size={14} strokeWidth={1.5} /> Telegram шоурум
+              </a>
             </div>
 
             {/* Contacts */}
