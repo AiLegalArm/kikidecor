@@ -33,7 +33,7 @@ const Home = () => {
             <div className="absolute inset-0 bg-foreground/45" />
           </div>
         </div>
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-background/8 z-10 hidden md:block" />
+        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-background/8 z-10" />
         <div className="absolute inset-0 z-[5]" style={{ background: "radial-gradient(ellipse at center, transparent 30%, hsl(0 0% 0% / 0.4) 100%)" }} />
 
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
