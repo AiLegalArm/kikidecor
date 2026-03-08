@@ -15,8 +15,8 @@ const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const contactInfo = [
-  { icon: Phone, label: c.phone[lang], value: "+7 (900) 123-45-67", href: "tel:+79001234567" },
-  { icon: MessageCircle, label: "WhatsApp", value: "+7 (900) 123-45-67", href: "https://wa.me/79001234567" },
+  { icon: Phone, label: c.phone[lang], value: "+7 988 259-85-22", href: "tel:+79882598522" },
+  { icon: MessageCircle, label: "WhatsApp", value: "+7 988 259-85-22", href: "https://wa.me/79882598522" },
   { icon: Instagram, label: "Instagram", value: "@ki_ki_decor", href: "https://instagram.com/ki_ki_decor" },
   { icon: Mail, label: "Email", value: "info@kikidecor.ru", href: "mailto:info@kikidecor.ru" },
   { icon: MapPin, label: c.geography[lang], value: c.geographyValue[lang] },
