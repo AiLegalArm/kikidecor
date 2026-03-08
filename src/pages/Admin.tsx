@@ -131,6 +131,16 @@ const Admin = () => {
   if (authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   if (!session) return <AdminLogin onLogin={() => { }} />;
 
+  if (!isAdminUser(session.user?.email)) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
+        <p className="text-lg font-medium text-destructive">Доступ запрещён</p>
+        <p className="text-sm text-muted-foreground">У вас нет прав администратора</p>
+        <button onClick={handleLogout} className="text-sm underline text-muted-foreground hover:text-foreground">Выйти</button>
+      </div>
+    );
+  }
+
   const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setPage(0); fetchLeads(); };
 
   const updateStatus = async (id: string, newStatus: string) => {
