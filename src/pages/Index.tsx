@@ -43,7 +43,7 @@ const Index = () => {
             <p className="overline text-background/60 mb-6 animate-fade-up" style={{ animationDelay: "0.15s", opacity: 0 }}>
               {idx.heroOverline[lang]}
             </p>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-[6rem] font-light text-background leading-[1.02] mb-6 animate-fade-up" style={{ animationDelay: "0.3s", opacity: 0 }}>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-[6rem] font-light text-background leading-[1.02] mb-6 animate-fade-up" style={{ animationDelay: "0.3s", opacity: 0 }}>
               Ki Ki Decor
             </h1>
             <p className="font-display text-xl md:text-2xl font-light italic text-background/70 mb-12 animate-fade-up" style={{ animationDelay: "0.45s", opacity: 0 }}>
