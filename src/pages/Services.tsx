@@ -37,7 +37,7 @@ const Services = () => {
             <p className="text-[10px] uppercase tracking-[0.35em] font-body mb-4 text-secondary-foreground font-semibold">{s.overline[lang]}</p>
             <h1 className="font-display text-3xl sm:text-5xl md:text-7xl font-light mb-5 leading-[1.05] text-foreground">{s.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-foreground/70 font-light text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">{s.subtitle[lang]}</p>
+            <p className="text-foreground/70 text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed font-medium">{s.subtitle[lang]}</p>
           </ScrollReveal>
         </div>
       </section>
