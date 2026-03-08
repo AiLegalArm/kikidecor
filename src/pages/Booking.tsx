@@ -384,7 +384,7 @@ const Booking = () => {
                 </div>
 
                 {selectedDate && (
-                  <p className="text-sm text-foreground mb-6 flex items-center gap-2 font-light">
+                  <p className="text-sm text-foreground mb-6 flex items-center gap-2 font-semibold">
                     <CalendarDays size={14} className="text-primary" />
                     {format(selectedDate, "d MMMM yyyy, EEEE", { locale: dateLocale })}
                   </p>
