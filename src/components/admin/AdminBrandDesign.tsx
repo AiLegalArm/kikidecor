@@ -172,7 +172,7 @@ const AdminBrandDesign = () => {
                         <ColorPicker label="Основной цвет (лавандовый)" value={settings.primaryColor} field="primaryColor" />
                         <ColorPicker label="Второстепенный (шампань)" value={settings.secondaryColor} field="secondaryColor" />
                     </div>
-                    <div style={row}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <ColorPicker label="Цвет текста" value={settings.textColor} field="textColor" />
                         <ColorPicker label="Цвет фона" value={settings.bgColor} field="bgColor" />
                     </div>
