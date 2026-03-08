@@ -53,7 +53,7 @@ const CheckoutPage = () => {
             phone: form.phone,
             eventType: lang === "ru" ? "Запрос из каталога" : "Catalog Request",
             message: fullMessage,
-            source: "booking",
+            source: "catalog_request",
           },
         });
       } catch {
