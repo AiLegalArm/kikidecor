@@ -260,6 +260,7 @@ const OutfitGenerator = () => {
                     productIds={outfits.flatMap(o => o.items.map(i => i.product.id))}
                   />
                 </div>
+              </>
               )}
             </div>
           </motion.section>

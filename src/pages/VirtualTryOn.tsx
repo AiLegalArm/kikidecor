@@ -196,7 +196,6 @@ const VirtualTryOn = () => {
                     productIds={product ? [product.id] : []}
                   />
                 </div>
-                )}
 
                 <div className="flex items-center justify-center gap-4">
                   <button

@@ -304,6 +304,16 @@ const AIStylist = () => {
 
               })}
                 </div>
+
+                {/* AI-to-CRM conversion CTA */}
+                <div className="mt-12 max-w-3xl mx-auto">
+                  <AIResultCTA
+                    toolName={isRu ? "AI Стилист" : "AI Stylist"}
+                    resultSummary={outfits.map(o => `${o.title}: ${o.products.map(p => p.name).join(", ")}`).join(" | ")}
+                    productIds={outfits.flatMap(o => o.products.map(p => p.id))}
+                    context={{ occasion, style, colors, budget }}
+                  />
+                </div>
             }
             </div>
           </motion.section>
