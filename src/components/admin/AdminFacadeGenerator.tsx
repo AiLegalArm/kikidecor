@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import ConceptChat from "./ConceptChat";
 import {
   Sparkles, Loader2, Upload, Camera, Lightbulb, Flower2,
   RotateCcw, Building2, Lamp, Paintbrush,
@@ -394,6 +395,14 @@ const AdminFacadeGenerator = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* AI Chat for refining facade concept */}
+      {concept && (
+        <ConceptChat
+          concept={concept}
+          onConceptUpdate={(updated) => setConcept(updated)}
+        />
       )}
     </div>
   );
