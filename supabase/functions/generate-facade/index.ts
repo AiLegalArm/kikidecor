@@ -141,10 +141,9 @@ Think like a creative director planning exterior/facade decorations for a luxury
     console.log(`[generate-facade] ✅ Concept: "${concept.conceptName}" | generating images...`);
 
     // Step 2: Generate decorated facade images
-    const prompts: string[] = (concept.imagePrompts || []).slice(0, 3);
+    const prompts: string[] = (concept.imagePrompts || []).slice(0, imageUrl ? 2 : 3);
     const colors = (concept.colorPalette || []).slice(0, 3).join(", ");
 
-    // Pre-fetch image once if available
     let uploadedImageDataUrl: string | null = null;
     if (imageUrl) {
       try {
@@ -155,43 +154,54 @@ Think like a creative director planning exterior/facade decorations for a luxury
       }
     }
 
-    const imagePromises = prompts.map(async (prompt: string) => {
-      // If user uploaded a photo, ALWAYS edit it (overlay decor on their building)
+    const imagePromises = prompts.map(async (prompt: string, idx: number) => {
       if (uploadedImageDataUrl) {
+        const variantNote = idx === 0
+          ? "Create the most realistic primary version."
+          : "Create a second subtle variation with the SAME building and only small decor differences.";
+
         try {
           const editData = await aiImageGen({
             apiKey: API_KEY,
-            model: "google/gemini-3-pro-image-preview",
+            model: "google/gemini-3.1-flash-image-preview",
             messages: [{
               role: "user",
               content: [
-                { type: "image_url", image_url: { url: uploadedImageDataUrl } },
                 {
                   type: "text",
                   text: [
-                    "You are a photo editor. You MUST keep the EXACT same building from this photo unchanged.",
-                    "Do NOT replace the building. Do NOT change the architecture, angle, lighting, or surroundings.",
-                    "Your ONLY task: overlay event decoration elements on top of this exact building photo.",
-                    `Decorations to add: ${prompt}`,
-                    `Use these colors: ${colors}`,
-                    "Add: floral garlands on walls, drapery on entrance, uplighting on facade, flower arrangements near doors.",
-                    "The building itself must remain 100% recognizable — same walls, same windows, same roof.",
-                    "Result: photorealistic decorated version of THIS EXACT building.",
+                    "IMAGE EDIT TASK.",
+                    "Use the attached image as the fixed base photo.",
+                    "Do NOT generate a new building.",
+                    "Do NOT change camera angle, framing, architecture, windows, doors, roofline, facade materials, street context, or perspective.",
+                    "Keep the original photo composition intact and recognizable.",
+                    "Only add event decor overlays to this exact building.",
+                    `Decor brief: ${prompt}`,
+                    `Color palette: ${colors}`,
+                    "Allowed edits only: flowers, entrance decor, drapery, lighting, ribbons, exterior styling details.",
+                    "Forbidden: replacing the building, changing the facade design, inventing a different venue, changing the viewpoint, changing daylight/time dramatically.",
+                    variantNote,
+                    "Return a photorealistic edited version of THIS SAME uploaded building.",
                   ].join("\n"),
                 },
+                { type: "image_url", image_url: { url: uploadedImageDataUrl } },
               ],
             }],
             timeoutMs: 70_000,
           });
+
           const result = extractGatewayImage(editData);
           if (result) return result;
         } catch (e) {
-          console.warn(`[generate-facade] Image edit failed, falling back:`, e);
+          console.warn("[generate-facade] Image edit failed:", e);
+          return null;
         }
+
+        return null;
       }
 
-      // Fallback: generate from scratch (no user photo)
       const fullPrompt = `Luxury event facade decoration, professional architectural photography. ${prompt}. Color palette: ${colors}. Elegant, sophisticated exterior decor. Warm ambient lighting. No text, no watermarks, no people. Photorealistic.`;
+
       try {
         const genData = await aiImageGen({
           apiKey: API_KEY,
@@ -207,6 +217,13 @@ Think like a creative director planning exterior/facade decorations for a luxury
 
     const images = await Promise.all(imagePromises);
     concept.generatedImages = images.filter(Boolean);
+
+    if (uploadedImageDataUrl && concept.generatedImages.length === 0) {
+      throw new GeminiError(
+        "INVALID_MODEL_RESPONSE",
+        "Не удалось применить декор поверх загруженного фото. Попробуйте другое фото фасада с более чётким ракурсом."
+      );
+    }
 
     console.log(`[generate-facade] 🏛️ Images: ${concept.generatedImages.length}/${prompts.length}`);
     return okResponse(concept);
