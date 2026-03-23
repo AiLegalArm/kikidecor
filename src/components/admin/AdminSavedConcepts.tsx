@@ -38,6 +38,23 @@ const AdminSavedConcepts = () => {
     const [concepts, setConcepts] = useState<SavedConcept[]>([]);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [sending, setSending] = useState<string | null>(null);
+    const [exportingId, setExportingId] = useState<string | null>(null);
+
+    const handleExportPDF = async (c: SavedConcept) => {
+        setExportingId(c.id);
+        try {
+            await exportConceptToPDF({
+                conceptName: c.conceptName,
+                conceptDescription: c.conceptDescription,
+                colorPalette: c.colorNames,
+                colorHexCodes: c.colorHexCodes,
+                decorElements: c.decorElements?.map(el => ({ ...el, category: "focal" })),
+                estimatedComplexity: undefined,
+            }, { eventType: c.eventType, venueType: c.venueType, guestCount: c.guestCount, decorStyle: c.decorStyle });
+            toast.success("📄 PDF скачан!");
+        } catch { toast.error("Ошибка экспорта PDF"); }
+        finally { setExportingId(null); }
+    };
 
     useEffect(() => { setConcepts(getSavedConcepts()); }, []);
 
