@@ -436,6 +436,7 @@ const Admin = () => {
 
           {/* ═══ TELEGRAM SETTINGS ═══ */}
           {section === "telegram" && <AdminTelegramSettings />}
+         </Suspense>
         </main>
       </div>
 
