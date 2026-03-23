@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import type jsPDFType from "jspdf";
 
 const LABEL_MAP: Record<string, string> = {
   event_type: "Тип события", event_goal: "Цель", location: "Локация", venue: "Площадка",
