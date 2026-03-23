@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import ConceptChat from "./ConceptChat";
 import {
   Sparkles, Loader2, Upload, Camera, Lightbulb, Flower2,
-  RotateCcw, Building2, Lamp, Paintbrush,
+  RotateCcw, Building2, Lamp, Paintbrush, FileDown,
 } from "lucide-react";
+import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 import { toast } from "sonner";
 
 type FacadeConcept = {
