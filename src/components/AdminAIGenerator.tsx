@@ -166,7 +166,7 @@ const AdminAIGenerator = () => {
     else toast.error("Ошибка. Настройте Telegram в разделе «Telegram»");
   };
 
-  const reset = () => { setConcept(null); setSaved(false); setEventType(""); setVenueType(""); setColorPalette(""); setGuestCount(""); setDecorStyle(""); setVenuePreview(null); setVenuePhotoUrl(null); setMoodboardImages([]); };
+  const reset = () => { setConcept(null); setSaved(false); setEventType(""); setVenueType(""); setColorPalette(""); setGuestCount(""); setDecorStyle(""); setVenuePreview(null); setVenuePhotoUrl(null); setMoodboardImages([]); setTextDescription(""); };
 
   const generateMoodboard = async () => {
     if (!concept) return;
