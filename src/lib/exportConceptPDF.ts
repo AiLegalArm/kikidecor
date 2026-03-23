@@ -132,7 +132,7 @@ export async function exportConceptToPDF(
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor("rgba(255,255,255,0.85)");
+  doc.setTextColor("#DDDDDD");
   doc.text("Концепция оформления мероприятия", margin, 30);
 
   doc.setFontSize(8);
