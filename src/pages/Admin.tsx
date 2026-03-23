@@ -275,6 +275,7 @@ const Admin = () => {
 
         {/* Page content */}
         <main style={{ flex: 1, padding: "16px 12px", overflowX: "hidden" }} className="sm:p-6">
+         <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-primary" size={24} /></div>}>
           {/* ═══ LEADS ═══ */}
           {section === "leads" && (
             <>
