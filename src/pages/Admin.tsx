@@ -12,7 +12,7 @@ import {
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
-  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow,
+  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
