@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Trash2, Send, Download, Eye, Calendar, Users, Palette, Clock } from "lucide-react";
+import { Sparkles, Trash2, Send, Download, Eye, Calendar, Users, Palette, Clock, FileDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { sendTelegramMessage } from "./AdminTelegramSettings";
+import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 
 export type SavedConcept = {
     id: string;
