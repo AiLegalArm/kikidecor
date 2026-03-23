@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Trash2, Send, Download, Eye, Calendar, Users, Palette, Clock } from "lucide-react";
+import { Sparkles, Trash2, Send, Download, Eye, Calendar, Users, Palette, Clock, FileDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { sendTelegramMessage } from "./AdminTelegramSettings";
+import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 
 export type SavedConcept = {
     id: string;
@@ -37,6 +38,23 @@ const AdminSavedConcepts = () => {
     const [concepts, setConcepts] = useState<SavedConcept[]>([]);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [sending, setSending] = useState<string | null>(null);
+    const [exportingId, setExportingId] = useState<string | null>(null);
+
+    const handleExportPDF = async (c: SavedConcept) => {
+        setExportingId(c.id);
+        try {
+            await exportConceptToPDF({
+                conceptName: c.conceptName,
+                conceptDescription: c.conceptDescription,
+                colorPalette: c.colorNames,
+                colorHexCodes: c.colorHexCodes,
+                decorElements: c.decorElements?.map(el => ({ ...el, category: "focal" })),
+                estimatedComplexity: undefined,
+            }, { eventType: c.eventType, venueType: c.venueType, guestCount: c.guestCount, decorStyle: c.decorStyle });
+            toast.success("📄 PDF скачан!");
+        } catch { toast.error("Ошибка экспорта PDF"); }
+        finally { setExportingId(null); }
+    };
 
     useEffect(() => { setConcepts(getSavedConcepts()); }, []);
 
@@ -121,9 +139,12 @@ const AdminSavedConcepts = () => {
                             </div>
 
                             {/* Actions */}
-                            <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+                            <div style={{ display: "flex", gap: "6px", flexShrink: 0, flexWrap: "wrap" }}>
                                 <button onClick={() => setExpanded(expanded === c.id ? null : c.id)} style={{ padding: "7px 12px", borderRadius: "7px", border: "1px solid #E5E5E5", background: expanded === c.id ? "#F0EDFF" : "#F5F5F5", color: expanded === c.id ? "#7C3AED" : "#555", fontWeight: 600, fontSize: "0.75rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}>
                                     <Eye size={13} /> {expanded === c.id ? "Скрыть" : "Открыть"}
+                                </button>
+                                <button onClick={() => handleExportPDF(c)} disabled={exportingId === c.id} style={{ padding: "7px 12px", borderRadius: "7px", border: "1px solid #BFDBFE", background: "#EFF6FF", color: "#1D4ED8", fontWeight: 600, fontSize: "0.75rem", cursor: exportingId === c.id ? "default" : "pointer", display: "flex", alignItems: "center", gap: "4px", opacity: exportingId === c.id ? 0.6 : 1 }}>
+                                    {exportingId === c.id ? <Loader2 size={13} className="animate-spin" /> : <FileDown size={13} />} PDF
                                 </button>
                                 <button onClick={() => sendToTelegram(c)} disabled={sending === c.id} style={{ padding: "7px 12px", borderRadius: "7px", border: "1px solid #BBF7D0", background: "#F0FDF4", color: "#15803D", fontWeight: 600, fontSize: "0.75rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", opacity: sending === c.id ? 0.6 : 1 }}>
                                     <Send size={13} /> TG
