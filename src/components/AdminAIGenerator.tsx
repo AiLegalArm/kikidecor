@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { sendTelegramMessage, getTelegramSettings } from "./admin/AdminTelegramSettings";
 import { saveConcept } from "./admin/AdminSavedConcepts";
+import ConceptChat from "./admin/ConceptChat";
 
 type DecorConcept = {
   conceptName: string;
