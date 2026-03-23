@@ -144,33 +144,54 @@ Think like a creative director planning exterior/facade decorations for a luxury
     const prompts: string[] = (concept.imagePrompts || []).slice(0, 3);
     const colors = (concept.colorPalette || []).slice(0, 3).join(", ");
 
-    const imagePromises = prompts.map(async (prompt: string, idx: number) => {
-      const fullPrompt = `Luxury event facade decoration, professional architectural photography. ${prompt}. Color palette: ${colors}. Elegant, sophisticated exterior decor. Warm ambient lighting. No text, no watermarks, no people. Photorealistic.`;
+    // Pre-fetch image once if available
+    let uploadedImageDataUrl: string | null = null;
+    if (imageUrl) {
+      try {
+        const img = await fetchImageAsBase64(imageUrl);
+        uploadedImageDataUrl = `data:${img.mimeType};base64,${img.data}`;
+      } catch (e) {
+        console.warn("[generate-facade] Could not pre-fetch photo for editing:", e);
+      }
+    }
 
-      // First image: try to edit the uploaded photo with decoration overlay
-      if (idx === 0 && imageUrl) {
+    const imagePromises = prompts.map(async (prompt: string) => {
+      // If user uploaded a photo, ALWAYS edit it (overlay decor on their building)
+      if (uploadedImageDataUrl) {
         try {
-          const img = await fetchImageAsBase64(imageUrl);
-          const contextUrl = `data:${img.mimeType};base64,${img.data}`;
           const editData = await aiImageGen({
             apiKey: API_KEY,
+            model: "google/gemini-3-pro-image-preview",
             messages: [{
               role: "user",
               content: [
-                { type: "image_url", image_url: { url: contextUrl } },
-                { type: "text", text: `IMPORTANT: Edit THIS EXACT photo. Do NOT generate a new building. Keep the SAME building, SAME angle, SAME perspective, SAME architecture exactly as shown. Only ADD decoration elements ON TOP of the existing building: ${prompt}. Add floral installations, drapery, lighting in ${colors} colors. The result must look like the SAME building with decorations added. Photorealistic edit.` },
+                { type: "image_url", image_url: { url: uploadedImageDataUrl } },
+                {
+                  type: "text",
+                  text: [
+                    "You are a photo editor. You MUST keep the EXACT same building from this photo unchanged.",
+                    "Do NOT replace the building. Do NOT change the architecture, angle, lighting, or surroundings.",
+                    "Your ONLY task: overlay event decoration elements on top of this exact building photo.",
+                    `Decorations to add: ${prompt}`,
+                    `Use these colors: ${colors}`,
+                    "Add: floral garlands on walls, drapery on entrance, uplighting on facade, flower arrangements near doors.",
+                    "The building itself must remain 100% recognizable — same walls, same windows, same roof.",
+                    "Result: photorealistic decorated version of THIS EXACT building.",
+                  ].join("\n"),
+                },
               ],
             }],
-            timeoutMs: 60_000,
+            timeoutMs: 70_000,
           });
           const result = extractGatewayImage(editData);
           if (result) return result;
         } catch (e) {
-          console.warn(`[generate-facade] Image edit failed, falling back to generation:`, e);
+          console.warn(`[generate-facade] Image edit failed, falling back:`, e);
         }
       }
 
-      // Fallback: generate from scratch
+      // Fallback: generate from scratch (no user photo)
+      const fullPrompt = `Luxury event facade decoration, professional architectural photography. ${prompt}. Color palette: ${colors}. Elegant, sophisticated exterior decor. Warm ambient lighting. No text, no watermarks, no people. Photorealistic.`;
       try {
         const genData = await aiImageGen({
           apiKey: API_KEY,
