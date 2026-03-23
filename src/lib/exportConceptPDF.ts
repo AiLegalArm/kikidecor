@@ -343,5 +343,5 @@ export async function exportConceptToPDF(
 
   // ── Save ──
   const safeName = concept.conceptName.replace(/[^a-zA-Zа-яА-Я0-9]/g, "_").slice(0, 40);
-  doc.save(`KiKi_Concept_${safeName}.pdf`);
+  savePDFCrossPlatform(doc, `KiKi_Concept_${safeName}.pdf`);
 }
