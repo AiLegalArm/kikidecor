@@ -69,6 +69,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "analytics", label: "Аналитика", icon: BarChart3, group: "Маркетинг" },
   { key: "venue", label: "Анализ площадки", icon: Camera, group: "AI" },
   { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
+  { key: "ai-facade", label: "AI Фасады", icon: Building2, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
   { key: "saved-concepts", label: "AI Концепции", icon: BookOpen, group: "AI" },
   { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
