@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { sendTelegramMessage, getTelegramSettings } from "./admin/AdminTelegramSettings";
 import { saveConcept } from "./admin/AdminSavedConcepts";
 import ConceptChat from "./admin/ConceptChat";
+import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 
 type DecorConcept = {
   conceptName: string;
