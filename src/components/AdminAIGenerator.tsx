@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Sparkles, Loader2, Palette, Lightbulb, Flower2, UtensilsCrossed,
   Layers, Upload, Camera, Image as ImageIcon, Star, Armchair, Send,
-  BookmarkPlus, Copy, RotateCcw, ChevronDown, Check, Grid3X3,
+  BookmarkPlus, Copy, RotateCcw, ChevronDown, Check, Grid3X3, FileDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
