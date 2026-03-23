@@ -687,6 +687,14 @@ const AdminAIGenerator = () => {
             )}
           </div>
         )}
+
+        {/* AI Chat for refining concept */}
+        {concept && (
+          <ConceptChat
+            concept={concept}
+            onConceptUpdate={(updated) => setConcept(updated)}
+          />
+        )}
       </div>
     </div>
   );
