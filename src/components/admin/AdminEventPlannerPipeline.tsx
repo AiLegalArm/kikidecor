@@ -60,7 +60,8 @@ const AdminEventPlannerPipeline = () => {
       await exportEventPipelineToPDF(result, brief);
       toast.success("PDF экспортирован");
     } catch (err) {
-      toast.error("Ошибка экспорта PDF");
+      console.error("PDF export error:", err);
+      toast.error("Ошибка экспорта PDF: " + (err instanceof Error ? err.message : String(err)));
     } finally {
       setExporting(false);
     }

@@ -176,7 +176,8 @@ const AdminAIGenerator = () => {
       await exportConceptToPDF(concept, { eventType, venueType, guestCount, decorStyle });
       toast.success("📄 PDF скачан!");
     } catch (err) {
-      toast.error("Ошибка экспорта PDF");
+      console.error("PDF export error:", err);
+      toast.error("Ошибка экспорта PDF: " + (err instanceof Error ? err.message : String(err)));
     } finally { setExporting(false); }
   };
 
