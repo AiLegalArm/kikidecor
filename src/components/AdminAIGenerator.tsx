@@ -79,7 +79,7 @@ const AdminAIGenerator = () => {
   const [generatingMoodboard, setGeneratingMoodboard] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canGenerate = !!(eventType && venueType && colorPalette && guestCount);
+  const canGenerate = !!(eventType && venueType && colorPalette && guestCount) || textDescription.trim().length >= 10;
 
   const uploadFile = async (file: File) => {
     if (!file.type.startsWith("image/")) { toast.error("Загрузите изображение"); return; }
