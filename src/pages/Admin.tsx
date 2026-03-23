@@ -407,6 +407,9 @@ const Admin = () => {
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && <AdminAIGenerator />}
 
+          {/* ═══ AI FACADE GENERATOR ═══ */}
+          {section === "ai-facade" && <AdminFacadeGenerator />}
+
           {/* ═══ VENUE ANALYZER ═══ */}
           {section === "venue" && <AdminVenueAnalyzer />}
 
