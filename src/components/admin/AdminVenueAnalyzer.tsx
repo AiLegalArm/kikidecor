@@ -260,6 +260,13 @@ const AdminVenueAnalyzer = () => {
       {/* ── Analysis Results ── */}
       {analysis && (
         <div className="space-y-6 animate-in fade-in duration-500">
+          {/* Export button */}
+          <div className="flex gap-2">
+            <Button variant="outline" className="rounded-none gap-2" onClick={handleExportPDF} disabled={exporting}>
+              {exporting ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
+              Экспорт PDF
+            </Button>
+          </div>
           {/* Overview cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-background border border-border p-4">
