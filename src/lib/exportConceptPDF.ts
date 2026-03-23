@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import type jsPDFType from "jspdf";
 
 type ConceptData = {
   conceptName: string;
