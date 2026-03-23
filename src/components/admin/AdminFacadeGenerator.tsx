@@ -62,7 +62,7 @@ const AdminFacadeGenerator = () => {
     try {
       await exportConceptToPDF(concept, { decorStyle: style });
       toast.success("📄 PDF скачан!");
-    } catch { toast.error("Ошибка экспорта PDF"); }
+    } catch (err) { console.error("PDF export error:", err); toast.error("Ошибка: " + (err instanceof Error ? err.message : String(err))); }
     finally { setExporting(false); }
   };
 
