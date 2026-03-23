@@ -66,6 +66,7 @@ const AdminAIGenerator = () => {
   const [decorStyle, setDecorStyle] = useState("");
   const [venuePhotoUrl, setVenuePhotoUrl] = useState<string | null>(null);
   const [venuePreview, setVenuePreview] = useState<string | null>(null);
+  const [textDescription, setTextDescription] = useState("");
   const [generating, setGenerating] = useState(false);
   const [concept, setConcept] = useState<DecorConcept | null>(null);
   const [activeTab, setActiveTab] = useState<"elements" | "flowers" | "lighting" | "backdrops" | "table">("elements");
