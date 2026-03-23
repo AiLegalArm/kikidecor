@@ -14,9 +14,9 @@
 const LOVABLE_GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
 export const AI_MODELS = {
-  REASONING: "google/gemini-2.5-pro",
+  REASONING: "google/gemini-3.1-pro-preview",
   FAST: "google/gemini-3-flash-preview",
-  IMAGE_GEN: "google/gemini-2.5-flash-image",
+  IMAGE_GEN: "google/gemini-3.1-flash-image-preview",
   VISION: "google/gemini-2.5-flash",
 } as const;
 
