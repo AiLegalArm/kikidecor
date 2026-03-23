@@ -396,6 +396,14 @@ const AdminFacadeGenerator = () => {
           </div>
         </div>
       )}
+
+      {/* AI Chat for refining facade concept */}
+      {concept && (
+        <ConceptChat
+          concept={concept}
+          onConceptUpdate={(updated) => setConcept(updated)}
+        />
+      )}
     </div>
   );
 };
