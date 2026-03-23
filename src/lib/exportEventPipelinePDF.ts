@@ -181,7 +181,7 @@ export async function exportEventPipelineToPDF(data: Record<string, unknown>, br
     doc.text(`${p} / ${pageCount}`, W - M, 290, { align: "right" });
   }
 
-  doc.save("KiKi_Event_Pipeline.pdf");
+  savePDFCrossPlatform(doc, "KiKi_Event_Pipeline.pdf");
 
   // --- helpers ---
   function sectionTitle(title: string) {

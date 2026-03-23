@@ -1,4 +1,5 @@
 import type jsPDFType from "jspdf";
+import { savePDFCrossPlatform } from "./pdfSaveHelper";
 
 type ConceptData = {
   conceptName: string;
