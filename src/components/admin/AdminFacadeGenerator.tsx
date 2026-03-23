@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import ConceptChat from "./ConceptChat";
 import {
   Sparkles, Loader2, Upload, Camera, Lightbulb, Flower2,
-  RotateCcw, Building2, Lamp, Paintbrush,
+  RotateCcw, Building2, Lamp, Paintbrush, FileDown,
 } from "lucide-react";
+import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 import { toast } from "sonner";
 
 type FacadeConcept = {
@@ -50,9 +51,20 @@ const AdminFacadeGenerator = () => {
   const [concept, setConcept] = useState<FacadeConcept | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [activeTab, setActiveTab] = useState<"elements" | "lighting" | "floral">("elements");
+  const [exporting, setExporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const canGenerate = description.trim().length >= 5;
+
+  const handleExportPDF = async () => {
+    if (!concept) return;
+    setExporting(true);
+    try {
+      await exportConceptToPDF(concept, { decorStyle: style });
+      toast.success("📄 PDF скачан!");
+    } catch { toast.error("Ошибка экспорта PDF"); }
+    finally { setExporting(false); }
+  };
 
   const uploadFile = async (file: File) => {
     if (!file.type.startsWith("image/")) { toast.error("Загрузите изображение"); return; }
@@ -293,6 +305,17 @@ const AdminFacadeGenerator = () => {
                 </p>
               </div>
             )}
+
+            {/* Action buttons */}
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "16px" }}>
+              <button onClick={handleExportPDF} disabled={exporting} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "9px 14px", borderRadius: "8px", border: "1px solid #BFDBFE", background: "#EFF6FF", color: "#1D4ED8", fontWeight: 600, fontSize: "0.8125rem", cursor: exporting ? "default" : "pointer", opacity: exporting ? 0.7 : 1 }}>
+                {exporting ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
+                {exporting ? "Экспорт..." : "Скачать PDF"}
+              </button>
+              <button onClick={reset} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "9px 14px", borderRadius: "8px", border: "1px solid #E5E5E5", background: "#F5F5F5", color: "#555", fontWeight: 600, fontSize: "0.8125rem", cursor: "pointer" }}>
+                <RotateCcw size={14} /> Новая концепция
+              </button>
+            </div>
           </div>
 
           {/* Generated images */}

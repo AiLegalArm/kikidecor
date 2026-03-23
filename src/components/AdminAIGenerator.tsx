@@ -3,13 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Sparkles, Loader2, Palette, Lightbulb, Flower2, UtensilsCrossed,
   Layers, Upload, Camera, Image as ImageIcon, Star, Armchair, Send,
-  BookmarkPlus, Copy, RotateCcw, ChevronDown, Check, Grid3X3,
+  BookmarkPlus, Copy, RotateCcw, ChevronDown, Check, Grid3X3, FileDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { sendTelegramMessage, getTelegramSettings } from "./admin/AdminTelegramSettings";
 import { saveConcept } from "./admin/AdminSavedConcepts";
 import ConceptChat from "./admin/ConceptChat";
+import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 
 type DecorConcept = {
   conceptName: string;
@@ -74,6 +75,7 @@ const AdminAIGenerator = () => {
   const [saved, setSaved] = useState(false);
   const [sending, setSending] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [moodboardImages, setMoodboardImages] = useState<{ label: string; url: string }[]>([]);
@@ -165,6 +167,17 @@ const AdminAIGenerator = () => {
     setSending(false);
     if (ok) toast.success("✅ Отправлено в Telegram!");
     else toast.error("Ошибка. Настройте Telegram в разделе «Telegram»");
+  };
+
+  const handleExportPDF = async () => {
+    if (!concept) return;
+    setExporting(true);
+    try {
+      await exportConceptToPDF(concept, { eventType, venueType, guestCount, decorStyle });
+      toast.success("📄 PDF скачан!");
+    } catch (err) {
+      toast.error("Ошибка экспорта PDF");
+    } finally { setExporting(false); }
   };
 
   const reset = () => { setConcept(null); setSaved(false); setEventType(""); setVenueType(""); setColorPalette(""); setGuestCount(""); setDecorStyle(""); setVenuePreview(null); setVenuePhotoUrl(null); setMoodboardImages([]); setTextDescription(""); };
@@ -462,6 +475,10 @@ const AdminAIGenerator = () => {
                     <button onClick={handleCopy} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "9px 14px", borderRadius: "8px", border: "1px solid #E5E5E5", background: "#F5F5F5", color: "#555", fontWeight: 600, fontSize: "0.8125rem", cursor: "pointer" }}>
                       {copied ? <Check size={14} /> : <Copy size={14} />}
                       {copied ? "Скопировано" : "Копировать"}
+                    </button>
+                    <button onClick={handleExportPDF} disabled={exporting} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "9px 14px", borderRadius: "8px", border: "1px solid #BFDBFE", background: "#EFF6FF", color: "#1D4ED8", fontWeight: 600, fontSize: "0.8125rem", cursor: exporting ? "default" : "pointer", opacity: exporting ? 0.7 : 1 }}>
+                      {exporting ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
+                      {exporting ? "Экспорт..." : "PDF"}
                     </button>
                     <button onClick={reset} style={{ display: "flex", alignItems: "center", gap: "6px", padding: "9px 14px", borderRadius: "8px", border: "1px solid #E5E5E5", background: "#fff", color: "#555", fontWeight: 600, fontSize: "0.8125rem", cursor: "pointer" }}>
                       <RotateCcw size={14} /> Новая
