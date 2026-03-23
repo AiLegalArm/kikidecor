@@ -81,7 +81,7 @@ Think like a creative director presenting a full mood board concept to an afflue
     // Step 1: Generate concept with REASONING model
     const chatData = await aiChat({
       apiKey: API_KEY,
-      model: AI_MODELS.REASONING,
+      model: AI_MODELS.FAST,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userContent },
