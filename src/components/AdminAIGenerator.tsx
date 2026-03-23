@@ -169,6 +169,17 @@ const AdminAIGenerator = () => {
     else toast.error("Ошибка. Настройте Telegram в разделе «Telegram»");
   };
 
+  const handleExportPDF = async () => {
+    if (!concept) return;
+    setExporting(true);
+    try {
+      await exportConceptToPDF(concept, { eventType, venueType, guestCount, decorStyle });
+      toast.success("📄 PDF скачан!");
+    } catch (err) {
+      toast.error("Ошибка экспорта PDF");
+    } finally { setExporting(false); }
+  };
+
   const reset = () => { setConcept(null); setSaved(false); setEventType(""); setVenueType(""); setColorPalette(""); setGuestCount(""); setDecorStyle(""); setVenuePreview(null); setVenuePhotoUrl(null); setMoodboardImages([]); setTextDescription(""); };
 
   const generateMoodboard = async () => {
