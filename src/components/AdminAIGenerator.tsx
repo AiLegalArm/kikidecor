@@ -110,7 +110,7 @@ const AdminAIGenerator = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("generate-decor-concept", {
-        body: { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl },
+        body: { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl, textDescription: textDescription.trim() || undefined },
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
