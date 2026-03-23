@@ -78,7 +78,18 @@ const AdminVenueAnalyzer = () => {
   const [analysis, setAnalysis] = useState<VenueAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [expandedZone, setExpandedZone] = useState<number | null>(null);
+  const [exporting, setExporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExportPDF = async () => {
+    if (!analysis) return;
+    setExporting(true);
+    try {
+      await exportVenueAnalysisToPDF(analysis, { eventType, guestCount, colorPalette });
+      toast.success("📄 PDF скачан!");
+    } catch { toast.error("Ошибка экспорта PDF"); }
+    finally { setExporting(false); }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
