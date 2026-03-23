@@ -51,9 +51,20 @@ const AdminFacadeGenerator = () => {
   const [concept, setConcept] = useState<FacadeConcept | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [activeTab, setActiveTab] = useState<"elements" | "lighting" | "floral">("elements");
+  const [exporting, setExporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const canGenerate = description.trim().length >= 5;
+
+  const handleExportPDF = async () => {
+    if (!concept) return;
+    setExporting(true);
+    try {
+      await exportConceptToPDF(concept, { decorStyle: style });
+      toast.success("📄 PDF скачан!");
+    } catch { toast.error("Ошибка экспорта PDF"); }
+    finally { setExporting(false); }
+  };
 
   const uploadFile = async (file: File) => {
     if (!file.type.startsWith("image/")) { toast.error("Загрузите изображение"); return; }
