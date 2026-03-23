@@ -32,9 +32,14 @@ serve(async (req) => {
       return errorResponse("INVALID_INPUT", "Request body must be valid JSON", 400);
     }
 
-    const { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl } = body;
-    if (!eventType || !venueType || !colorPalette || !guestCount) {
-      return errorResponse("INVALID_INPUT", "Required: eventType, venueType, colorPalette, guestCount", 400);
+    const { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl, textDescription } = body;
+    
+    // Allow generation either from structured fields OR from text description
+    const hasStructured = eventType && venueType && colorPalette && guestCount;
+    const hasDescription = textDescription && textDescription.trim().length >= 10;
+    
+    if (!hasStructured && !hasDescription) {
+      return errorResponse("INVALID_INPUT", "Required: eventType, venueType, colorPalette, guestCount OR textDescription (min 10 chars)", 400);
     }
 
     const API_KEY = requireApiKey();
