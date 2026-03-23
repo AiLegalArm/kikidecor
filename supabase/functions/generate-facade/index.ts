@@ -157,8 +157,8 @@ Think like a creative director planning exterior/facade decorations for a luxury
             messages: [{
               role: "user",
               content: [
-                { type: "text", text: `Add luxurious event decorations to this building facade: ${prompt}. Add elegant floral installations, drapery, lighting, and architectural accents in ${colors} color scheme. Keep the original building structure visible. Professional event decoration photography.` },
                 { type: "image_url", image_url: { url: contextUrl } },
+                { type: "text", text: `IMPORTANT: Edit THIS EXACT photo. Do NOT generate a new building. Keep the SAME building, SAME angle, SAME perspective, SAME architecture exactly as shown. Only ADD decoration elements ON TOP of the existing building: ${prompt}. Add floral installations, drapery, lighting in ${colors} colors. The result must look like the SAME building with decorations added. Photorealistic edit.` },
               ],
             }],
             timeoutMs: 60_000,
