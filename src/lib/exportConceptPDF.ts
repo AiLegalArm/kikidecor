@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import type jsPDFType from "jspdf";
 
 type ConceptData = {
   conceptName: string;
@@ -57,6 +57,7 @@ export async function exportConceptToPDF(
   concept: ConceptData,
   meta?: { eventType?: string; venueType?: string; guestCount?: string; decorStyle?: string }
 ): Promise<void> {
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const W = 210;
   const margin = 18;

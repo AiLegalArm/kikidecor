@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,25 +14,27 @@ import {
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
   Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2,
 } from "lucide-react";
-import AdminCalendar from "@/components/AdminCalendar";
-import AdminAIGenerator from "@/components/AdminAIGenerator";
 import AdminLogin from "@/components/AdminLogin";
-import AdminProducts from "@/components/admin/AdminProducts";
-import AdminInstagramCommerce from "@/components/admin/AdminInstagramCommerce";
-import AdminInstagramAnalytics from "@/components/admin/AdminInstagramAnalytics";
-import AdminVenueAnalyzer from "@/components/admin/AdminVenueAnalyzer";
-import AdminAIInsights from "@/components/admin/AdminAIInsights";
-import AdminAnalytics from "@/components/admin/AdminAnalytics";
-import AdminOrders from "@/components/admin/AdminOrders";
-import AdminCustomers from "@/components/admin/AdminCustomers";
-import AdminTelegramSettings from "@/components/admin/AdminTelegramSettings";
-import AdminBrandDesign from "@/components/admin/AdminBrandDesign";
-import AdminMediaManager from "@/components/admin/AdminMediaManager";
-import AdminSavedConcepts from "@/components/admin/AdminSavedConcepts";
-import AdminEventPlannerPipeline from "@/components/admin/AdminEventPlannerPipeline";
-import AdminFacadeGenerator from "@/components/admin/AdminFacadeGenerator";
 import type { Session } from "@supabase/supabase-js";
 import { isAdminUser } from "@/lib/admin";
+
+// Lazy-load all admin sub-panels
+const AdminCalendar = lazy(() => import("@/components/AdminCalendar"));
+const AdminAIGenerator = lazy(() => import("@/components/AdminAIGenerator"));
+const AdminProducts = lazy(() => import("@/components/admin/AdminProducts"));
+const AdminInstagramCommerce = lazy(() => import("@/components/admin/AdminInstagramCommerce"));
+const AdminInstagramAnalytics = lazy(() => import("@/components/admin/AdminInstagramAnalytics"));
+const AdminVenueAnalyzer = lazy(() => import("@/components/admin/AdminVenueAnalyzer"));
+const AdminAIInsights = lazy(() => import("@/components/admin/AdminAIInsights"));
+const AdminAnalytics = lazy(() => import("@/components/admin/AdminAnalytics"));
+const AdminOrders = lazy(() => import("@/components/admin/AdminOrders"));
+const AdminCustomers = lazy(() => import("@/components/admin/AdminCustomers"));
+const AdminTelegramSettings = lazy(() => import("@/components/admin/AdminTelegramSettings"));
+const AdminBrandDesign = lazy(() => import("@/components/admin/AdminBrandDesign"));
+const AdminMediaManager = lazy(() => import("@/components/admin/AdminMediaManager"));
+const AdminSavedConcepts = lazy(() => import("@/components/admin/AdminSavedConcepts"));
+const AdminEventPlannerPipeline = lazy(() => import("@/components/admin/AdminEventPlannerPipeline"));
+const AdminFacadeGenerator = lazy(() => import("@/components/admin/AdminFacadeGenerator"));
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
@@ -273,6 +275,7 @@ const Admin = () => {
 
         {/* Page content */}
         <main style={{ flex: 1, padding: "16px 12px", overflowX: "hidden" }} className="sm:p-6">
+         <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-primary" size={24} /></div>}>
           {/* ═══ LEADS ═══ */}
           {section === "leads" && (
             <>
@@ -433,6 +436,7 @@ const Admin = () => {
 
           {/* ═══ TELEGRAM SETTINGS ═══ */}
           {section === "telegram" && <AdminTelegramSettings />}
+         </Suspense>
         </main>
       </div>
 

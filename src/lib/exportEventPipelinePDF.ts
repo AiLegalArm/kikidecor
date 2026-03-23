@@ -1,4 +1,4 @@
-import jsPDF from "jspdf";
+import type jsPDFType from "jspdf";
 
 const LABEL_MAP: Record<string, string> = {
   event_type: "Тип события", event_goal: "Цель", location: "Локация", venue: "Площадка",
@@ -36,6 +36,7 @@ function label(key: string): string {
 }
 
 export async function exportEventPipelineToPDF(data: Record<string, unknown>, brief: string): Promise<void> {
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const W = 210;
   const M = 16;
