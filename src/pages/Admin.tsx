@@ -12,7 +12,7 @@ import {
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
-  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow,
+  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2,
 } from "lucide-react";
 import AdminCalendar from "@/components/AdminCalendar";
 import AdminAIGenerator from "@/components/AdminAIGenerator";
@@ -30,6 +30,7 @@ import AdminBrandDesign from "@/components/admin/AdminBrandDesign";
 import AdminMediaManager from "@/components/admin/AdminMediaManager";
 import AdminSavedConcepts from "@/components/admin/AdminSavedConcepts";
 import AdminEventPlannerPipeline from "@/components/admin/AdminEventPlannerPipeline";
+import AdminFacadeGenerator from "@/components/admin/AdminFacadeGenerator";
 import type { Session } from "@supabase/supabase-js";
 import { isAdminUser } from "@/lib/admin";
 
@@ -55,7 +56,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts" | "event-pipeline";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "ai-facade" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
@@ -68,6 +69,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "analytics", label: "Аналитика", icon: BarChart3, group: "Маркетинг" },
   { key: "venue", label: "Анализ площадки", icon: Camera, group: "AI" },
   { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
+  { key: "ai-facade", label: "AI Фасады", icon: Building2, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
   { key: "saved-concepts", label: "AI Концепции", icon: BookOpen, group: "AI" },
   { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
@@ -404,6 +406,9 @@ const Admin = () => {
 
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && <AdminAIGenerator />}
+
+          {/* ═══ AI FACADE GENERATOR ═══ */}
+          {section === "ai-facade" && <AdminFacadeGenerator />}
 
           {/* ═══ VENUE ANALYZER ═══ */}
           {section === "venue" && <AdminVenueAnalyzer />}
