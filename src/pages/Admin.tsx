@@ -30,6 +30,7 @@ import AdminBrandDesign from "@/components/admin/AdminBrandDesign";
 import AdminMediaManager from "@/components/admin/AdminMediaManager";
 import AdminSavedConcepts from "@/components/admin/AdminSavedConcepts";
 import AdminEventPlannerPipeline from "@/components/admin/AdminEventPlannerPipeline";
+import AdminFacadeGenerator from "@/components/admin/AdminFacadeGenerator";
 import type { Session } from "@supabase/supabase-js";
 import { isAdminUser } from "@/lib/admin";
 
