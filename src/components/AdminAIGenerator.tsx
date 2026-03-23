@@ -75,6 +75,7 @@ const AdminAIGenerator = () => {
   const [saved, setSaved] = useState(false);
   const [sending, setSending] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [moodboardImages, setMoodboardImages] = useState<{ label: string; url: string }[]>([]);
