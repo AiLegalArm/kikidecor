@@ -1,4 +1,5 @@
 import type jsPDFType from "jspdf";
+import { savePDFCrossPlatform } from "./pdfSaveHelper";
 
 const LABEL_MAP: Record<string, string> = {
   event_type: "Тип события", event_goal: "Цель", location: "Локация", venue: "Площадка",
