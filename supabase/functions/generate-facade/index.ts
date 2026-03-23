@@ -61,7 +61,7 @@ Think like a creative director planning exterior/facade decorations for a luxury
 
     const chatData = await aiChat({
       apiKey: API_KEY,
-      model: AI_MODELS.REASONING,
+      model: AI_MODELS.FAST,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userContent },
