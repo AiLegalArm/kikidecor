@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
   Upload, Loader2, MapPin, Ruler, Users, Lightbulb, Palette,
-  Star, ChevronDown, ChevronUp, Camera, Sparkles, Target, Layers,
+  Star, ChevronDown, ChevronUp, Camera, Sparkles, Target, Layers, FileDown,
 } from "lucide-react";
+import { exportVenueAnalysisToPDF } from "@/lib/exportVenueAnalysisPDF";
 
 interface VenueAnalysis {
   venue_type: string;
