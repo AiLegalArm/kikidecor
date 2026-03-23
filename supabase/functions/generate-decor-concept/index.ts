@@ -32,9 +32,14 @@ serve(async (req) => {
       return errorResponse("INVALID_INPUT", "Request body must be valid JSON", 400);
     }
 
-    const { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl } = body;
-    if (!eventType || !venueType || !colorPalette || !guestCount) {
-      return errorResponse("INVALID_INPUT", "Required: eventType, venueType, colorPalette, guestCount", 400);
+    const { eventType, venueType, colorPalette, guestCount, decorStyle, venuePhotoUrl, textDescription } = body;
+    
+    // Allow generation either from structured fields OR from text description
+    const hasStructured = eventType && venueType && colorPalette && guestCount;
+    const hasDescription = textDescription && textDescription.trim().length >= 10;
+    
+    if (!hasStructured && !hasDescription) {
+      return errorResponse("INVALID_INPUT", "Required: eventType, venueType, colorPalette, guestCount OR textDescription (min 10 chars)", 400);
     }
 
     const API_KEY = requireApiKey();
@@ -51,16 +56,26 @@ serve(async (req) => {
       }
     }
 
+    const contextParts: string[] = [];
+    if (eventType) contextParts.push(`Event: ${eventType}`);
+    if (venueType) contextParts.push(`Venue: ${venueType}`);
+    if (guestCount) contextParts.push(`Guests: ${guestCount}`);
+    if (decorStyle) contextParts.push(`Style: ${decorStyle}`);
+    if (colorPalette) contextParts.push(`Colors: ${colorPalette}`);
+    
     const systemPrompt = `You are KiKi Decor Studio's creative director — a luxury event decoration company. Respond ONLY with the generate_concept tool call. All output text in Russian.
 
-Event: ${eventType} | Venue: ${venueType} | Guests: ${guestCount} | Style: ${decorStyle || "Elegant luxury"} | Colors: ${colorPalette}
-${venueImageContent ? "A venue photo is attached. Analyze the space and tailor every recommendation specifically to what you see." : ""}
+${contextParts.length > 0 ? contextParts.join(" | ") : ""}
+${textDescription ? `\nClient's vision: "${textDescription}"` : ""}
+${venueImageContent ? "\nA venue photo is attached. Analyze the space and tailor every recommendation specifically to what you see." : ""}
 
 Think like a creative director presenting a full mood board concept to an affluent client. Be specific about materials, textures, flowers, and placement. Consider seasonality, logistics, and guest flow.`;
 
-    const userContent: any[] = [
-      { type: "text", text: "Generate a complete luxury decoration concept." + (venueImageContent ? " Analyze the venue photo." : "") },
-    ];
+    const userText = textDescription
+      ? `Generate a complete luxury decoration concept based on the client's description: "${textDescription}"` + (venueImageContent ? " Also analyze the venue photo." : "")
+      : "Generate a complete luxury decoration concept." + (venueImageContent ? " Analyze the venue photo." : "");
+
+    const userContent: any[] = [{ type: "text", text: userText }];
     if (venueImageContent) userContent.push(venueImageContent);
 
     // Step 1: Generate concept with REASONING model
