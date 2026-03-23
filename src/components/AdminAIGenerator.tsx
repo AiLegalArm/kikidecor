@@ -338,6 +338,28 @@ const AdminAIGenerator = () => {
                     </div>
                   </div>
 
+                  {/* Text description */}
+                  <div>
+                    <label style={labelSt}>Текстовое описание</label>
+                    <textarea
+                      value={textDescription}
+                      onChange={e => setTextDescription(e.target.value)}
+                      placeholder="Опишите свою идею декора... Например: «Хочу романтическую свадьбу в стиле Прованс с лавандой, белыми свечами и винтажной мебелью на 80 гостей в загородном поместье»"
+                      rows={3}
+                      style={{
+                        ...sel,
+                        backgroundImage: "none",
+                        resize: "vertical",
+                        minHeight: "72px",
+                        fontFamily: "inherit",
+                        lineHeight: "1.5",
+                      }}
+                    />
+                    <p style={{ fontSize: "0.6875rem", color: "#999", margin: "4px 0 0" }}>
+                      💡 Можно генерировать только по описанию — без заполнения полей выше (мин. 10 символов)
+                    </p>
+                  </div>
+
                   {/* Generate button */}
                   <button
                     onClick={generate}
