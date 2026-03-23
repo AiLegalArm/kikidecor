@@ -56,7 +56,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts" | "event-pipeline";
+type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "ai-facade" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
