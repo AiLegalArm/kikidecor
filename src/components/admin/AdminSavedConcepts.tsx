@@ -139,9 +139,12 @@ const AdminSavedConcepts = () => {
                             </div>
 
                             {/* Actions */}
-                            <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+                            <div style={{ display: "flex", gap: "6px", flexShrink: 0, flexWrap: "wrap" }}>
                                 <button onClick={() => setExpanded(expanded === c.id ? null : c.id)} style={{ padding: "7px 12px", borderRadius: "7px", border: "1px solid #E5E5E5", background: expanded === c.id ? "#F0EDFF" : "#F5F5F5", color: expanded === c.id ? "#7C3AED" : "#555", fontWeight: 600, fontSize: "0.75rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}>
                                     <Eye size={13} /> {expanded === c.id ? "Скрыть" : "Открыть"}
+                                </button>
+                                <button onClick={() => handleExportPDF(c)} disabled={exportingId === c.id} style={{ padding: "7px 12px", borderRadius: "7px", border: "1px solid #BFDBFE", background: "#EFF6FF", color: "#1D4ED8", fontWeight: 600, fontSize: "0.75rem", cursor: exportingId === c.id ? "default" : "pointer", display: "flex", alignItems: "center", gap: "4px", opacity: exportingId === c.id ? 0.6 : 1 }}>
+                                    {exportingId === c.id ? <Loader2 size={13} className="animate-spin" /> : <FileDown size={13} />} PDF
                                 </button>
                                 <button onClick={() => sendToTelegram(c)} disabled={sending === c.id} style={{ padding: "7px 12px", borderRadius: "7px", border: "1px solid #BBF7D0", background: "#F0FDF4", color: "#15803D", fontWeight: 600, fontSize: "0.75rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", opacity: sending === c.id ? 0.6 : 1 }}>
                                     <Send size={13} /> TG
