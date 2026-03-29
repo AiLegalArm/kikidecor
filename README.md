@@ -60,6 +60,45 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## AI integrations (current setup)
+
+This project uses Supabase Edge Functions as an AI backend layer.
+
+### Request flow
+
+1. Frontend calls AI features through `supabase.functions.invoke(...)`.
+2. Supabase Edge Functions call `https://ai.gateway.lovable.dev/v1/chat/completions`.
+3. Authentication to the AI gateway is done with `LOVABLE_API_KEY` (server-side env var).
+4. AI functions enrich responses with live Supabase data (for example, from `products`).
+
+### Implemented AI endpoints
+
+| Product feature | Supabase function | Model |
+|---|---|---|
+| AI stylist (preferences) | `ai-stylist` | `google/gemini-3-flash-preview` |
+| Style photo analyzer | `analyze-style-photo` | `google/gemini-2.5-flash` |
+| Find similar items | `find-similar` | `google/gemini-2.5-flash` |
+| Virtual try-on | `virtual-tryon` | `google/gemini-2.5-flash-image` |
+| Outfit generator | `generate-outfits` | `google/gemini-3-flash-preview` |
+| Venue analyzer | `analyze-venue` | `google/gemini-2.5-pro` |
+| Decor concept generator | `generate-decor-concept` | `google/gemini-2.5-pro` (+ image generation via `google/gemini-2.5-flash-image`) |
+
+### Required environment variables (Edge Functions)
+
+- `LOVABLE_API_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+---
+
+## AI интеграции (кратко на русском)
+
+- Веб-приложение вызывает AI-фичи через `supabase.functions.invoke(...)`.
+- Edge Functions отправляют запросы в `https://ai.gateway.lovable.dev/v1/chat/completions`.
+- Доступ к AI gateway идет через серверный ключ `LOVABLE_API_KEY`.
+- Для персонализации ответов функции подтягивают данные из Supabase (например, каталог `products`).
+- Основные функции: `ai-stylist`, `analyze-style-photo`, `find-similar`, `virtual-tryon`, `generate-outfits`, `analyze-venue`, `generate-decor-concept`.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
