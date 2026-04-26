@@ -427,6 +427,75 @@ export type Database = {
         }
         Relationships: []
       }
+      packages: {
+        Row: {
+          created_at: string
+          cta_label: string | null
+          cta_label_en: string | null
+          currency: string
+          description: string | null
+          description_en: string | null
+          features: Json
+          features_en: Json
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          name: string
+          name_en: string | null
+          price_from: number
+          price_to: number | null
+          slug: string
+          sort_order: number
+          subtitle: string | null
+          subtitle_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string | null
+          cta_label_en?: string | null
+          currency?: string
+          description?: string | null
+          description_en?: string | null
+          features?: Json
+          features_en?: Json
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          name: string
+          name_en?: string | null
+          price_from?: number
+          price_to?: number | null
+          slug: string
+          sort_order?: number
+          subtitle?: string | null
+          subtitle_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string | null
+          cta_label_en?: string | null
+          currency?: string
+          description?: string | null
+          description_en?: string | null
+          features?: Json
+          features_en?: Json
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          name?: string
+          name_en?: string | null
+          price_from?: number
+          price_to?: number | null
+          slug?: string
+          sort_order?: number
+          subtitle?: string | null
+          subtitle_en?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       page_views: {
         Row: {
           created_at: string
