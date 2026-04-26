@@ -403,6 +403,9 @@ const Admin = () => {
           {/* ═══ INSTAGRAM ANALYTICS ═══ */}
           {section === "ig-analytics" && <AdminInstagramAnalytics />}
 
+          {/* ═══ WORKS / PORTFOLIO ═══ */}
+          {section === "works" && <AdminWorks />}
+
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && <AdminAIGenerator />}
 
