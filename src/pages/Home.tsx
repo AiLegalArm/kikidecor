@@ -7,6 +7,7 @@ import logoHero from "@/assets/logo-kiki-new.png";
 import "@fontsource/great-vibes";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 import { motion, AnimatePresence } from "framer-motion";
 
 import heroDecor from "@/assets/hero-decor.jpg";
