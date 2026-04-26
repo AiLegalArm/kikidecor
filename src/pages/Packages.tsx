@@ -33,6 +33,17 @@ const Packages = () => {
   const comparison = pd.comparison;
   const [dbPackages, setDbPackages] = useState<DbPackage[] | null>(null);
 
+  useSEO({
+    title: lang === "ru" ? "Пакеты декора — Ki Ki Decor" : "Decor Packages — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Готовые пакеты оформления Ki Ki Decor: Basic, Standard, Premium. Прозрачные цены и сравнение."
+      : "Ki Ki Decor styling packages: Basic, Standard, Premium. Transparent pricing and comparison.",
+    canonical: "https://kiki-shop.online/packages",
+    keywords: lang === "ru"
+      ? "пакеты декора, цены оформление, свадебный декор пакет, декор дня рождения"
+      : "decor packages, event styling pricing, wedding decor package",
+  });
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
