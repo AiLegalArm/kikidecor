@@ -128,9 +128,11 @@ const Services = () => {
         </div>
       </section>
 
+      {/* Our Work — pulled from admin */}
+      <DecorWorksSection />
+
       {/* CTA */}
       <section className="border-t border-border/50 px-6 md:px-10 py-24 md:py-32">
-      </section>
         <div className="container mx-auto text-center max-w-2xl">
           <ScrollReveal>
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-light mb-5">{s.customTitle[lang]}</h2>
