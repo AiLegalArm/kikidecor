@@ -128,36 +128,10 @@ const AdminAnalytics = () => {
     },
   });
 
-  // ── Orders (cart items) ──
-  const { data: orderData, isLoading: loadingOrders } = useQuery({
-    queryKey: ["analytics-orders", period],
-    queryFn: async () => {
-      let query = supabase.from("cart_items").select("id, session_id, quantity, product_id, created_at");
-      if (periodStart) query = query.gte("created_at", periodStart);
-      const { data, error } = await query;
-      if (error) throw error;
+  const orderData = { uniqueOrders: 0, totalItems: 0 };
+  const brandLeadCount = 0;
 
-      const items = data || [];
-      const uniqueOrders = new Set(items.map((i) => i.session_id)).size;
-      const totalItems = items.reduce((s, i) => s + i.quantity, 0);
-
-      return { uniqueOrders, totalItems };
-    },
-  });
-
-  // ── Brand Leads ──
-  const { data: brandLeadCount } = useQuery({
-    queryKey: ["analytics-brand-leads", period],
-    queryFn: async () => {
-      let query = supabase.from("brand_leads").select("*", { count: "exact", head: true });
-      if (periodStart) query = query.gte("created_at", periodStart);
-      const { count, error } = await query;
-      if (error) throw error;
-      return count || 0;
-    },
-  });
-
-  const isLoading = loadingViews || loadingLeads || loadingOrders;
+  const isLoading = loadingViews || loadingLeads;
 
   if (isLoading) {
     return <div className="text-center py-20"><Loader2 className="animate-spin mx-auto text-primary" size={24} /></div>;

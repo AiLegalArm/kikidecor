@@ -21,18 +21,13 @@ import { isAdminUser } from "@/lib/admin";
 // Lazy-load all admin sub-panels
 const AdminCalendar = lazy(() => import("@/components/AdminCalendar"));
 const AdminAIGenerator = lazy(() => import("@/components/AdminAIGenerator"));
-const AdminProducts = lazy(() => import("@/components/admin/AdminProducts"));
-const AdminInstagramCommerce = lazy(() => import("@/components/admin/AdminInstagramCommerce"));
 const AdminInstagramAnalytics = lazy(() => import("@/components/admin/AdminInstagramAnalytics"));
 const AdminVenueAnalyzer = lazy(() => import("@/components/admin/AdminVenueAnalyzer"));
 const AdminAIInsights = lazy(() => import("@/components/admin/AdminAIInsights"));
 const AdminAnalytics = lazy(() => import("@/components/admin/AdminAnalytics"));
-const AdminOrders = lazy(() => import("@/components/admin/AdminOrders"));
-const AdminCustomers = lazy(() => import("@/components/admin/AdminCustomers"));
 const AdminTelegramSettings = lazy(() => import("@/components/admin/AdminTelegramSettings"));
 const AdminBrandDesign = lazy(() => import("@/components/admin/AdminBrandDesign"));
 const AdminMediaManager = lazy(() => import("@/components/admin/AdminMediaManager"));
-const AdminSavedConcepts = lazy(() => import("@/components/admin/AdminSavedConcepts"));
 const AdminEventPlannerPipeline = lazy(() => import("@/components/admin/AdminEventPlannerPipeline"));
 const AdminFacadeGenerator = lazy(() => import("@/components/admin/AdminFacadeGenerator"));
 const AdminVideoGenerator = lazy(() => import("@/components/admin/AdminVideoGenerator"));
@@ -59,15 +54,11 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "customers" | "products" | "calendar" | "orders" | "instagram" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "saved-concepts" | "event-pipeline";
+type Section = "leads" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
-  { key: "customers", label: "Клиенты", icon: Users, group: "CRM" },
-  { key: "orders", label: "Заказы", icon: ShoppingBag, group: "CRM" },
-  { key: "products", label: "Товары", icon: ShoppingBag, group: "CRM" },
   { key: "calendar", label: "Календарь", icon: CalendarDays, group: "CRM" },
-  { key: "instagram", label: "Instagram", icon: Instagram, group: "Маркетинг" },
   { key: "ig-analytics", label: "IG Аналитика", icon: BarChart3, group: "Маркетинг" },
   { key: "analytics", label: "Аналитика", icon: BarChart3, group: "Маркетинг" },
   { key: "venue", label: "Анализ площадки", icon: Camera, group: "AI" },
@@ -75,7 +66,6 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "ai-facade", label: "AI Фасады", icon: Building2, group: "AI" },
   { key: "ai-video", label: "AI Видео", icon: Film, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
-  { key: "saved-concepts", label: "AI Концепции", icon: BookOpen, group: "AI" },
   { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
   { key: "media", label: "Media Manager", icon: ImageIcon, group: "Контент" },
   { key: "brand", label: "Brand Design", icon: Palette, group: "Контент" },
@@ -386,15 +376,6 @@ const Admin = () => {
             </>
           )}
 
-          {/* ═══ CUSTOMERS ═══ */}
-          {section === "customers" && <AdminCustomers />}
-
-          {/* ═══ PRODUCTS ═══ */}
-          {section === "products" && <AdminProducts />}
-
-          {/* ═══ ORDERS ═══ */}
-          {section === "orders" && <AdminOrders />}
-
           {/* ═══ CALENDAR ═══ */}
           {section === "calendar" && (
             <>
@@ -402,9 +383,6 @@ const Admin = () => {
               <AdminCalendar onLeadUpdated={fetchLeads} />
             </>
           )}
-
-          {/* ═══ INSTAGRAM COMMERCE ═══ */}
-          {section === "instagram" && <AdminInstagramCommerce />}
 
           {/* ═══ INSTAGRAM ANALYTICS ═══ */}
           {section === "ig-analytics" && <AdminInstagramAnalytics />}
@@ -426,9 +404,6 @@ const Admin = () => {
 
           {/* ═══ ANALYTICS ═══ */}
           {section === "analytics" && <AdminAnalytics />}
-
-          {/* ═══ SAVED CONCEPTS ═══ */}
-          {section === "saved-concepts" && <AdminSavedConcepts />}
 
           {/* ═══ EVENT PIPELINE ═══ */}
           {section === "event-pipeline" && <AdminEventPlannerPipeline />}

@@ -56,11 +56,13 @@ const ExitIntentPopup = ({ offer = "decor" }: ExitIntentPopupProps) => {
     setSubmitting(true);
     setError("");
     try {
-      const { error: dbError } = await supabase.from("brand_leads").insert({
+      const { error: dbError } = await supabase.from("event_leads").insert({
         name: result.data.name,
         phone: result.data.phone,
         email: result.data.email,
-        interest: offer,
+        event_type: offer || "exit_intent",
+        booking_type: "decor",
+        status: "new",
       });
       if (dbError) throw dbError;
       setSubmitted(true);

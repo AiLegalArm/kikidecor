@@ -8,8 +8,16 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { sendTelegramMessage, getTelegramSettings } from "./admin/AdminTelegramSettings";
-import { saveConcept } from "./admin/AdminSavedConcepts";
 import ConceptChat from "./admin/ConceptChat";
+
+// Locally stub saveConcept (saved concepts panel removed)
+const saveConcept = (_data: any) => {
+  try {
+    const list = JSON.parse(localStorage.getItem("kiki_saved_concepts") || "[]");
+    list.unshift({ ..._data, savedAt: new Date().toISOString() });
+    localStorage.setItem("kiki_saved_concepts", JSON.stringify(list.slice(0, 50)));
+  } catch {}
+};
 import { exportConceptToPDF } from "@/lib/exportConceptPDF";
 
 type DecorConcept = {

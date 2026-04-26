@@ -43,11 +43,13 @@ const LeadCapture = () => {
 
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("brand_leads").insert({
+      const { error } = await supabase.from("event_leads").insert({
         name: result.data.name,
         phone: result.data.phone,
         email: result.data.email,
-        interest: result.data.interest,
+        event_type: result.data.interest || "consultation",
+        booking_type: "decor",
+        status: "new",
       });
       if (error) throw error;
       setSubmitted(true);
