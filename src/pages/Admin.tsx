@@ -92,19 +92,32 @@ const Admin = () => {
   const PAGE_SIZE = 20;
 
 
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setAuthLoading(false);
+      if (session?.user?.id) {
+        // Defer Supabase calls outside of the auth callback
+        setTimeout(() => {
+          isAdminUser(session.user.id).then(setIsAdmin);
+        }, 0);
+      } else {
+        setIsAdmin(null);
+      }
     });
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setAuthLoading(false);
+      if (session?.user?.id) {
+        isAdminUser(session.user.id).then(setIsAdmin);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogout = async () => { await supabase.auth.signOut(); setSession(null); };
+  const handleLogout = async () => { await supabase.auth.signOut(); setSession(null); setIsAdmin(null); };
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -126,8 +139,9 @@ const Admin = () => {
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
   if (!session) return <AdminLogin onLogin={() => { }} />;
+  if (isAdmin === null) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>;
 
-  if (!isAdminUser(session.user?.email)) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background">
         <p className="text-lg font-medium text-destructive">Доступ запрещён</p>
