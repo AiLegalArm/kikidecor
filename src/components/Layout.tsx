@@ -19,7 +19,6 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
   const navLinks = [
   { name: t.nav.home[lang], path: "/" },
   { name: t.nav.decor[lang], path: "/decor" },
-  { name: t.nav.showroom[lang], path: "/showroom" },
   { name: t.nav.about[lang], path: "/about" },
   { name: t.nav.contact[lang], path: "/contact" }];
 
@@ -51,7 +50,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
         <nav className="container mx-auto flex items-center justify-between px-6 md:px-10">
           {/* Left nav */}
           <div className="hidden lg:flex items-center gap-10 flex-1">
-            {navLinks.slice(0, 3).map((link) =>
+            {navLinks.slice(0, 2).map((link) =>
             <Link
               key={link.path}
               to={link.path}
@@ -81,7 +80,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
 
           {/* Right nav */}
           <div className="hidden lg:flex items-center gap-10 flex-1 justify-end">
-            {navLinks.slice(3).map((link) =>
+            {navLinks.slice(2).map((link) =>
             <Link
               key={link.path}
               to={link.path}
