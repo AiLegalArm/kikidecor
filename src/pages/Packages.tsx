@@ -1,17 +1,52 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, X, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSEO } from "@/hooks/useSEO";
 
+type DbPackage = {
+  id: string;
+  slug: string;
+  name: string;
+  name_en: string | null;
+  subtitle: string | null;
+  subtitle_en: string | null;
+  price_from: number;
+  price_to: number | null;
+  currency: string;
+  features: string[];
+  features_en: string[];
+  is_featured: boolean;
+  cta_label: string | null;
+  cta_label_en: string | null;
+};
+
 const Packages = () => {
   const { lang, t } = useLanguage();
   const p = t.packages;
   const pd = t.packagesData;
-  const packages = pd.items;
+  const fallback = pd.items;
   const comparison = pd.comparison;
+  const [dbPackages, setDbPackages] = useState<DbPackage[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("packages")
+        .select("id, slug, name, name_en, subtitle, subtitle_en, price_from, price_to, currency, features, features_en, is_featured, cta_label, cta_label_en")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (!cancelled && data && data.length > 0) {
+        setDbPackages(data as unknown as DbPackage[]);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   useSEO({
     title: lang === "ru" ? "Пакеты декора — Ki Ki Decor" : "Decor Packages — Ki Ki Decor",
@@ -27,6 +62,11 @@ const Packages = () => {
     flowers: { ru: "Цветы", en: "Flowers" },
     backdrop: { ru: "Задник", en: "Backdrop" },
     setup: { ru: "Монтаж", en: "Setup" },
+  };
+
+  const fmtPrice = (n: number, currency: string) => {
+    const sym = currency === "RUB" ? "₽" : currency === "USD" ? "$" : currency === "EUR" ? "€" : currency;
+    return `${new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US").format(n)} ${sym}`;
   };
 
   return (
