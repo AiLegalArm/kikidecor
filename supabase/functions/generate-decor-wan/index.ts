@@ -107,7 +107,18 @@ Deno.serve(async (req) => {
     if (body.lastFrameUrl) {
       lastFrameDescription = await describeLastFrame(body.lastFrameUrl);
       if (lastFrameDescription) {
-        finalPrompt += ` Ending frame should resemble: ${lastFrameDescription}`;
+        const targetLine = `Last frame target: end the shot on a composition that resembles — ${lastFrameDescription}. Smoothly evolve toward this ending.`;
+        if (finalPrompt.includes("Last frame target:")) {
+          // Replace the placeholder line built on the client with the vision-enriched one
+          finalPrompt = finalPrompt.replace(/Last frame target:[^\n]*/g, targetLine);
+        } else {
+          // Insert right after First-frame line, or before Style block, or at the start
+          const lines = finalPrompt.split("\n");
+          let insertAt = lines.findIndex((l) => l.startsWith("Style:"));
+          if (insertAt === -1) insertAt = 1;
+          lines.splice(insertAt, 0, targetLine);
+          finalPrompt = lines.join("\n");
+        }
       }
     }
 
