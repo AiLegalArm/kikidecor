@@ -1,20 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Instagram, Mail, Phone, MapPin, ArrowUp, Globe, Send, ShoppingBag, Clock } from "lucide-react";
+import { Menu, X, Instagram, Phone, MapPin, ArrowUp, Globe, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useCart } from "@/hooks/useCart";
-import CartSidebar from "@/components/shop/CartSidebar";
 import logoImg from "@/assets/logo-kiki.png";
 
 const Layout = ({ children }: {children: React.ReactNode;}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showTop, setShowTop] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const location = useLocation();
   const { lang, setLang, t } = useLanguage();
-  const { count } = useCart();
 
   const navLinks = [
   { name: t.nav.home[lang], path: "/" },
@@ -109,37 +105,10 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               <Globe size={16} strokeWidth={2} />
               {lang === "ru" ? "EN" : "RU"}
             </button>
-            <button
-              onClick={() => setCartOpen(true)}
-              className={cn(
-                "relative transition-colors duration-300 ml-2",
-                scrolled ? "text-foreground/70 hover:text-primary" : "text-white/80 hover:text-white"
-              )}
-              aria-label="Cart">
-              
-              <ShoppingBag size={22} strokeWidth={2} />
-              {count > 0 &&
-              <span className="absolute -top-1.5 -right-1.5 w-4.5 h-4.5 bg-primary text-primary-foreground text-[9px] font-body font-bold rounded-full flex items-center justify-center">
-                  {count}
-                </span>
-              }
-            </button>
           </div>
 
           {/* Mobile */}
           <div className="flex items-center gap-3 lg:hidden">
-            <button
-              onClick={() => setCartOpen(true)}
-              className="relative text-foreground/70 hover:text-primary transition-colors duration-300"
-              aria-label="Cart">
-              
-              <ShoppingBag size={20} strokeWidth={2} />
-              {count > 0 &&
-              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-[8px] font-body font-medium rounded-full flex items-center justify-center">
-                  {count}
-                </span>
-              }
-            </button>
             <button
               onClick={toggleLang}
               className="text-[11px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 flex items-center gap-1 font-medium"
@@ -275,8 +244,6 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
         
         <ArrowUp size={16} strokeWidth={1.5} />
       </button>
-
-      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
     </div>);
 
 };

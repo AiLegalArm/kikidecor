@@ -21,15 +21,6 @@ const Booking = lazy(() => import("./pages/Booking"));
 const Contact = lazy(() => import("./pages/Contact"));
 const InstagramPage = lazy(() => import("./pages/Instagram"));
 const Admin = lazy(() => import("./pages/Admin"));
-const Shop = lazy(() => import("./pages/Shop"));
-const ProductPage = lazy(() => import("./pages/ProductPage"));
-const CheckoutPage = lazy(() => import("./pages/Checkout"));
-const Lookbook = lazy(() => import("./pages/Lookbook"));
-const Stylist = lazy(() => import("./pages/Stylist"));
-const OutfitGenerator = lazy(() => import("./pages/OutfitGenerator"));
-const FindSimilar = lazy(() => import("./pages/FindSimilar"));
-const VirtualTryOn = lazy(() => import("./pages/VirtualTryOn"));
-const ShoppableGalleryPage = lazy(() => import("./pages/ShoppableGalleryPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -73,15 +64,6 @@ const AnimatedRoutes = () => {
             <Route path="/booking" element={<PageTransition><Booking /></PageTransition>} />
             <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
             <Route path="/instagram" element={<PageTransition><InstagramPage /></PageTransition>} />
-            <Route path="/shop" element={<PageTransition><Shop /></PageTransition>} />
-            <Route path="/shop/:id" element={<PageTransition><ProductPage /></PageTransition>} />
-            <Route path="/lookbook" element={<PageTransition><Lookbook /></PageTransition>} />
-            <Route path="/stylist" element={<PageTransition><Stylist /></PageTransition>} />
-            <Route path="/outfits" element={<PageTransition><OutfitGenerator /></PageTransition>} />
-            <Route path="/find-similar" element={<PageTransition><FindSimilar /></PageTransition>} />
-            <Route path="/try-on" element={<PageTransition><VirtualTryOn /></PageTransition>} />
-            <Route path="/shop-the-look" element={<PageTransition><ShoppableGalleryPage /></PageTransition>} />
-            <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
             <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
           </Routes>
         </AnimatePresence>
