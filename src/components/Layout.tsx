@@ -159,7 +159,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
       </header>
 
       {/* Main */}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-16 lg:pb-0">{children}</main>
 
       {/* ── Footer ── */}
       <footer className="bg-foreground text-background/80">
