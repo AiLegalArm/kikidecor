@@ -30,6 +30,13 @@ type Category = { id: string; name: string; name_en: string | null };
 
 const Portfolio = () => {
   const { lang, t } = useLanguage();
+  useSEO({
+    title: lang === "ru" ? "Портфолио — Ki Ki Decor" : "Portfolio — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Реализованные проекты Ki Ki Decor: свадьбы, дни рождения, корпоративы и другие события."
+      : "Realised Ki Ki Decor projects: weddings, birthdays, corporates and more.",
+    canonical: "https://kiki-shop.online/portfolio",
+  });
   const p = t.portfolio;
 
   const [works, setWorks] = useState<WorkItem[]>([]);
