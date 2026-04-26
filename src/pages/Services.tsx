@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { cn } from "@/lib/utils";
 import weddingImg from "@/assets/portfolio-wedding.jpg";
 import birthdayImg from "@/assets/portfolio-birthday.jpg";
 import proposalImg from "@/assets/portfolio-proposal.jpg";
