@@ -84,7 +84,7 @@ async function generateViaWanApi(opts: {
 }
 
 // ---------- BACKEND 2: Lovable AI Gateway videogen ----------
-// Uses the videos endpoint of the Lovable AI Gateway.
+// Uses the videos endpoint of the Lovable AI Gateway with a supported model.
 async function generateViaLovable(opts: {
   prompt: string;
   aspectRatio: string; resolution: string; duration: number;
@@ -93,7 +93,7 @@ async function generateViaLovable(opts: {
   if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is missing — enable AI for this project");
 
   const payload: Record<string, unknown> = {
-    model: "wan-2.5",
+    model: "google/veo-3-fast",
     prompt: opts.prompt,
     duration: opts.duration === 10 ? 10 : 5,
     resolution: opts.resolution === "480p" ? "480p" : "1080p",
