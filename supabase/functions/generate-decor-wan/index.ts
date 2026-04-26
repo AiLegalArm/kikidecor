@@ -1,7 +1,8 @@
 // Decor Wan generator: builds a compiled prompt, kicks off video generation,
-// and stores the result. Two backends are supported:
-//   1. External Wan-compatible API (used when WAN_API_URL + WAN_API_KEY secrets exist)
-//   2. Lovable AI Gateway videogen (default fallback, no extra keys required)
+// and stores the result. Backends (priority order):
+//   1. Alibaba Cloud DashScope Wan 2.2 (DASHSCOPE_API_KEY) — recommended
+//   2. fal.ai Wan 2.2 (FAL_API_KEY)
+//   3. Custom Wan-compatible endpoint (WAN_API_URL + WAN_API_KEY)
 // Generation runs in background (EdgeRuntime.waitUntil) so the request returns
 // immediately with status="processing"; the client polls wan_runs for updates.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -17,6 +18,9 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 const WAN_API_URL = Deno.env.get("WAN_API_URL");
 const WAN_API_KEY = Deno.env.get("WAN_API_KEY");
+const DASHSCOPE_API_KEY = Deno.env.get("DASHSCOPE_API_KEY");
+// International endpoint (Singapore). For mainland accounts switch host to dashscope.aliyuncs.com.
+const DASHSCOPE_HOST = Deno.env.get("DASHSCOPE_HOST") || "https://dashscope-intl.aliyuncs.com";
 
 type Body = {
   userPrompt: string;
@@ -124,6 +128,80 @@ async function generateViaFal(opts: {
   return url as string;
 }
 
+// ---------- BACKEND 3: Alibaba Cloud DashScope (Wan 2.2) ----------
+// Async API: POST creates a task, then poll GET /tasks/{id} until SUCCEEDED/FAILED.
+// Models: wan2.2-t2v-plus (text-to-video), wan2.2-i2v-plus (image-to-video, first frame).
+async function generateViaDashScope(opts: {
+  prompt: string; negative: string;
+  aspectRatio: string; resolution: string; duration: number;
+  firstFrameUrl: string | null;
+}): Promise<string> {
+  const useImage = !!opts.firstFrameUrl;
+  const model = useImage ? "wan2.2-i2v-plus" : "wan2.2-t2v-plus";
+
+  // DashScope expects "size" as WxH. Map common aspect ratios at 720p/1080p.
+  const sizeMap: Record<string, { "720p": string; "1080p": string; "480p": string }> = {
+    "16:9": { "480p": "832*480",  "720p": "1280*720",  "1080p": "1920*1080" },
+    "9:16": { "480p": "480*832",  "720p": "720*1280",  "1080p": "1080*1920" },
+    "1:1":  { "480p": "624*624",  "720p": "960*960",   "1080p": "1440*1440" },
+    "4:3":  { "480p": "624*468",  "720p": "960*720",   "1080p": "1440*1080" },
+    "3:4":  { "480p": "468*624",  "720p": "720*960",   "1080p": "1080*1440" },
+  };
+  const res = (["480p","720p","1080p"].includes(opts.resolution) ? opts.resolution : "1080p") as "480p"|"720p"|"1080p";
+  const ar = sizeMap[opts.aspectRatio] ? opts.aspectRatio : "16:9";
+  const size = sizeMap[ar][res];
+
+  const input: Record<string, unknown> = { prompt: opts.prompt };
+  if (opts.negative) input.negative_prompt = opts.negative;
+  if (useImage) input.img_url = opts.firstFrameUrl;
+
+  const parameters: Record<string, unknown> = {
+    size,
+    duration: opts.duration === 10 ? 10 : 5,
+    prompt_extend: true,
+  };
+
+  // Submit task
+  const submit = await fetch(`${DASHSCOPE_HOST}/api/v1/services/aigc/video-generation/video-synthesis`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${DASHSCOPE_API_KEY}`,
+      "Content-Type": "application/json",
+      "X-DashScope-Async": "enable",
+    },
+    body: JSON.stringify({ model, input, parameters }),
+  });
+  if (!submit.ok) {
+    const text = await submit.text();
+    throw new Error(`DashScope submit ${submit.status}: ${text.slice(0, 400)}`);
+  }
+  const submitData = await submit.json();
+  const taskId = submitData?.output?.task_id;
+  if (!taskId) throw new Error(`DashScope: no task_id in response: ${JSON.stringify(submitData).slice(0, 300)}`);
+
+  // Poll up to ~10 minutes
+  const deadline = Date.now() + 10 * 60 * 1000;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, 5000));
+    const poll = await fetch(`${DASHSCOPE_HOST}/api/v1/tasks/${taskId}`, {
+      headers: { "Authorization": `Bearer ${DASHSCOPE_API_KEY}` },
+    });
+    if (!poll.ok) continue;
+    const pd = await poll.json();
+    const status = pd?.output?.task_status;
+    if (status === "SUCCEEDED") {
+      const url = pd?.output?.video_url;
+      if (!url) throw new Error(`DashScope SUCCEEDED but no video_url: ${JSON.stringify(pd).slice(0, 300)}`);
+      return url as string;
+    }
+    if (status === "FAILED" || status === "UNKNOWN") {
+      throw new Error(`DashScope task ${status}: ${pd?.output?.message || JSON.stringify(pd).slice(0, 300)}`);
+    }
+    // PENDING / RUNNING → keep polling
+  }
+  throw new Error("DashScope task timed out after 10 minutes");
+}
+
 // Download video and re-host in our public bucket so it survives provider URLs expiring.
 async function rehost(admin: ReturnType<typeof createClient>, sourceUrl: string, runId: string): Promise<string> {
   try {
@@ -155,7 +233,14 @@ async function runGeneration(
     const cameraFixed = !!out.cameraFixed;
 
     let videoUrl: string;
-    if (WAN_API_URL && WAN_API_KEY) {
+    if (DASHSCOPE_API_KEY) {
+      videoUrl = await generateViaDashScope({
+        prompt: finalPrompt,
+        negative: body.negativePrompt || "",
+        aspectRatio, resolution, duration,
+        firstFrameUrl: body.firstFrameUrl || null,
+      });
+    } else if (WAN_API_URL && WAN_API_KEY) {
       videoUrl = await generateViaWanApi({
         prompt: finalPrompt,
         negative: body.negativePrompt || "",
@@ -174,7 +259,7 @@ async function runGeneration(
       });
     } else {
       throw new Error(
-        "Не настроен видео-бэкенд. Добавьте FAL_API_KEY (рекомендуется, fal.ai → Wan 2.2) или WAN_API_URL + WAN_API_KEY для собственного эндпоинта.",
+        "Не настроен видео-бэкенд. Добавьте DASHSCOPE_API_KEY (Alibaba Cloud Wan 2.2, рекомендуется), FAL_API_KEY (fal.ai Wan 2.2) или WAN_API_URL + WAN_API_KEY для собственного эндпоинта.",
       );
     }
 
@@ -248,11 +333,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    const backend = WAN_API_URL && WAN_API_KEY
-      ? "wan-api"
-      : Deno.env.get("FAL_API_KEY")
-        ? "fal-wan-2.2"
-        : "unconfigured";
+    const backend = DASHSCOPE_API_KEY
+      ? "dashscope-wan-2.2"
+      : WAN_API_URL && WAN_API_KEY
+        ? "wan-api"
+        : Deno.env.get("FAL_API_KEY")
+          ? "fal-wan-2.2"
+          : "unconfigured";
 
     const { data: run, error: insErr } = await admin
       .from("wan_runs")
