@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_actions: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          source: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          source?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          source?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_interactions: {
         Row: {
           created_at: string
@@ -79,70 +112,38 @@ export type Database = {
         }
         Relationships: []
       }
-      brand_leads: {
+      categories: {
         Row: {
           created_at: string
-          email: string
+          description: string | null
           id: string
-          interest: string
           name: string
-          phone: string
+          name_en: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
         }
         Insert: {
           created_at?: string
-          email: string
+          description?: string | null
           id?: string
-          interest: string
           name: string
-          phone: string
+          name_en?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
         }
         Update: {
           created_at?: string
-          email?: string
+          description?: string | null
           id?: string
-          interest?: string
           name?: string
-          phone?: string
+          name_en?: string | null
+          slug?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
-      }
-      cart_items: {
-        Row: {
-          color: string | null
-          created_at: string
-          id: string
-          product_id: string
-          quantity: number
-          session_id: string
-          size: string | null
-        }
-        Insert: {
-          color?: string | null
-          created_at?: string
-          id?: string
-          product_id: string
-          quantity?: number
-          session_id: string
-          size?: string | null
-        }
-        Update: {
-          color?: string | null
-          created_at?: string
-          id?: string
-          product_id?: string
-          quantity?: number
-          session_id?: string
-          size?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "cart_items_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       communication_log: {
         Row: {
@@ -274,6 +275,54 @@ export type Database = {
           },
         ]
       }
+      generator_runs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          generator_type: string
+          id: string
+          initiated_by: string | null
+          input_data: Json
+          output_data: Json
+          prompt: string | null
+          source: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["gen_status"]
+          telegram_chat_id: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          generator_type: string
+          id?: string
+          initiated_by?: string | null
+          input_data?: Json
+          output_data?: Json
+          prompt?: string | null
+          source?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["gen_status"]
+          telegram_chat_id?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          generator_type?: string
+          id?: string
+          initiated_by?: string | null
+          input_data?: Json
+          output_data?: Json
+          prompt?: string | null
+          source?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["gen_status"]
+          telegram_chat_id?: number | null
+        }
+        Relationships: []
+      }
       instagram_clicks: {
         Row: {
           click_type: string
@@ -378,48 +427,6 @@ export type Database = {
         }
         Relationships: []
       }
-      lookbook_looks: {
-        Row: {
-          created_at: string
-          description: string | null
-          description_en: string | null
-          id: string
-          image_url: string
-          is_published: boolean | null
-          product_ids: string[] | null
-          season: string | null
-          sort_order: number
-          title: string
-          title_en: string | null
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          description_en?: string | null
-          id?: string
-          image_url: string
-          is_published?: boolean | null
-          product_ids?: string[] | null
-          season?: string | null
-          sort_order?: number
-          title: string
-          title_en?: string | null
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          description_en?: string | null
-          id?: string
-          image_url?: string
-          is_published?: boolean | null
-          product_ids?: string[] | null
-          season?: string | null
-          sort_order?: number
-          title?: string
-          title_en?: string | null
-        }
-        Relationships: []
-      }
       page_views: {
         Row: {
           created_at: string
@@ -447,120 +454,139 @@ export type Database = {
         }
         Relationships: []
       }
-      product_embeddings: {
+      telegram_admins: {
         Row: {
+          chat_id: number | null
           created_at: string
-          embedding: string | null
-          feature_text: string | null
           id: string
-          product_id: string
-          updated_at: string
+          is_active: boolean
+          link_code: string | null
+          link_code_expires_at: string | null
+          linked_at: string | null
+          notifications_enabled: boolean
+          user_id: string | null
+          username: string | null
         }
         Insert: {
+          chat_id?: number | null
           created_at?: string
-          embedding?: string | null
-          feature_text?: string | null
           id?: string
-          product_id: string
-          updated_at?: string
+          is_active?: boolean
+          link_code?: string | null
+          link_code_expires_at?: string | null
+          linked_at?: string | null
+          notifications_enabled?: boolean
+          user_id?: string | null
+          username?: string | null
         }
         Update: {
+          chat_id?: number | null
           created_at?: string
-          embedding?: string | null
-          feature_text?: string | null
           id?: string
-          product_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "product_embeddings_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: true
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      products: {
-        Row: {
-          category: string | null
-          colors: string[] | null
-          compare_at_price: number | null
-          created_at: string
-          description: string | null
-          description_en: string | null
-          id: string
-          images: string[] | null
-          inventory: number
-          is_published: boolean | null
-          name: string
-          name_en: string | null
-          price: number
-          sizes: string[] | null
-          updated_at: string
-        }
-        Insert: {
-          category?: string | null
-          colors?: string[] | null
-          compare_at_price?: number | null
-          created_at?: string
-          description?: string | null
-          description_en?: string | null
-          id?: string
-          images?: string[] | null
-          inventory?: number
-          is_published?: boolean | null
-          name: string
-          name_en?: string | null
-          price?: number
-          sizes?: string[] | null
-          updated_at?: string
-        }
-        Update: {
-          category?: string | null
-          colors?: string[] | null
-          compare_at_price?: number | null
-          created_at?: string
-          description?: string | null
-          description_en?: string | null
-          id?: string
-          images?: string[] | null
-          inventory?: number
-          is_published?: boolean | null
-          name?: string
-          name_en?: string | null
-          price?: number
-          sizes?: string[] | null
-          updated_at?: string
+          is_active?: boolean
+          link_code?: string | null
+          link_code_expires_at?: string | null
+          linked_at?: string | null
+          notifications_enabled?: boolean
+          user_id?: string | null
+          username?: string | null
         }
         Relationships: []
       }
-      wishlist_items: {
+      user_roles: {
         Row: {
           created_at: string
           id: string
-          product_id: string
-          session_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          product_id: string
-          session_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          product_id?: string
-          session_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      works: {
+        Row: {
+          category_id: string | null
+          cover_image_url: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_en: string | null
+          event_date: string | null
+          featured: boolean
+          gallery: Json
+          id: string
+          materials: string[]
+          price_range: string | null
+          slug: string
+          sort_order: number
+          status: Database["public"]["Enums"]["work_status"]
+          tags: string[]
+          title: string
+          title_en: string | null
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          category_id?: string | null
+          cover_image_url: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_en?: string | null
+          event_date?: string | null
+          featured?: boolean
+          gallery?: Json
+          id?: string
+          materials?: string[]
+          price_range?: string | null
+          slug: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["work_status"]
+          tags?: string[]
+          title: string
+          title_en?: string | null
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          category_id?: string | null
+          cover_image_url?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_en?: string | null
+          event_date?: string | null
+          featured?: boolean
+          gallery?: Json
+          id?: string
+          materials?: string[]
+          price_range?: string | null
+          slug?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["work_status"]
+          tags?: string[]
+          title?: string
+          title_en?: string | null
+          updated_at?: string
+          view_count?: number
         }
         Relationships: [
           {
-            foreignKeyName: "wishlist_items_product_id_fkey"
-            columns: ["product_id"]
+            foreignKeyName: "works_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: "products"
+            referencedRelation: "categories"
             referencedColumns: ["id"]
           },
         ]
@@ -570,20 +596,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      match_products: {
+      has_role: {
         Args: {
-          match_count?: number
-          match_threshold?: number
-          query_embedding: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
         }
-        Returns: {
-          product_id: string
-          similarity: number
-        }[]
+        Returns: boolean
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "editor"
+      gen_status: "queued" | "running" | "completed" | "failed" | "cancelled"
+      work_status: "draft" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -710,6 +734,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "editor"],
+      gen_status: ["queued", "running", "completed", "failed", "cancelled"],
+      work_status: ["draft", "published", "archived"],
+    },
   },
 } as const
