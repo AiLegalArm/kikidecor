@@ -10,15 +10,15 @@ import ReactMarkdown from "react-markdown";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const PRESET_HINTS = [
-  "1 — Luxury floral",
-  "3 — Elegant wedding",
-  "4 — Modern luxury",
-  "9 — Minimal premium",
-  "19 — Champagne beige",
-  "27 — Christmas premium",
-  "39 — Floral arch statement",
-  "40 — Photo zone premium",
-  "50 — Ultra-premium signature",
+  "1 — Modern luxury",
+  "2 — Quiet luxury",
+  "5 — Japandi",
+  "19 — Ivory & champagne",
+  "82 — Christmas premium",
+  "88 — Wedding white floral",
+  "92 — Floral arch premium",
+  "117 — Couture brand event",
+  "184 — Candlelight romance",
 ];
 
 export default function AdminDecorPromptGenerator() {
