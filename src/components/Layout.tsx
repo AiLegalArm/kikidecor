@@ -19,7 +19,6 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
   const navLinks = [
   { name: t.nav.home[lang], path: "/" },
   { name: t.nav.decor[lang], path: "/decor" },
-  { name: t.nav.showroom[lang], path: "/showroom" },
   { name: t.nav.about[lang], path: "/about" },
   { name: t.nav.contact[lang], path: "/contact" }];
 
@@ -51,7 +50,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
         <nav className="container mx-auto flex items-center justify-between px-6 md:px-10">
           {/* Left nav */}
           <div className="hidden lg:flex items-center gap-10 flex-1">
-            {navLinks.slice(0, 3).map((link) =>
+            {navLinks.slice(0, 2).map((link) =>
             <Link
               key={link.path}
               to={link.path}
@@ -81,7 +80,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
 
           {/* Right nav */}
           <div className="hidden lg:flex items-center gap-10 flex-1 justify-end">
-            {navLinks.slice(3).map((link) =>
+            {navLinks.slice(2).map((link) =>
             <Link
               key={link.path}
               to={link.path}
@@ -225,29 +224,8 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
               </a>
             </div>
 
-            {/* Showroom */}
-            <div className="lg:col-span-2">
-              <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{t.footer.showroom[lang]}</h4>
-              <div className="flex flex-col gap-3 mb-5">
-                {[
-                { to: "/showroom", label: t.footer.collection[lang] },
-                { to: "/shop", label: lang === "ru" ? "Каталог" : "Catalog" },
-                { to: "/lookbook", label: "Lookbook" },
-                { to: "/calculator", label: t.footer.calculator[lang] }].
-                map((l) =>
-                <Link key={l.to} to={l.to} className="text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">{l.label}</Link>
-                )}
-              </div>
-              <a href="https://instagram.com/ki_ki_showroom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
-                <Instagram size={14} strokeWidth={1.5} /> @ki_ki_showroom
-              </a>
-              <a href="https://t.me/ki_ki_showroom" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-semibold text-background/70 hover:text-primary transition-colors duration-500">
-                <Send size={14} strokeWidth={1.5} /> Telegram шоурум
-              </a>
-            </div>
-
             {/* Contacts */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-5">
               <h4 className="text-[10px] uppercase tracking-[0.25em] text-background/50 mb-4 md:mb-6 font-body font-medium">{lang === "ru" ? "Контакты" : "Contacts"}</h4>
               <div className="flex flex-col gap-3">
                 <p className="text-sm font-semibold text-background/70">{lang === "ru" ? "Шоу Рум Ростов / Геленджик" : "Showroom Rostov / Gelendzhik"}</p>
