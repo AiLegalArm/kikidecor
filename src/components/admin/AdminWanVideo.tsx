@@ -440,31 +440,13 @@ const AdminWanVideo = () => {
       </div>
 
       {/* History */}
-      <div className="space-y-3 pt-6 border-t">
-        <h3 className="font-semibold text-sm uppercase tracking-[0.2em]">Generation History</h3>
-        {runs.length === 0 ? (
-          <p className="text-sm text-muted-foreground">История пуста.</p>
-        ) : (
-          <div className="flex gap-3 overflow-x-auto pb-3 snap-x">
-            {runs.map((run) => (
-              <button
-                key={run.id}
-                onClick={() => restoreFromRun(run)}
-                className="shrink-0 w-[200px] snap-start text-left rounded-lg border p-3 bg-card hover:border-primary/50 transition"
-              >
-                <div className="aspect-video rounded bg-muted mb-2 overflow-hidden flex">
-                  {run.first_frame_url ? <img src={run.first_frame_url} className="w-1/2 object-cover" alt="" /> : <div className="w-1/2 bg-emerald-500/10" />}
-                  {run.last_frame_url ? <img src={run.last_frame_url} className="w-1/2 object-cover" alt="" /> : <div className="w-1/2 bg-amber-500/10" />}
-                </div>
-                <p className="text-xs font-semibold line-clamp-2 mb-1">{run.user_prompt}</p>
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>{run.preset_name}</span>
-                  <span>{new Date(run.created_at).toLocaleDateString()}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="pt-6 border-t">
+        <WanHistory
+          runs={runs}
+          loading={historyLoading}
+          onRefresh={loadRuns}
+          onRerun={(setup) => restoreSetup(setup)}
+        />
       </div>
     </div>
   );
