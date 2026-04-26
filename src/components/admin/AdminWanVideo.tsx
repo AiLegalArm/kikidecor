@@ -340,6 +340,20 @@ const AdminWanVideo = () => {
           </div>
 
           {/* Output */}
+          <div>
+            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Model</Label>
+            <Select value={model} onValueChange={(v: any) => setModel(v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="wan2.2-plus">Wan 2.2 plus · stable</SelectItem>
+                <SelectItem value="wan2.5-preview">Wan 2.5 preview · newer</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-[10px] text-muted-foreground mt-1">
+              2.5 preview доступна не на всех аккаунтах DashScope — при ошибке переключитесь на 2.2.
+            </p>
+          </div>
+
           <div className="grid grid-cols-3 gap-3">
             <div>
               <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Resolution</Label>
