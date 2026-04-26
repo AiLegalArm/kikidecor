@@ -4,6 +4,7 @@ import { Menu, X, Instagram, Phone, MapPin, ArrowUp, Globe, Clock } from "lucide
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 import logoImg from "@/assets/logo-kiki.png";
+import MobileContactBar from "./MobileContactBar";
 
 const Layout = ({ children }: {children: React.ReactNode;}) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -242,6 +243,8 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
         
         <ArrowUp size={16} strokeWidth={1.5} />
       </button>
+
+      <MobileContactBar />
     </div>);
 
 };
