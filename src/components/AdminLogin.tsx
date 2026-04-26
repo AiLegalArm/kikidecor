@@ -168,9 +168,27 @@ const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
             onMouseLeave={(e) => { if (!loading) { (e.target as HTMLElement).style.background = "#000000"; (e.target as HTMLElement).style.transform = "translateY(0)"; } }}
           >
             <LogIn size={16} />
-            {loading ? "Вхожу..." : "Войти"}
+            {loading ? (mode === "login" ? "Вхожу..." : "Создаю...") : (mode === "login" ? "Войти" : "Создать аккаунт")}
           </button>
         </form>
+
+        <button
+          type="button"
+          onClick={() => setMode(mode === "login" ? "signup" : "login")}
+          style={{
+            marginTop: "16px",
+            width: "100%",
+            background: "transparent",
+            border: "none",
+            color: "#7C3AED",
+            fontSize: "0.8125rem",
+            fontWeight: 500,
+            cursor: "pointer",
+            padding: "8px",
+          }}
+        >
+          {mode === "login" ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти"}
+        </button>
 
         <p style={{ marginTop: "24px", textAlign: "center", fontSize: "0.75rem", color: "#999999", fontWeight: 400 }}>
           Ki Ki Decor · Панель управления
