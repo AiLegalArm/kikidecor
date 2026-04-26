@@ -7,6 +7,7 @@ const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"login" | "signup">("login");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,13 +17,24 @@ const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
     }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-
-    if (error) {
-      toast.error("Неверный email или пароль");
+    if (mode === "login") {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      setLoading(false);
+      if (error) toast.error("Неверный email или пароль");
+      else onLogin();
     } else {
-      onLogin();
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/admin` },
+      });
+      setLoading(false);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Аккаунт создан. Проверьте почту для подтверждения email.");
+        setMode("login");
+      }
     }
   };
 
