@@ -1,32 +1,26 @@
 import { useState, useCallback, useEffect } from "react";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
-import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ArrowRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
-
-import weddingImg from "@/assets/portfolio-wedding.jpg";
-import birthdayImg from "@/assets/portfolio-birthday.jpg";
-import proposalImg from "@/assets/portfolio-proposal.jpg";
-import themedImg from "@/assets/portfolio-themed.jpg";
-import detailImg from "@/assets/portfolio-detail.jpg";
-import loungeImg from "@/assets/portfolio-lounge.jpg";
-import dessertImg from "@/assets/portfolio-dessert.jpg";
+import { supabase } from "@/integrations/supabase/client";
 import heroImg from "@/assets/hero-decoration.jpg";
-import corporateImg from "@/assets/portfolio-corporate.jpg";
-import corporate2Img from "@/assets/portfolio-corporate2.jpg";
-import kidsImg from "@/assets/portfolio-kids.jpg";
-import kids2Img from "@/assets/portfolio-kids2.jpg";
 
-const projectImages = [
-  { img: weddingImg, secondaryImg: detailImg, layout: "right" as const },
-  { img: corporateImg, secondaryImg: corporate2Img, layout: "left" as const },
-  { img: proposalImg, layout: "full" as const },
-  { img: birthdayImg, secondaryImg: dessertImg, layout: "right" as const },
-  { img: kidsImg, secondaryImg: kids2Img, layout: "left" as const },
-  { img: themedImg, secondaryImg: loungeImg, layout: "full" as const },
-];
+type WorkItem = {
+  id: string;
+  title: string;
+  title_en: string | null;
+  description: string | null;
+  description_en: string | null;
+  cover_image_url: string;
+  gallery: string[];
+  tags: string[];
+  materials: string[];
+  event_date: string | null;
+  category?: { name: string; name_en: string | null } | null;
+};
 
 const Portfolio = () => {
   const { lang, t } = useLanguage();
