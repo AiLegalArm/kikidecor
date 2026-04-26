@@ -583,6 +583,78 @@ export type Database = {
         }
         Relationships: []
       }
+      wan_runs: {
+        Row: {
+          compiled_prompt: string
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          first_frame_url: string | null
+          id: string
+          last_frame_description: string | null
+          last_frame_url: string | null
+          mood: Json
+          motion: Json
+          negative_prompt: string | null
+          output: Json
+          preset_id: string | null
+          preset_name: string | null
+          status: string
+          style_strength: number
+          thumbnail_url: string | null
+          updated_at: string
+          user_id: string | null
+          user_prompt: string
+          video_url: string | null
+        }
+        Insert: {
+          compiled_prompt: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          first_frame_url?: string | null
+          id?: string
+          last_frame_description?: string | null
+          last_frame_url?: string | null
+          mood?: Json
+          motion?: Json
+          negative_prompt?: string | null
+          output?: Json
+          preset_id?: string | null
+          preset_name?: string | null
+          status?: string
+          style_strength?: number
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+          user_prompt: string
+          video_url?: string | null
+        }
+        Update: {
+          compiled_prompt?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          first_frame_url?: string | null
+          id?: string
+          last_frame_description?: string | null
+          last_frame_url?: string | null
+          mood?: Json
+          motion?: Json
+          negative_prompt?: string | null
+          output?: Json
+          preset_id?: string | null
+          preset_name?: string | null
+          status?: string
+          style_strength?: number
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+          user_prompt?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       works: {
         Row: {
           category_id: string | null

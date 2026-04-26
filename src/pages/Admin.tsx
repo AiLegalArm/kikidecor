@@ -33,6 +33,7 @@ const AdminFacadeGenerator = lazy(() => import("@/components/admin/AdminFacadeGe
 const AdminVideoGenerator = lazy(() => import("@/components/admin/AdminVideoGenerator"));
 const AdminWorks = lazy(() => import("@/components/admin/AdminWorks"));
 const AdminPackages = lazy(() => import("@/components/admin/AdminPackages"));
+const AdminWanVideo = lazy(() => import("@/components/admin/AdminWanVideo"));
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
@@ -56,7 +57,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
+type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "ai-wan" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
@@ -69,6 +70,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
   { key: "ai-facade", label: "AI Фасады", icon: Building2, group: "AI" },
   { key: "ai-video", label: "AI Видео", icon: Film, group: "AI" },
+  { key: "ai-wan", label: "AI Wan Видео", icon: Film, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
   { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
   { key: "media", label: "Media Manager", icon: ImageIcon, group: "Контент" },
@@ -419,6 +421,9 @@ const Admin = () => {
 
           {/* ═══ AI VIDEO GENERATOR ═══ */}
           {section === "ai-video" && <AdminVideoGenerator />}
+
+          {/* ═══ AI WAN VIDEO ═══ */}
+          {section === "ai-wan" && <AdminWanVideo />}
 
           {/* ═══ VENUE ANALYZER ═══ */}
           {section === "venue" && <AdminVenueAnalyzer />}
