@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { X, ChevronLeft, ChevronRight, ArrowRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +11,7 @@ import heroImg from "@/assets/hero-decoration.jpg";
 
 type WorkItem = {
   id: string;
+  slug: string;
   title: string;
   title_en: string | null;
   description: string | null;
@@ -19,27 +21,36 @@ type WorkItem = {
   tags: string[];
   materials: string[];
   event_date: string | null;
+  category_id: string | null;
   category?: { name: string; name_en: string | null } | null;
 };
+
+type Category = { id: string; name: string; name_en: string | null };
 
 const Portfolio = () => {
   const { lang, t } = useLanguage();
   const p = t.portfolio;
 
   const [works, setWorks] = useState<WorkItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCat, setActiveCat] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalIndex, setModalIndex] = useState<number | null>(null);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
   useEffect(() => {
     const load = async () => {
-      const { data, error } = await supabase
-        .from("works")
-        .select("id, title, title_en, description, description_en, cover_image_url, gallery, tags, materials, event_date, category:categories(name, name_en)")
-        .eq("status", "published")
-        .order("featured", { ascending: false })
-        .order("sort_order", { ascending: true })
-        .order("created_at", { ascending: false });
+      const [worksRes, catsRes] = await Promise.all([
+        supabase
+          .from("works")
+          .select("id, slug, title, title_en, description, description_en, cover_image_url, gallery, tags, materials, event_date, category_id, category:categories(name, name_en)")
+          .eq("status", "published")
+          .order("featured", { ascending: false })
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: false }),
+        supabase.from("categories").select("id, name, name_en").order("sort_order", { ascending: true }),
+      ]);
+      const { data, error } = worksRes;
       if (!error && data) {
         setWorks(
           data.map((w: any) => ({
@@ -48,10 +59,16 @@ const Portfolio = () => {
           }))
         );
       }
+      if (catsRes.data) setCategories(catsRes.data as Category[]);
       setLoading(false);
     };
     load();
   }, []);
+
+  const filteredWorks = useMemo(() => {
+    if (!activeCat) return works;
+    return works.filter((w) => w.category_id === activeCat);
+  }, [works, activeCat]);
 
   const openModal = (index: number) => { setModalIndex(index); setGalleryIndex(0); };
   const closeModal = () => setModalIndex(null);
@@ -60,9 +77,9 @@ const Portfolio = () => {
     (dir: 1 | -1) => {
       if (modalIndex === null) return;
       const next = modalIndex + dir;
-      if (next >= 0 && next < works.length) { setModalIndex(next); setGalleryIndex(0); }
+      if (next >= 0 && next < filteredWorks.length) { setModalIndex(next); setGalleryIndex(0); }
     },
-    [modalIndex, works.length]
+    [modalIndex, filteredWorks.length]
   );
 
   useEffect(() => {
@@ -80,7 +97,7 @@ const Portfolio = () => {
     };
   }, [modalIndex, navigate]);
 
-  const current = modalIndex !== null ? works[modalIndex] : null;
+  const current = modalIndex !== null ? filteredWorks[modalIndex] : null;
   const currentImages = current ? [current.cover_image_url, ...(current.gallery || [])] : [];
 
   const titleOf = (w: WorkItem) => (lang === "en" && w.title_en ? w.title_en : w.title);
@@ -119,20 +136,41 @@ const Portfolio = () => {
         </div>
       </section>
 
+      {/* Category Filter */}
+      {categories.length > 0 && !loading && works.length > 0 && (
+        <div className="sticky top-16 md:top-20 z-30 bg-background/95 backdrop-blur-md border-b border-border/50">
+          <div className="container mx-auto px-4 md:px-12 lg:px-20 py-4 overflow-x-auto">
+            <div className="flex items-center gap-2 md:gap-3 min-w-max">
+              <button onClick={() => setActiveCat(null)} className={cn("text-[10px] uppercase tracking-[0.25em] font-semibold px-4 py-2 transition-colors duration-300 whitespace-nowrap", activeCat === null ? "text-foreground border-b border-foreground" : "text-foreground/50 hover:text-foreground")}>
+                {lang === "ru" ? "Все" : "All"}
+              </button>
+              {categories.map((c) => {
+                const name = lang === "en" && c.name_en ? c.name_en : c.name;
+                return (
+                  <button key={c.id} onClick={() => setActiveCat(c.id)} className={cn("text-[10px] uppercase tracking-[0.25em] font-semibold px-4 py-2 transition-colors duration-300 whitespace-nowrap", activeCat === c.id ? "text-foreground border-b border-foreground" : "text-foreground/50 hover:text-foreground")}>
+                    {name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Editorial Projects */}
       <div className="bg-background">
         {loading ? (
           <div className="container mx-auto py-32 flex justify-center">
             <Loader2 className="animate-spin text-primary" size={32} />
           </div>
-        ) : works.length === 0 ? (
+        ) : filteredWorks.length === 0 ? (
           <div className="container mx-auto py-32 text-center max-w-xl px-6">
             <p className="font-display text-2xl md:text-3xl font-light text-foreground/70 italic">
               {lang === "ru" ? "Скоро здесь появятся избранные проекты студии." : "Featured projects coming soon."}
             </p>
           </div>
         ) : (
-          works.map((work, index) => (
+          filteredWorks.map((work, index) => (
             <EditorialSection
               key={work.id}
               work={work}
@@ -306,10 +344,15 @@ const EditorialSection = ({ work, index, lang, labels, titleOf, descOf, category
                   {work.tags.slice(0, 5).map((tag) => <span key={tag} className="text-[10px] uppercase tracking-wider px-2.5 py-1 border border-border rounded-full text-muted-foreground/70">{tag}</span>)}
                 </div>
               )}
-              <button onClick={onImageClick} className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-foreground/60 hover:text-primary transition-colors duration-500 group/btn mt-2">
-                {labels.viewProject?.[lang] || (lang === "ru" ? "Смотреть проект" : "View project")}
-                <ArrowRight size={14} strokeWidth={1.5} className="transition-transform duration-300 group-hover/btn:translate-x-1" />
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 mt-2">
+                <Link to={`/portfolio/${work.slug}`} className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors duration-500 group/btn font-semibold border-b border-foreground/30 hover:border-primary pb-1">
+                  {labels.viewProject?.[lang] || (lang === "ru" ? "Смотреть проект" : "View project")}
+                  <ArrowRight size={14} strokeWidth={1.5} className="transition-transform duration-300 group-hover/btn:translate-x-1" />
+                </Link>
+                <button onClick={onImageClick} className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-foreground/50 hover:text-foreground transition-colors duration-500">
+                  {lang === "ru" ? "Быстрый просмотр" : "Quick preview"}
+                </button>
+              </div>
             </div>
           </ScrollReveal>
         </div>

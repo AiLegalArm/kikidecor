@@ -19,8 +19,8 @@ const Calculator = lazy(() => import("./pages/Calculator"));
 const About = lazy(() => import("./pages/About"));
 const Booking = lazy(() => import("./pages/Booking"));
 const Contact = lazy(() => import("./pages/Contact"));
-const InstagramPage = lazy(() => import("./pages/Instagram"));
 const Admin = lazy(() => import("./pages/Admin"));
+const WorkDetail = lazy(() => import("./pages/WorkDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -57,13 +57,13 @@ const AnimatedRoutes = () => {
             <Route path="/" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/decor" element={<PageTransition><Services /></PageTransition>} />
             <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
+            <Route path="/portfolio/:slug" element={<PageTransition><WorkDetail /></PageTransition>} />
             <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
             <Route path="/packages" element={<PageTransition><Packages /></PageTransition>} />
             <Route path="/calculator" element={<PageTransition><Calculator /></PageTransition>} />
             <Route path="/about" element={<PageTransition><About /></PageTransition>} />
             <Route path="/booking" element={<PageTransition><Booking /></PageTransition>} />
             <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-            <Route path="/instagram" element={<PageTransition><InstagramPage /></PageTransition>} />
             <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
           </Routes>
         </AnimatePresence>

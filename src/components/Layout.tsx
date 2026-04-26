@@ -160,8 +160,7 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
       {/* Main */}
       <main className="flex-1">{children}</main>
 
-      {/* ── Footer (hidden on homepage) ── */}
-      {location.pathname !== "/" &&
+      {/* ── Footer ── */}
       <footer className="bg-foreground text-background/80">
         <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
@@ -231,7 +230,6 @@ const Layout = ({ children }: {children: React.ReactNode;}) => {
           </div>
         </div>
       </footer>
-      }
 
       {/* Back to top */}
       <button
