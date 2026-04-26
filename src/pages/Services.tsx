@@ -56,31 +56,63 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Services grid */}
+      {/* Services — Editorial list */}
       <section className="px-6 md:px-10 pb-24 md:pb-36">
         <div className="container mx-auto max-w-6xl">
           <ScrollReveal>
-            <h2 className="font-display text-3xl md:text-4xl font-light text-center mb-12">{a.ourServices[lang]}</h2>
+            <div className="flex items-end justify-between mb-16 md:mb-24 border-b border-border/60 pb-6">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-semibold mb-3">{s.overline[lang]}</p>
+                <h2 className="font-display text-3xl md:text-5xl font-light leading-[1]">{a.ourServices[lang]}</h2>
+              </div>
+              <p className="hidden md:block font-display text-6xl font-light text-border">{String(s.items.length).padStart(2, "0")}</p>
+            </div>
           </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {s.items.map((service, i) =>
-            <ScrollReveal key={i} delay={i * 80}>
-                <div className="group relative overflow-hidden aspect-[3/4] sm:aspect-[4/5] cursor-pointer">
-                  <img src={serviceImages[i]} alt={service.title[lang]} className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.05]" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-all duration-700 group-hover:from-black/95" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7 md:p-8">
-                    <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-light text-white mb-1.5 sm:mb-2">{service.title[lang]}</h2>
-                    <p className="text-xs sm:text-sm text-white/70 leading-relaxed mb-3 sm:mb-4 max-w-xs font-semibold">{service.desc[lang]}</p>
-                    <div className="flex items-center justify-between">
-                      <p className="font-display text-lg sm:text-xl font-semibold text-primary-foreground">{service.price[lang]}</p>
-                      <Link to="/booking" className="text-[9px] uppercase tracking-[0.25em] text-white/80 hover:text-white transition-colors duration-300 font-body">
-                        {s.order[lang]} →
-                      </Link>
+
+          <div className="flex flex-col">
+            {s.items.map((service, i) => {
+              const number = String(i + 1).padStart(2, "0");
+              const imageRight = i % 2 === 0;
+              return (
+                <ScrollReveal key={i} delay={i * 60}>
+                  <article className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-10 md:py-16 border-b border-border/50">
+                    {/* Image */}
+                    <div className={cn("lg:col-span-7", imageRight ? "lg:order-2" : "lg:order-1")}>
+                      <div className="relative overflow-hidden aspect-[5/4]">
+                        <img
+                          src={serviceImages[i]}
+                          alt={service.title[lang]}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-[1.04]"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            )}
+
+                    {/* Text */}
+                    <div className={cn("lg:col-span-5", imageRight ? "lg:order-1 lg:pr-10" : "lg:order-2 lg:pl-10")}>
+                      <p className="font-display text-6xl md:text-7xl font-light text-border/70 leading-none mb-5">{number}</p>
+                      <h3 className="font-display text-2xl md:text-4xl font-light text-foreground leading-[1.1] mb-3">
+                        {service.title[lang]}
+                      </h3>
+                      <div className="w-12 h-px bg-primary/40 my-5" />
+                      <p className="text-sm md:text-base text-muted-foreground leading-[1.9] font-normal mb-7 max-w-md">
+                        {service.desc[lang]}
+                      </p>
+                      <div className="flex items-baseline justify-between gap-4 max-w-md">
+                        <p className="font-display text-xl md:text-2xl text-primary">{service.price[lang]}</p>
+                        <Link
+                          to="/booking"
+                          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-foreground/70 hover:text-primary transition-colors duration-500 font-semibold border-b border-foreground/20 hover:border-primary pb-1"
+                        >
+                          {s.order[lang]}
+                          <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                </ScrollReveal>
+              );
+            })}
           </div>
         </div>
       </section>
