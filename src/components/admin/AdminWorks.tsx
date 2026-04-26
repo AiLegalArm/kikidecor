@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Image as ImageIcon, Loader2, X, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Image as ImageIcon, Loader2, X, Star, Film } from "lucide-react";
 
 type Category = { id: string; name: string; slug: string };
 type Work = {
@@ -19,6 +19,7 @@ type Work = {
   description: string | null;
   cover_image_url: string;
   gallery: string[];
+  video_url: string | null;
   category_id: string | null;
   status: "draft" | "published" | "archived";
   featured: boolean;
@@ -51,6 +52,7 @@ const emptyForm = (): Partial<Work> => ({
   description: "",
   cover_image_url: "",
   gallery: [],
+  video_url: null,
   category_id: null,
   status: "draft",
   featured: false,
@@ -69,6 +71,7 @@ export default function AdminWorks() {
   const [saving, setSaving] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -131,6 +134,29 @@ export default function AdminWorks() {
     setEditing({ ...editing, gallery: (editing.gallery || []).filter((u) => u !== url) });
   };
 
+  const handleVideoUpload = async (file: File) => {
+    if (!editing) return;
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error("Файл больше 100 МБ");
+      return;
+    }
+    setUploadingVideo(true);
+    const ext = file.name.split(".").pop() || "mp4";
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("work-videos").upload(path, file, {
+      contentType: file.type, upsert: false,
+    });
+    if (error) {
+      toast.error("Ошибка загрузки видео: " + error.message);
+      setUploadingVideo(false);
+      return;
+    }
+    const { data } = supabase.storage.from("work-videos").getPublicUrl(path);
+    setEditing({ ...editing, video_url: data.publicUrl });
+    setUploadingVideo(false);
+    toast.success("Видео загружено");
+  };
+
   const save = async () => {
     if (!editing) return;
     if (!editing.title?.trim()) return toast.error("Введите название");
@@ -144,6 +170,7 @@ export default function AdminWorks() {
       description: editing.description || null,
       cover_image_url: editing.cover_image_url,
       gallery: editing.gallery || [],
+      video_url: editing.video_url || null,
       category_id: editing.category_id || null,
       status: editing.status || "draft",
       featured: !!editing.featured,
@@ -345,6 +372,38 @@ export default function AdminWorks() {
                   <label className="aspect-square border-2 border-dashed border-border rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/30">
                     <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => e.target.files && handleGalleryUpload(e.target.files)} />
                     {uploadingGallery ? <Loader2 className="animate-spin text-muted-foreground" size={20} /> : <Plus className="text-muted-foreground" size={20} />}
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <Label>Видео (MP4 / WebM, до 100 МБ)</Label>
+                <div className="mt-2 flex items-start gap-3">
+                  {editing.video_url ? (
+                    <div className="relative">
+                      <video src={editing.video_url} className="w-48 h-32 object-cover rounded-lg border border-border bg-black" controls muted />
+                      <button
+                        type="button"
+                        onClick={() => setEditing({ ...editing, video_url: null })}
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
+                        title="Удалить видео"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ) : null}
+                  <label className="flex-1">
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm,video/quicktime"
+                      className="hidden"
+                      onChange={(e) => e.target.files?.[0] && handleVideoUpload(e.target.files[0])}
+                    />
+                    <div className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:bg-muted/30">
+                      {uploadingVideo
+                        ? <Loader2 className="mx-auto animate-spin" />
+                        : <><Film className="mx-auto mb-2 text-muted-foreground" /><p className="text-sm text-muted-foreground">{editing.video_url ? "Заменить видео" : "Загрузить видео"}</p></>}
+                    </div>
                   </label>
                 </div>
               </div>
