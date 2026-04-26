@@ -1,10 +1,20 @@
-// Single source of truth for admin access
-const ADMIN_EMAILS = [
-  "admin@kikidecor.ru",
-  "kris@kikidecor.ru",
-];
+import { supabase } from "@/integrations/supabase/client";
 
-export function isAdminUser(email: string | undefined | null): boolean {
-  if (!email) return false;
-  return ADMIN_EMAILS.some(e => e.toLowerCase() === email.toLowerCase());
+/**
+ * Server-validated admin check via user_roles table + has_role() RPC.
+ * Returns true only if the authenticated user has the 'admin' role.
+ */
+export async function isAdminUser(userId: string | undefined | null): Promise<boolean> {
+  if (!userId) return false;
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error) {
+    console.error("[isAdminUser] role check failed:", error.message);
+    return false;
+  }
+  return !!data;
 }
