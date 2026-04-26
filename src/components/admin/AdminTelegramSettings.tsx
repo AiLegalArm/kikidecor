@@ -224,3 +224,26 @@ const AdminTelegramSettings = () => {
 };
 
 export default AdminTelegramSettings;
+
+// ─── Backward-compat shims for legacy imports ───
+// Old code imported getTelegramSettings/sendTelegramMessage from this file.
+// Now we send via the server (notify-new-lead / telegram-bot). These shims
+// keep the build green and route through the supabase function.
+
+export const getTelegramSettings = () => ({
+  botToken: "",
+  chatId: "",
+  autoSend: false,
+  connected: true,
+});
+
+export const sendTelegramMessage = async (text: string, imageUrl?: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase.functions.invoke("notify-new-lead", {
+      body: { broadcast: true, text, imageUrl },
+    });
+    return !error;
+  } catch {
+    return false;
+  }
+};
