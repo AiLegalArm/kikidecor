@@ -423,10 +423,10 @@ const Admin = () => {
           {section === "ai-facade" && <AdminFacadeGenerator />}
 
           {/* ═══ AI VIDEO GENERATOR ═══ */}
-          {section === "ai-video" && <AdminVideoGenerator />}
+          {section === "ai-video" && <AdminWanVideo />}
 
-          {/* ═══ AI WAN VIDEO ═══ */}
-          {section === "ai-wan" && <AdminWanVideo />}
+          {/* ═══ AI PROVIDER SETTINGS ═══ */}
+          {section === "ai-provider" && <AdminAIProvider />}
 
           {/* ═══ VENUE ANALYZER ═══ */}
           {section === "venue" && <AdminVenueAnalyzer />}
