@@ -13,6 +13,7 @@ import {
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
   Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2, Film, Package, MessageCircle,
+  Cpu,
 } from "lucide-react";
 import AdminLogin from "@/components/AdminLogin";
 import type { Session } from "@supabase/supabase-js";
@@ -30,11 +31,11 @@ const AdminBrandDesign = lazy(() => import("@/components/admin/AdminBrandDesign"
 const AdminMediaManager = lazy(() => import("@/components/admin/AdminMediaManager"));
 const AdminEventPlannerPipeline = lazy(() => import("@/components/admin/AdminEventPlannerPipeline"));
 const AdminFacadeGenerator = lazy(() => import("@/components/admin/AdminFacadeGenerator"));
-const AdminVideoGenerator = lazy(() => import("@/components/admin/AdminVideoGenerator"));
 const AdminWorks = lazy(() => import("@/components/admin/AdminWorks"));
 const AdminPackages = lazy(() => import("@/components/admin/AdminPackages"));
 const AdminWanVideo = lazy(() => import("@/components/admin/AdminWanVideo"));
 const AdminConcierge = lazy(() => import("@/components/admin/AdminConcierge"));
+const AdminAIProvider = lazy(() => import("@/components/admin/AdminAIProvider"));
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
@@ -58,7 +59,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "ai-wan" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline" | "concierge";
+type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline" | "concierge" | "ai-provider";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
@@ -71,13 +72,13 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
   { key: "ai-facade", label: "AI Фасады", icon: Building2, group: "AI" },
   { key: "ai-video", label: "AI Видео", icon: Film, group: "AI" },
-  { key: "ai-wan", label: "AI Wan Видео", icon: Film, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
   { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
   { key: "media", label: "Media Manager", icon: ImageIcon, group: "Контент" },
   { key: "brand", label: "Brand Design", icon: Palette, group: "Контент" },
   { key: "telegram", label: "Telegram", icon: Send, group: "Настройки" },
   { key: "concierge", label: "Concierge AI", icon: MessageCircle, group: "AI" },
+  { key: "ai-provider", label: "AI Провайдер", icon: Cpu, group: "Настройки" },
 ];
 
 const Admin = () => {
