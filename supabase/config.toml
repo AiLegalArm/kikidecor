@@ -29,3 +29,6 @@ verify_jwt = true
 
 [functions.telegram-setup-webhook]
 verify_jwt = true
+
+[functions.concierge-telegram-webhook]
+verify_jwt = false
