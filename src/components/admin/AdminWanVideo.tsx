@@ -16,20 +16,11 @@ import {
   buildWanPrompt, type DecorPreset, type MotionState, type MoodState, type OutputState,
 } from "@/lib/decorPresets";
 import { cn } from "@/lib/utils";
+import WanHistory, { type WanRun, type WanSetup } from "./wan/WanHistory";
 
 type FrameKind = "first" | "last";
 
-type Run = {
-  id: string;
-  created_at: string;
-  status: string;
-  user_prompt: string;
-  compiled_prompt: string;
-  preset_name: string | null;
-  first_frame_url: string | null;
-  last_frame_url: string | null;
-  video_url: string | null;
-};
+type Run = WanRun;
 
 const FramePicker = ({
   kind, file, url, onPick, onClear,
@@ -134,6 +125,7 @@ const AdminWanVideo = () => {
   const [lastFile, setLastFile] = useState<File | null>(null);
 
   const [runs, setRuns] = useState<Run[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [lastResult, setLastResult] = useState<{ id: string; compiledPrompt: string; lastFrameDescription: string | null } | null>(null);
 
@@ -149,12 +141,14 @@ const AdminWanVideo = () => {
   }), [userPrompt, presetId, motion, mood, output, negativePrompt, styleStrength]);
 
   const loadRuns = async () => {
+    setHistoryLoading(true);
     const { data } = await supabase
       .from("wan_runs")
-      .select("id, created_at, status, user_prompt, compiled_prompt, preset_name, first_frame_url, last_frame_url, video_url")
+      .select("id, created_at, status, user_prompt, compiled_prompt, preset_id, preset_name, first_frame_url, last_frame_url, last_frame_description, video_url, thumbnail_url, motion, mood, output, negative_prompt, style_strength, error_message")
       .order("created_at", { ascending: false })
-      .limit(12);
+      .limit(50);
     setRuns((data as Run[]) || []);
+    setHistoryLoading(false);
   };
 
   useEffect(() => { loadRuns(); }, []);
@@ -213,9 +207,15 @@ const AdminWanVideo = () => {
     }
   };
 
-  const restoreFromRun = (run: Run) => {
-    setUserPrompt(run.user_prompt);
-    toast.success("Настройки восстановлены");
+  const restoreSetup = (s: WanSetup) => {
+    setUserPrompt(s.userPrompt);
+    setPresetId(s.presetId);
+    setMotion(s.motion);
+    setMood(s.mood);
+    setOutput(s.output);
+    setNegativePrompt(s.negativePrompt);
+    setStyleStrength(s.styleStrength);
+    setShowAdvanced(!!(s.negativePrompt || s.styleStrength !== 60 || s.output?.cameraFixed));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -440,31 +440,13 @@ const AdminWanVideo = () => {
       </div>
 
       {/* History */}
-      <div className="space-y-3 pt-6 border-t">
-        <h3 className="font-semibold text-sm uppercase tracking-[0.2em]">Generation History</h3>
-        {runs.length === 0 ? (
-          <p className="text-sm text-muted-foreground">История пуста.</p>
-        ) : (
-          <div className="flex gap-3 overflow-x-auto pb-3 snap-x">
-            {runs.map((run) => (
-              <button
-                key={run.id}
-                onClick={() => restoreFromRun(run)}
-                className="shrink-0 w-[200px] snap-start text-left rounded-lg border p-3 bg-card hover:border-primary/50 transition"
-              >
-                <div className="aspect-video rounded bg-muted mb-2 overflow-hidden flex">
-                  {run.first_frame_url ? <img src={run.first_frame_url} className="w-1/2 object-cover" alt="" /> : <div className="w-1/2 bg-emerald-500/10" />}
-                  {run.last_frame_url ? <img src={run.last_frame_url} className="w-1/2 object-cover" alt="" /> : <div className="w-1/2 bg-amber-500/10" />}
-                </div>
-                <p className="text-xs font-semibold line-clamp-2 mb-1">{run.user_prompt}</p>
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>{run.preset_name}</span>
-                  <span>{new Date(run.created_at).toLocaleDateString()}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="pt-6 border-t">
+        <WanHistory
+          runs={runs}
+          loading={historyLoading}
+          onRefresh={loadRuns}
+          onRerun={(setup) => restoreSetup(setup)}
+        />
       </div>
     </div>
   );
