@@ -13,7 +13,7 @@ import {
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
   Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2, Film, Package, MessageCircle,
-  Cpu,
+  Cpu, Wand2,
 } from "lucide-react";
 import AdminLogin from "@/components/AdminLogin";
 import type { Session } from "@supabase/supabase-js";
@@ -36,6 +36,7 @@ const AdminPackages = lazy(() => import("@/components/admin/AdminPackages"));
 const AdminWanVideo = lazy(() => import("@/components/admin/AdminWanVideo"));
 const AdminConcierge = lazy(() => import("@/components/admin/AdminConcierge"));
 const AdminAIProvider = lazy(() => import("@/components/admin/AdminAIProvider"));
+const AdminDecorPromptGenerator = lazy(() => import("@/components/admin/AdminDecorPromptGenerator"));
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
@@ -59,7 +60,7 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline" | "concierge" | "ai-provider";
+type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "ai-decor-prompt" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline" | "concierge" | "ai-provider";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
@@ -72,6 +73,7 @@ const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = 
   { key: "ai", label: "AI Генератор", icon: Sparkles, group: "AI" },
   { key: "ai-facade", label: "AI Фасады", icon: Building2, group: "AI" },
   { key: "ai-video", label: "AI Видео", icon: Film, group: "AI" },
+  { key: "ai-decor-prompt", label: "AI Промт-декор", icon: Wand2, group: "AI" },
   { key: "ai-insights", label: "AI Инсайты", icon: Sparkles, group: "AI" },
   { key: "event-pipeline", label: "Event Pipeline", icon: Workflow, group: "AI" },
   { key: "media", label: "Media Manager", icon: ImageIcon, group: "Контент" },
@@ -424,6 +426,9 @@ const Admin = () => {
 
           {/* ═══ AI VIDEO GENERATOR ═══ */}
           {section === "ai-video" && <AdminWanVideo />}
+
+          {/* ═══ AI DECOR PROMPT GENERATOR ═══ */}
+          {section === "ai-decor-prompt" && <AdminDecorPromptGenerator />}
 
           {/* ═══ AI PROVIDER SETTINGS ═══ */}
           {section === "ai-provider" && <AdminAIProvider />}
