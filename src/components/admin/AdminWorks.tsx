@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Image as ImageIcon, Loader2, X, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Image as ImageIcon, Loader2, X, Star, Film } from "lucide-react";
 
 type Category = { id: string; name: string; slug: string };
 type Work = {
@@ -19,6 +19,7 @@ type Work = {
   description: string | null;
   cover_image_url: string;
   gallery: string[];
+  video_url: string | null;
   category_id: string | null;
   status: "draft" | "published" | "archived";
   featured: boolean;
@@ -51,6 +52,7 @@ const emptyForm = (): Partial<Work> => ({
   description: "",
   cover_image_url: "",
   gallery: [],
+  video_url: null,
   category_id: null,
   status: "draft",
   featured: false,
@@ -69,6 +71,7 @@ export default function AdminWorks() {
   const [saving, setSaving] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -131,6 +134,29 @@ export default function AdminWorks() {
     setEditing({ ...editing, gallery: (editing.gallery || []).filter((u) => u !== url) });
   };
 
+  const handleVideoUpload = async (file: File) => {
+    if (!editing) return;
+    if (file.size > 100 * 1024 * 1024) {
+      toast.error("Файл больше 100 МБ");
+      return;
+    }
+    setUploadingVideo(true);
+    const ext = file.name.split(".").pop() || "mp4";
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("work-videos").upload(path, file, {
+      contentType: file.type, upsert: false,
+    });
+    if (error) {
+      toast.error("Ошибка загрузки видео: " + error.message);
+      setUploadingVideo(false);
+      return;
+    }
+    const { data } = supabase.storage.from("work-videos").getPublicUrl(path);
+    setEditing({ ...editing, video_url: data.publicUrl });
+    setUploadingVideo(false);
+    toast.success("Видео загружено");
+  };
+
   const save = async () => {
     if (!editing) return;
     if (!editing.title?.trim()) return toast.error("Введите название");
@@ -144,6 +170,7 @@ export default function AdminWorks() {
       description: editing.description || null,
       cover_image_url: editing.cover_image_url,
       gallery: editing.gallery || [],
+      video_url: editing.video_url || null,
       category_id: editing.category_id || null,
       status: editing.status || "draft",
       featured: !!editing.featured,
