@@ -21,7 +21,6 @@ const Booking = lazy(() => import("./pages/Booking"));
 const Contact = lazy(() => import("./pages/Contact"));
 const InstagramPage = lazy(() => import("./pages/Instagram"));
 const Admin = lazy(() => import("./pages/Admin"));
-const Showroom = lazy(() => import("./pages/Showroom"));
 const Shop = lazy(() => import("./pages/Shop"));
 const ProductPage = lazy(() => import("./pages/ProductPage"));
 const CheckoutPage = lazy(() => import("./pages/Checkout"));
@@ -30,7 +29,6 @@ const Stylist = lazy(() => import("./pages/Stylist"));
 const OutfitGenerator = lazy(() => import("./pages/OutfitGenerator"));
 const FindSimilar = lazy(() => import("./pages/FindSimilar"));
 const VirtualTryOn = lazy(() => import("./pages/VirtualTryOn"));
-const ShowroomBooking = lazy(() => import("./pages/ShowroomBooking"));
 const ShoppableGalleryPage = lazy(() => import("./pages/ShoppableGalleryPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -67,7 +65,6 @@ const AnimatedRoutes = () => {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<PageTransition><Home /></PageTransition>} />
             <Route path="/decor" element={<PageTransition><Services /></PageTransition>} />
-            <Route path="/showroom" element={<PageTransition><Showroom /></PageTransition>} />
             <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
             <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
             <Route path="/packages" element={<PageTransition><Packages /></PageTransition>} />
@@ -83,7 +80,6 @@ const AnimatedRoutes = () => {
             <Route path="/outfits" element={<PageTransition><OutfitGenerator /></PageTransition>} />
             <Route path="/find-similar" element={<PageTransition><FindSimilar /></PageTransition>} />
             <Route path="/try-on" element={<PageTransition><VirtualTryOn /></PageTransition>} />
-            <Route path="/showroom-booking" element={<PageTransition><ShowroomBooking /></PageTransition>} />
             <Route path="/shop-the-look" element={<PageTransition><ShoppableGalleryPage /></PageTransition>} />
             <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
             <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
