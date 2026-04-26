@@ -3,9 +3,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Send, Image as ImageIcon, Upload, Copy, Wand2, Download } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2, Sparkles, Send, Image as ImageIcon, Upload, Copy, Wand2, Download, BookOpen, Check, Search } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { CLIENT_PRESETS, type ClientPreset } from "@/data/decorPresets";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -44,6 +55,65 @@ export default function AdminDecorPromptGenerator() {
   const [applying, setApplying] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Catalog browser
+  const [catalogOpen, setCatalogOpen] = useState(false);
+  const [catalogSearch, setCatalogSearch] = useState("");
+  const [catalogArea, setCatalogArea] = useState("входной зоне");
+  const [selectedPreset, setSelectedPreset] = useState<ClientPreset | null>(null);
+
+  const filteredPresets = CLIENT_PRESETS.filter((p) => {
+    const q = catalogSearch.trim().toLowerCase();
+    if (!q) return true;
+    if (String(p.id) === q) return true;
+    return (
+      p.name.toLowerCase().includes(q) ||
+      p.prompt.toLowerCase().includes(q)
+    );
+  });
+
+  const presetFinalText = selectedPreset
+    ? selectedPreset.prompt.replace(/\[ОБЛАСТЬ\]/g, catalogArea.trim() || "[ОБЛАСТЬ]")
+    : "";
+
+  const usePreset = (apply: boolean) => {
+    if (!selectedPreset) return;
+    setFinalPrompt(presetFinalText);
+    setPreset(`${selectedPreset.id} — ${selectedPreset.name}`);
+    setArea(catalogArea);
+    setNegative("");
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: `Каталог: пресет ${selectedPreset.id} (${selectedPreset.name}), область: ${catalogArea}` },
+      { role: "assistant", content: `Готово — выбран пресет **${selectedPreset.id}. ${selectedPreset.name}**.\n\n\`\`\`\n${presetFinalText}\n\`\`\`` },
+    ]);
+    toast.success(`Пресет ${selectedPreset.id} применён`);
+    setCatalogOpen(false);
+    if (apply && imageDataUrl) {
+      // run apply on next tick so finalPrompt state is set
+      setTimeout(() => apply && void applyWithPrompt(presetFinalText), 0);
+    }
+  };
+
+  const applyWithPrompt = async (prompt: string) => {
+    if (!imageDataUrl) return;
+    setApplying(true);
+    setEditedUrl("");
+    try {
+      const { data, error } = await supabase.functions.invoke("decor-prompt-chat", {
+        body: { mode: "apply", prompt, imageUrl: imageDataUrl },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      setEditedUrl((data as any).imageUrl);
+      toast.success("Готово");
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Ошибка применения к фото");
+    } finally {
+      setApplying(false);
+    }
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -124,12 +194,120 @@ export default function AdminDecorPromptGenerator() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Sparkles className="text-primary" size={20} />
-        <h2 className="text-2xl font-serif font-bold">Decor Prompt Generator PRO</h2>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          <Sparkles className="text-primary" size={20} />
+          <h2 className="text-2xl font-serif font-bold">Decor Prompt Generator PRO</h2>
+        </div>
+        <Dialog open={catalogOpen} onOpenChange={setCatalogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <BookOpen size={14} className="mr-1" />
+              Каталог промтов ({CLIENT_PRESETS.length})
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-5xl h-[80vh] flex flex-col p-0 gap-0">
+            <DialogHeader className="p-4 border-b">
+              <DialogTitle className="flex items-center gap-2">
+                <BookOpen size={18} /> Каталог декор-пресетов
+              </DialogTitle>
+            </DialogHeader>
+            <div className="p-4 border-b grid gap-2 md:grid-cols-2">
+              <div className="relative">
+                <Search size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Поиск: номер, название или ключевое слово…"
+                  value={catalogSearch}
+                  onChange={(e) => setCatalogSearch(e.target.value)}
+                  className="pl-7"
+                />
+              </div>
+              <Input
+                placeholder="Область (например: входной зоне, банкетном столе, потолке)"
+                value={catalogArea}
+                onChange={(e) => setCatalogArea(e.target.value)}
+              />
+            </div>
+            <div className="flex-1 grid md:grid-cols-2 overflow-hidden">
+              <ScrollArea className="border-r h-full">
+                <div className="p-2 space-y-1">
+                  {filteredPresets.map((p) => {
+                    const active = selectedPreset?.id === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setSelectedPreset(p)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition flex items-start gap-2 ${
+                          active ? "bg-primary text-primary-foreground" : "hover:bg-muted"
+                        }`}
+                      >
+                        <span className={`text-[11px] font-mono shrink-0 mt-0.5 ${active ? "opacity-80" : "text-muted-foreground"}`}>
+                          #{String(p.id).padStart(3, "0")}
+                        </span>
+                        <span className="font-medium">{p.name}</span>
+                        {active && <Check size={14} className="ml-auto shrink-0 mt-0.5" />}
+                      </button>
+                    );
+                  })}
+                  {filteredPresets.length === 0 && (
+                    <div className="text-sm text-muted-foreground p-4 text-center">Ничего не найдено</div>
+                  )}
+                </div>
+              </ScrollArea>
+              <ScrollArea className="h-full">
+                <div className="p-4 space-y-3">
+                  {selectedPreset ? (
+                    <>
+                      <div>
+                        <div className="text-xs text-muted-foreground">Пресет #{selectedPreset.id}</div>
+                        <div className="text-lg font-semibold">{selectedPreset.name}</div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">Превью с подставленной областью:</div>
+                      <Textarea
+                        readOnly
+                        value={presetFinalText}
+                        className="min-h-[200px] text-sm font-mono"
+                      />
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            await navigator.clipboard.writeText(presetFinalText);
+                            toast.success("Промт скопирован");
+                          }}
+                        >
+                          <Copy size={14} className="mr-1" /> Копировать
+                        </Button>
+                        <Button size="sm" onClick={() => usePreset(false)}>
+                          <Check size={14} className="mr-1" /> Использовать
+                        </Button>
+                        {imageDataUrl && (
+                          <Button size="sm" variant="secondary" onClick={() => usePreset(true)}>
+                            <Wand2 size={14} className="mr-1" /> Применить к фото
+                          </Button>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-sm text-muted-foreground text-center p-6">
+                      Выбери пресет слева, чтобы увидеть полный промт.
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+            <DialogFooter className="p-3 border-t">
+              <div className="text-xs text-muted-foreground mr-auto">
+                Всего пресетов: {CLIENT_PRESETS.length} · Найдено: {filteredPresets.length}
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setCatalogOpen(false)}>Закрыть</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       <p className="text-sm text-muted-foreground">
-        Чат-ассистент строит финальный промт по 50 пресетам декора. Можешь сразу применить к фото.
+        Чат-ассистент строит финальный промт по {CLIENT_PRESETS.length} пресетам декора. Открой «Каталог промтов», чтобы посмотреть и выбрать вручную, или опиши задачу в чате.
       </p>
 
       <div className="grid lg:grid-cols-2 gap-4">
