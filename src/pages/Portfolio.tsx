@@ -344,10 +344,15 @@ const EditorialSection = ({ work, index, lang, labels, titleOf, descOf, category
                   {work.tags.slice(0, 5).map((tag) => <span key={tag} className="text-[10px] uppercase tracking-wider px-2.5 py-1 border border-border rounded-full text-muted-foreground/70">{tag}</span>)}
                 </div>
               )}
-              <button onClick={onImageClick} className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-foreground/60 hover:text-primary transition-colors duration-500 group/btn mt-2">
-                {labels.viewProject?.[lang] || (lang === "ru" ? "Смотреть проект" : "View project")}
-                <ArrowRight size={14} strokeWidth={1.5} className="transition-transform duration-300 group-hover/btn:translate-x-1" />
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 mt-2">
+                <Link to={`/portfolio/${work.slug}`} className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors duration-500 group/btn font-semibold border-b border-foreground/30 hover:border-primary pb-1">
+                  {labels.viewProject?.[lang] || (lang === "ru" ? "Смотреть проект" : "View project")}
+                  <ArrowRight size={14} strokeWidth={1.5} className="transition-transform duration-300 group-hover/btn:translate-x-1" />
+                </Link>
+                <button onClick={onImageClick} className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-foreground/50 hover:text-foreground transition-colors duration-500">
+                  {lang === "ru" ? "Быстрый просмотр" : "Quick preview"}
+                </button>
+              </div>
             </div>
           </ScrollReveal>
         </div>
