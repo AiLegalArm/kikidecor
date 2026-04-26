@@ -375,6 +375,38 @@ export default function AdminWorks() {
                   </label>
                 </div>
               </div>
+
+              <div>
+                <Label>Видео (MP4 / WebM, до 100 МБ)</Label>
+                <div className="mt-2 flex items-start gap-3">
+                  {editing.video_url ? (
+                    <div className="relative">
+                      <video src={editing.video_url} className="w-48 h-32 object-cover rounded-lg border border-border bg-black" controls muted />
+                      <button
+                        type="button"
+                        onClick={() => setEditing({ ...editing, video_url: null })}
+                        className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1"
+                        title="Удалить видео"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ) : null}
+                  <label className="flex-1">
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm,video/quicktime"
+                      className="hidden"
+                      onChange={(e) => e.target.files?.[0] && handleVideoUpload(e.target.files[0])}
+                    />
+                    <div className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:bg-muted/30">
+                      {uploadingVideo
+                        ? <Loader2 className="mx-auto animate-spin" />
+                        : <><Film className="mx-auto mb-2 text-muted-foreground" /><p className="text-sm text-muted-foreground">{editing.video_url ? "Заменить видео" : "Загрузить видео"}</p></>}
+                    </div>
+                  </label>
+                </div>
+              </div>
             </div>
           )}
 
