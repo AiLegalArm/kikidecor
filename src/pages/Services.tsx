@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 import { cn } from "@/lib/utils";
 import weddingImg from "@/assets/portfolio-wedding.jpg";
 import birthdayImg from "@/assets/portfolio-birthday.jpg";
@@ -19,6 +20,14 @@ const Services = () => {
   const { lang, t } = useLanguage();
   const s = t.services;
   const a = t.about;
+
+  useSEO({
+    title: lang === "ru" ? "Услуги декора — Ki Ki Decor" : "Decor Services — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Полный спектр оформления: свадьбы, дни рождения, предложения, корпоративы, тематические события."
+      : "Full-service event styling: weddings, birthdays, proposals, corporates, themed events.",
+    canonical: "https://kiki-shop.online/decor",
+  });
 
   return (
     <>

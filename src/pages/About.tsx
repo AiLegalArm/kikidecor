@@ -4,10 +4,19 @@ import loungeImg from "@/assets/portfolio-lounge.jpg";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 
 const About = () => {
   const { lang, t } = useLanguage();
   const a = t.about;
+
+  useSEO({
+    title: lang === "ru" ? "О студии — Ki Ki Decor" : "About — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Студия декора Kris (By Kris): философия, опыт, география, авторский подход к каждому событию."
+      : "Kris (By Kris) decor studio: philosophy, experience, geography, author's approach.",
+    canonical: "https://kiki-shop.online/about",
+  });
 
   const stats = [
     { number: "500+", label: a.stats.projects[lang] },

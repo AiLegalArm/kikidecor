@@ -7,10 +7,19 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 
 const Contact = () => {
   const { lang, t } = useLanguage();
   const c = t.contact;
+
+  useSEO({
+    title: lang === "ru" ? "Контакты — Ki Ki Decor" : "Contacts — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Свяжитесь с Ki Ki Decor: телефон, WhatsApp, Telegram, Instagram. Ростов-на-Дону и Геленджик."
+      : "Reach Ki Ki Decor: phone, WhatsApp, Telegram, Instagram. Rostov & Gelendzhik.",
+    canonical: "https://kiki-shop.online/contact",
+  });
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
 
