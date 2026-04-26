@@ -22,17 +22,10 @@ const Home = () => {
 
       {/* ═══ HERO ═══ */}
       <section className="relative h-screen overflow-hidden">
-        <div className="absolute inset-0 flex flex-row">
-          <div className="w-1/2 h-full relative overflow-hidden">
-            <img src={heroDecor} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-in" loading="eager" />
-            <div className="absolute inset-0 bg-foreground/45" />
-          </div>
-          <div className="w-1/2 h-full relative overflow-hidden">
-            <img src={heroDecor} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-out" loading="eager" />
-            <div className="absolute inset-0 bg-foreground/45" />
-          </div>
+        <div className="absolute inset-0">
+          <img src={heroDecor} alt="" className="absolute inset-0 w-full h-full object-cover animate-hero-zoom-in" loading="eager" />
+          <div className="absolute inset-0 bg-foreground/45" />
         </div>
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-background/8 z-10" />
         <div className="absolute inset-0 z-[5]" style={{ background: "radial-gradient(ellipse at center, transparent 30%, hsl(0 0% 0% / 0.4) 100%)" }} />
 
         <div className="relative z-20 h-full flex items-center justify-center text-center px-6">
