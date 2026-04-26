@@ -387,12 +387,7 @@ Deno.serve(async (req) => {
     const chatId: number = msg.chat.id;
     const text: string = msg.text.trim();
     const username: string | undefined = msg.from?.username;
-
-    // /start (Telegram standard) → show help
-    if (text === "/start" || text === "/help") {
-      await reply(chatId, HELP_TEXT);
-      return new Response("ok", { headers: corsHeaders });
-    }
+    const fromName: string | undefined = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(" ") || undefined;
 
     // /link <code> — does NOT require prior linkage
     if (text.startsWith("/link")) {
@@ -405,10 +400,32 @@ Deno.serve(async (req) => {
       return new Response("ok", { headers: corsHeaders });
     }
 
-    // All other commands require admin linkage
     const linked = await isLinkedAdmin(chatId);
+
+    // ───── Customer (non-admin) flow → AI auto-reply ─────
     if (!linked) {
-      await reply(chatId, "🔒 Доступ только для администраторов. Используйте /link &lt;код&gt; для привязки.");
+      // /start for customers — friendly greeting
+      if (text === "/start") {
+        await reply(
+          chatId,
+          "✨ Здравствуйте! Я ассистент студии <b>KiKi Decor</b>.\n\n" +
+            "Помогу с подбором декора, расскажу о наших услугах, ценах и доступных датах. " +
+            "Просто напишите ваш вопрос ✍️"
+        );
+        return new Response("ok", { headers: corsHeaders });
+      }
+      // Ignore other slash-commands from non-admins
+      if (text.startsWith("/")) {
+        await reply(chatId, "Напишите ваш вопрос обычным сообщением — я постараюсь помочь.");
+        return new Response("ok", { headers: corsHeaders });
+      }
+      await handleCustomerMessage(chatId, text, fromName, username);
+      return new Response("ok", { headers: corsHeaders });
+    }
+
+    // ───── Admin flow ─────
+    if (text === "/start" || text === "/help") {
+      await reply(chatId, HELP_TEXT);
       return new Response("ok", { headers: corsHeaders });
     }
 
