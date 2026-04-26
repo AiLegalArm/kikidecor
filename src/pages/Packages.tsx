@@ -90,7 +90,64 @@ const Packages = () => {
       <section className="px-5 md:px-8 lg:px-16 pb-20 md:pb-28">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {packages.map((pkg, i) => {
+            {dbPackages ? dbPackages.map((pkg, i) => {
+              const featured = pkg.is_featured;
+              const number = String(i + 1).padStart(2, "0");
+              const name = lang === "en" && pkg.name_en ? pkg.name_en : pkg.name;
+              const subtitle = lang === "en" && pkg.subtitle_en ? pkg.subtitle_en : (pkg.subtitle || "");
+              const features = lang === "en" && pkg.features_en?.length ? pkg.features_en : pkg.features;
+              const cta = lang === "en" && pkg.cta_label_en ? pkg.cta_label_en : (pkg.cta_label || p.orderPackage[lang]);
+              return (
+                <ScrollReveal key={pkg.id} delay={i * 120}>
+                  <div className={cn(
+                    "p-7 md:p-9 h-full flex flex-col transition-all duration-500 relative",
+                    featured
+                      ? "bg-card border border-primary/60 shadow-[0_12px_50px_-12px_hsl(var(--primary)/0.30)]"
+                      : "bg-card border border-border/70 hover:border-foreground/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.15)]"
+                  )}>
+                    {featured && (
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.3em] px-5 py-1.5 font-semibold">
+                        {p.popular[lang]}
+                      </span>
+                    )}
+                    <div className="flex items-start justify-between mb-1">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-semibold">{subtitle}</p>
+                      <span className="font-display text-3xl font-light text-border leading-none">{number}</span>
+                    </div>
+                    <h2 className="font-display text-3xl md:text-4xl font-light tracking-tight mb-1">{name}</h2>
+                    <div className="w-10 h-px bg-primary/40 my-4" />
+                    <div className="flex items-baseline gap-1 mb-7">
+                      <span className="font-display text-3xl md:text-4xl text-primary">{fmtPrice(pkg.price_from, pkg.currency)}</span>
+                      <span className="text-xs text-muted-foreground font-light">{p.from[lang]}</span>
+                    </div>
+                    <div className="space-y-4 flex-1 mb-8">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">{p.included[lang]}</p>
+                      {features.map((feat, idx) => (
+                        <div key={idx} className="flex items-start gap-3">
+                          <Check size={14} className="text-primary mt-0.5 shrink-0" />
+                          <span className="text-sm font-light text-foreground/80">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="space-y-3">
+                      <Link to="/booking" className="block">
+                        <Button className={cn(
+                          "w-full rounded-none text-[11px] uppercase tracking-[0.25em] py-5 font-semibold",
+                          featured ? "bg-primary hover:bg-primary/90 text-primary-foreground" : "bg-foreground hover:bg-foreground/90 text-background"
+                        )}>
+                          {cta}
+                        </Button>
+                      </Link>
+                      <Link to="/contact" className="block">
+                        <Button variant="outline" className="w-full rounded-none text-[11px] uppercase tracking-[0.25em] py-5 border-border hover:bg-secondary font-semibold">
+                          {p.contactDecorator[lang]}
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              );
+            }) : fallback.map((pkg, i) => {
               const featured = i === 1;
               const number = String(i + 1).padStart(2, "0");
               return (
@@ -176,9 +233,9 @@ const Packages = () => {
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-left p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium w-[35%]">{p.option[lang]}</th>
-                    <th className="text-center p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{packages[0].name[lang]}</th>
-                    <th className="text-center p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-primary font-medium bg-primary/5">{packages[1].name[lang]} ★</th>
-                    <th className="text-center p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{packages[2].name[lang]}</th>
+                    <th className="text-center p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{fallback[0].name[lang]}</th>
+                    <th className="text-center p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-primary font-medium bg-primary/5">{fallback[1].name[lang]} ★</th>
+                    <th className="text-center p-4 md:p-5 text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">{fallback[2].name[lang]}</th>
                   </tr>
                 </thead>
                 <tbody>
