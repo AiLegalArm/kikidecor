@@ -47,6 +47,90 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_canned_replies: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          key: string
+          language: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          key: string
+          language?: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          key?: string
+          language?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      agent_policies: {
+        Row: {
+          ai_globally_paused: boolean
+          allowed_topics: string[]
+          blocked_topics: string[]
+          business_hours: Json
+          confidence_threshold: number
+          escalation_keywords: string[]
+          handoff_template_en: string
+          handoff_template_ru: string
+          id: number
+          max_repeated_clarifications: number
+          qualification_questions: Json
+          refusal_template_en: string
+          refusal_template_ru: string
+          tone_voice: string
+          updated_at: string
+        }
+        Insert: {
+          ai_globally_paused?: boolean
+          allowed_topics?: string[]
+          blocked_topics?: string[]
+          business_hours?: Json
+          confidence_threshold?: number
+          escalation_keywords?: string[]
+          handoff_template_en?: string
+          handoff_template_ru?: string
+          id: number
+          max_repeated_clarifications?: number
+          qualification_questions?: Json
+          refusal_template_en?: string
+          refusal_template_ru?: string
+          tone_voice?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_globally_paused?: boolean
+          allowed_topics?: string[]
+          blocked_topics?: string[]
+          business_hours?: Json
+          confidence_threshold?: number
+          escalation_keywords?: string[]
+          handoff_template_en?: string
+          handoff_template_ru?: string
+          id?: number
+          max_repeated_clarifications?: number
+          qualification_questions?: Json
+          refusal_template_en?: string
+          refusal_template_ru?: string
+          tone_voice?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ai_interactions: {
         Row: {
           created_at: string
@@ -427,6 +511,204 @@ export type Database = {
         }
         Relationships: []
       }
+      kb_chunks: {
+        Row: {
+          chunk_index: number
+          chunk_text: string
+          created_at: string
+          document_id: string
+          embedding: string | null
+          id: string
+          language: string
+          search_tsv: unknown
+          token_count: number | null
+        }
+        Insert: {
+          chunk_index: number
+          chunk_text: string
+          created_at?: string
+          document_id: string
+          embedding?: string | null
+          id?: string
+          language?: string
+          search_tsv?: unknown
+          token_count?: number | null
+        }
+        Update: {
+          chunk_index?: number
+          chunk_text?: string
+          created_at?: string
+          document_id?: string
+          embedding?: string | null
+          id?: string
+          language?: string
+          search_tsv?: unknown
+          token_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kb_chunks_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "kb_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kb_documents: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          embedded_at: string | null
+          id: string
+          language: string
+          metadata: Json
+          source: string
+          status: string
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          embedded_at?: string | null
+          id?: string
+          language?: string
+          metadata?: Json
+          source: string
+          status?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          embedded_at?: string | null
+          id?: string
+          language?: string
+          metadata?: Json
+          source?: string
+          status?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messaging_conversations: {
+        Row: {
+          ai_paused: boolean
+          assigned_to: string | null
+          channel: string
+          created_at: string
+          customer_display_name: string | null
+          customer_handle: string | null
+          customer_id: string | null
+          external_thread_id: string
+          external_user_id: string
+          id: string
+          language: string | null
+          last_message_at: string
+          last_message_preview: string | null
+          metadata: Json
+          status: string
+          unread_count: number
+          updated_at: string
+        }
+        Insert: {
+          ai_paused?: boolean
+          assigned_to?: string | null
+          channel: string
+          created_at?: string
+          customer_display_name?: string | null
+          customer_handle?: string | null
+          customer_id?: string | null
+          external_thread_id: string
+          external_user_id: string
+          id?: string
+          language?: string | null
+          last_message_at?: string
+          last_message_preview?: string | null
+          metadata?: Json
+          status?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Update: {
+          ai_paused?: boolean
+          assigned_to?: string | null
+          channel?: string
+          created_at?: string
+          customer_display_name?: string | null
+          customer_handle?: string | null
+          customer_id?: string | null
+          external_thread_id?: string
+          external_user_id?: string
+          id?: string
+          language?: string | null
+          last_message_at?: string
+          last_message_preview?: string | null
+          metadata?: Json
+          status?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messaging_conversations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messaging_messages: {
+        Row: {
+          ai_metadata: Json
+          attachments: Json
+          content: string
+          conversation_id: string
+          created_at: string
+          external_message_id: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          ai_metadata?: Json
+          attachments?: Json
+          content: string
+          conversation_id: string
+          created_at?: string
+          external_message_id?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          ai_metadata?: Json
+          attachments?: Json
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          external_message_id?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messaging_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "messaging_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       packages: {
         Row: {
           created_at: string
@@ -743,6 +1025,21 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      kb_search_chunks: {
+        Args: {
+          filter_language?: string
+          match_count?: number
+          query_text: string
+        }
+        Returns: {
+          chunk_id: string
+          chunk_text: string
+          document_id: string
+          document_source: string
+          document_title: string
+          rank: number
+        }[]
       }
     }
     Enums: {
