@@ -15,11 +15,20 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 
 const Booking = () => {
   const { lang, t } = useLanguage();
   const isMobile = useIsMobile();
   const b = t.booking;
+
+  useSEO({
+    title: lang === "ru" ? "Бронирование даты — Ki Ki Decor" : "Book a Date — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Забронируйте дату для оформления вашего события. Заявка занимает 1 минуту."
+      : "Book a date for your event styling. Takes one minute.",
+    canonical: "https://kiki-shop.online/booking",
+  });
   const eventTypes = b.eventTypes.map((et) => et[lang]);
   const budgetRanges = b.budgetRanges.map((br) => br[lang]);
   const decorStyles = b.decorStyles.map((ds) => ds[lang]);

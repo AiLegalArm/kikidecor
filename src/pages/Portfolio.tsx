@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 import { supabase } from "@/integrations/supabase/client";
 import heroImg from "@/assets/hero-decoration.jpg";
 
@@ -29,6 +30,13 @@ type Category = { id: string; name: string; name_en: string | null };
 
 const Portfolio = () => {
   const { lang, t } = useLanguage();
+  useSEO({
+    title: lang === "ru" ? "Портфолио — Ki Ki Decor" : "Portfolio — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Реализованные проекты Ki Ki Decor: свадьбы, дни рождения, корпоративы и другие события."
+      : "Realised Ki Ki Decor projects: weddings, birthdays, corporates and more.",
+    canonical: "https://kiki-shop.online/portfolio",
+  });
   const p = t.portfolio;
 
   const [works, setWorks] = useState<WorkItem[]>([]);

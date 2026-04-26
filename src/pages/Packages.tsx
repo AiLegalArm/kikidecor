@@ -4,6 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 
 const Packages = () => {
   const { lang, t } = useLanguage();
@@ -11,6 +12,14 @@ const Packages = () => {
   const pd = t.packagesData;
   const packages = pd.items;
   const comparison = pd.comparison;
+
+  useSEO({
+    title: lang === "ru" ? "Пакеты декора — Ki Ki Decor" : "Decor Packages — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Готовые пакеты: Базовый, Стандарт, Премиум. Прозрачные цены и состав."
+      : "Ready packages: Basic, Standard, Premium. Transparent pricing and scope.",
+    canonical: "https://kiki-shop.online/packages",
+  });
 
   const itemKeyLabels: Record<string, { ru: string; en: string }> = {
     decor: { ru: "Декор", en: "Decor" },

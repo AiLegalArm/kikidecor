@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 import { cn } from "@/lib/utils";
 import ScrollReveal from "@/components/ScrollReveal";
 
@@ -69,6 +70,13 @@ const WorkDetail = () => {
   const desc = work ? ((lang === "en" && work.description_en ? work.description_en : work.description) || "") : "";
   const category = work?.category ? (lang === "en" && work.category.name_en ? work.category.name_en : work.category.name) : "";
   const images = work ? [work.cover_image_url, ...(work.gallery || [])] : [];
+
+  useSEO({
+    title: title ? `${title} — Ki Ki Decor` : undefined,
+    description: desc || undefined,
+    canonical: slug ? `https://kiki-shop.online/portfolio/${slug}` : undefined,
+    ogImage: work?.cover_image_url,
+  });
 
   const navLightbox = useCallback((dir: 1 | -1) => {
     setLightbox((cur) => {

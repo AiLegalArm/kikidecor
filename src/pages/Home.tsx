@@ -7,6 +7,7 @@ import logoHero from "@/assets/logo-kiki-new.png";
 import "@fontsource/great-vibes";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 import { motion, AnimatePresence } from "framer-motion";
 
 import heroDecor from "@/assets/hero-decor.jpg";
@@ -27,6 +28,16 @@ const Home = () => {
   const [featured, setFeatured] = useState<FeaturedWork[]>([]);
   const [stats, setStats] = useState({ works: 0, categories: 0, leads: 0 });
 
+  useSEO({
+    title: lang === "ru"
+      ? "Ki Ki Decor — студия декора мероприятий, Ростов и Геленджик"
+      : "Ki Ki Decor — Event Decoration Studio, Rostov & Gelendzhik",
+    description: lang === "ru"
+      ? "Премиальный декор свадеб, дней рождения и корпоративов. Авторский подход, продуманные детали, выезд по югу России."
+      : "Premium decor for weddings, birthdays and corporate events. Author's approach, refined details, South Russia.",
+    canonical: "https://kiki-shop.online/",
+  });
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -45,8 +56,6 @@ const Home = () => {
 
   return (
     <>
-      <title>KiKi — Luxury Events & Fashion</title>
-      <meta name="description" content="KiKi — premium lifestyle brand combining luxury event decoration studio and fashion showroom. Beauty in every detail." />
 
       {/* ═══ HERO ═══ */}
       <section className="relative h-screen overflow-hidden">
