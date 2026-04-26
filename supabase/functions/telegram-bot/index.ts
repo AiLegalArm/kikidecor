@@ -27,6 +27,128 @@ async function reply(chatId: number, text: string) {
   return tg("sendMessage", { chat_id: chatId, text, parse_mode: "HTML" });
 }
 
+// ───────── Customer chat: AI auto-reply ─────────
+
+async function getOrCreateConversation(chatId: number, displayName: string | undefined, handle: string | undefined) {
+  const externalThreadId = String(chatId);
+  const { data: existing } = await supabase
+    .from("messaging_conversations")
+    .select("id, ai_paused, status")
+    .eq("channel", "telegram")
+    .eq("external_thread_id", externalThreadId)
+    .maybeSingle();
+  if (existing) return existing;
+
+  const { data: created, error } = await supabase
+    .from("messaging_conversations")
+    .insert({
+      channel: "telegram",
+      external_thread_id: externalThreadId,
+      external_user_id: externalThreadId,
+      customer_display_name: displayName ?? null,
+      customer_handle: handle ? `@${handle}` : null,
+      status: "open",
+      ai_paused: false,
+      last_message_preview: "",
+    })
+    .select("id, ai_paused, status")
+    .single();
+  if (error) throw error;
+  return created;
+}
+
+async function notifyAdmins(text: string) {
+  const { data: admins } = await supabase
+    .from("telegram_admins")
+    .select("chat_id")
+    .eq("is_active", true)
+    .eq("notifications_enabled", true)
+    .not("chat_id", "is", null);
+  if (!admins || admins.length === 0) return;
+  await Promise.all(
+    admins.map((a: { chat_id: number }) => reply(a.chat_id, text).catch((e) => console.error("[notify-admin]", e)))
+  );
+}
+
+async function handleCustomerMessage(
+  chatId: number,
+  text: string,
+  fromName: string | undefined,
+  fromUsername: string | undefined
+) {
+  const conv = await getOrCreateConversation(chatId, fromName, fromUsername);
+
+  // If a human took over → just store the message + ping admins, do NOT reply.
+  if (conv.ai_paused || conv.status === "pending_human") {
+    await supabase.from("messaging_messages").insert({
+      conversation_id: conv.id,
+      role: "customer",
+      content: text,
+    });
+    await supabase
+      .from("messaging_conversations")
+      .update({
+        last_message_at: new Date().toISOString(),
+        last_message_preview: text.slice(0, 140),
+        unread_count: (conv as any).unread_count ? (conv as any).unread_count + 1 : 1,
+      })
+      .eq("id", conv.id);
+    await notifyAdmins(
+      `💬 <b>${escapeHtml(fromName || fromUsername || "Клиент")}</b> (Telegram)\n` +
+        `<i>AI на паузе — нужен ответ человека</i>\n\n${escapeHtml(text)}`
+    );
+    return;
+  }
+
+  // Show typing indicator
+  await tg("sendChatAction", { chat_id: chatId, action: "typing" }).catch(() => {});
+
+  // Call agent-respond (it persists messages itself when mode=conversation)
+  let agentReply = "";
+  let escalate = false;
+  try {
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/agent-respond`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${SERVICE_KEY}`,
+      },
+      body: JSON.stringify({
+        mode: "conversation",
+        conversationId: conv.id,
+        channel: "telegram",
+        text,
+      }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data?.error || `agent-respond ${r.status}`);
+    agentReply = data.reply || "";
+    escalate = !!data.escalate;
+  } catch (e) {
+    console.error("[agent-respond call]", e);
+    agentReply = "Спасибо за сообщение! Наш менеджер свяжется с вами в ближайшее время.";
+    escalate = true;
+    // Persist the customer msg manually since agent-respond failed
+    await supabase.from("messaging_messages").insert({
+      conversation_id: conv.id,
+      role: "customer",
+      content: text,
+    });
+  }
+
+  // Reply to customer in Telegram
+  await reply(chatId, escapeHtml(agentReply));
+
+  // Mirror dialog to admins
+  const customerLabel = escapeHtml(fromName || fromUsername || `chat ${chatId}`);
+  const handlePart = fromUsername ? ` (@${escapeHtml(fromUsername)})` : "";
+  const escFlag = escalate ? "\n⚠️ <i>требуется внимание</i>" : "";
+  await notifyAdmins(
+    `💬 <b>${customerLabel}</b>${handlePart} → KiKi Bot${escFlag}\n\n` +
+      `👤 ${escapeHtml(text)}\n\n🤖 ${escapeHtml(agentReply)}`
+  );
+}
+
 async function isLinkedAdmin(chatId: number): Promise<boolean> {
   const { data } = await supabase
     .from("telegram_admins")
@@ -265,12 +387,7 @@ Deno.serve(async (req) => {
     const chatId: number = msg.chat.id;
     const text: string = msg.text.trim();
     const username: string | undefined = msg.from?.username;
-
-    // /start (Telegram standard) → show help
-    if (text === "/start" || text === "/help") {
-      await reply(chatId, HELP_TEXT);
-      return new Response("ok", { headers: corsHeaders });
-    }
+    const fromName: string | undefined = [msg.from?.first_name, msg.from?.last_name].filter(Boolean).join(" ") || undefined;
 
     // /link <code> — does NOT require prior linkage
     if (text.startsWith("/link")) {
@@ -283,10 +400,32 @@ Deno.serve(async (req) => {
       return new Response("ok", { headers: corsHeaders });
     }
 
-    // All other commands require admin linkage
     const linked = await isLinkedAdmin(chatId);
+
+    // ───── Customer (non-admin) flow → AI auto-reply ─────
     if (!linked) {
-      await reply(chatId, "🔒 Доступ только для администраторов. Используйте /link &lt;код&gt; для привязки.");
+      // /start for customers — friendly greeting
+      if (text === "/start") {
+        await reply(
+          chatId,
+          "✨ Здравствуйте! Я ассистент студии <b>KiKi Decor</b>.\n\n" +
+            "Помогу с подбором декора, расскажу о наших услугах, ценах и доступных датах. " +
+            "Просто напишите ваш вопрос ✍️"
+        );
+        return new Response("ok", { headers: corsHeaders });
+      }
+      // Ignore other slash-commands from non-admins
+      if (text.startsWith("/")) {
+        await reply(chatId, "Напишите ваш вопрос обычным сообщением — я постараюсь помочь.");
+        return new Response("ok", { headers: corsHeaders });
+      }
+      await handleCustomerMessage(chatId, text, fromName, username);
+      return new Response("ok", { headers: corsHeaders });
+    }
+
+    // ───── Admin flow ─────
+    if (text === "/start" || text === "/help") {
+      await reply(chatId, HELP_TEXT);
       return new Response("ok", { headers: corsHeaders });
     }
 
