@@ -198,8 +198,36 @@ const AdminWanVideo = () => {
         compiledPrompt: data.compiledPrompt,
         lastFrameDescription: data.lastFrameDescription,
       });
-      toast.success("Промпт собран и сохранён в истории");
+      const toastId = toast.loading("Генерация видео запущена…", { description: "Обычно занимает 30–120 секунд" });
       loadRuns();
+      // Poll for completion
+      const runId = data.runId as string;
+      const startedAt = Date.now();
+      const poll = async () => {
+        const { data: row } = await supabase
+          .from("wan_runs")
+          .select("status, video_url, error_message")
+          .eq("id", runId)
+          .maybeSingle();
+        if (!row) return;
+        if (row.status === "completed") {
+          toast.success("Видео готово", { id: toastId });
+          loadRuns();
+          return;
+        }
+        if (row.status === "failed") {
+          toast.error(row.error_message || "Генерация не удалась", { id: toastId });
+          loadRuns();
+          return;
+        }
+        if (Date.now() - startedAt > 5 * 60 * 1000) {
+          toast.error("Превышено ожидание 5 минут — проверьте историю позже", { id: toastId });
+          loadRuns();
+          return;
+        }
+        setTimeout(poll, 4000);
+      };
+      setTimeout(poll, 4000);
     } catch (e: any) {
       toast.error(e.message || "Generation failed");
     } finally {

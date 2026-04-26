@@ -273,126 +273,34 @@ export type WanGenerateInput = {
   lastFrameDescription?: string | null;
 };
 
-/**
- * Build the final Wan video prompt.
- *
- * Rules (in strict order):
- *  1. Subject: user prompt (always first, verbatim — it sets intent).
- *  2. First Frame: anchor instruction — animate FROM this frame.
- *  3. Last Frame: target composition — analyzed via vision and used as the END goal.
- *  4. Style block: preset name, language, palette, materials.
- *  5. Mood + Lighting block.
- *  6. Motion block: camera move + speed (+ "locked camera" if cameraFixed).
- *  7. Style emphasis: repeat preset.promptInfluence weighted by styleStrength (0–100).
- *       0–19   → omit (style barely applied)
- *       20–49  → 1× emphasis
- *       50–74  → 2× emphasis
- *       75–89  → 3× emphasis
- *       90–100 → 4× emphasis + "strongly enforce style"
- *  8. Output hints: aspect ratio + duration + resolution.
- *  9. Quality baseline (always appended).
- * 10. Negative prompt: ALWAYS as a separate "Negative prompt:" line at the end
- *      (merged with default safety negatives).
- */
-const DEFAULT_NEGATIVES = [
-  "text", "captions", "subtitles", "watermark", "logo", "brand names",
-  "distorted geometry", "warped furniture", "extra limbs", "deformed hands",
-  "low quality", "blurry", "compression artifacts", "oversaturated",
-];
-
-function styleEmphasisCount(strength: number): number {
-  const s = Math.max(0, Math.min(100, strength));
-  if (s < 20) return 0;
-  if (s < 50) return 1;
-  if (s < 75) return 2;
-  if (s < 90) return 3;
-  return 4;
-}
-
 export function buildWanPrompt(input: WanGenerateInput): string {
   const preset = DECOR_PRESETS.find((p) => p.id === input.presetId);
   const motion = MOTION_OPTIONS.find((m) => m.id === input.motion.cameraId);
   const mood = MOOD_OPTIONS.find((m) => m.id === input.mood.toneId);
   const lighting = LIGHTING_OPTIONS.find((l) => l.id === input.mood.lightingId);
 
-  const lines: string[] = [];
+  const parts: string[] = [];
+  parts.push(input.userPrompt.trim());
 
-  // 1. Subject
-  const subject = input.userPrompt.trim();
-  if (subject) lines.push(`Subject: ${subject}`);
-
-  // 2. First frame anchor
-  if (input.firstFrameUrl) {
-    lines.push(
-      "First frame: animate starting from the provided reference image; preserve its composition, framing, color and lighting in frame 1.",
-    );
+  if (preset) {
+    parts.push(`Style: ${preset.name} — ${preset.language}.`);
+    parts.push(`Palette: ${preset.palette.join(", ")}.`);
+    parts.push(`Materials: ${preset.materials.join(", ")}.`);
   }
-
-  // 3. Last frame target
+  if (mood) parts.push(`Mood: ${mood.tone}.`);
+  if (lighting) parts.push(`Lighting: ${lighting.desc}.`);
+  if (motion) parts.push(`Camera: ${motion.camera} at ${input.motion.speed} pace.`);
   if (input.lastFrameDescription) {
-    lines.push(
-      `Last frame target: end the shot on a composition that resembles — ${input.lastFrameDescription.trim()}. Smoothly evolve toward this ending.`,
-    );
-  } else if (input.lastFrameUrl) {
-    lines.push(
-      "Last frame target: end the shot on a composition matching the provided ending reference image.",
-    );
+    parts.push(`Ending composition target: ${input.lastFrameDescription}.`);
   }
-
-  // 4. Style block
   if (preset) {
-    lines.push(
-      `Style: ${preset.name} — ${preset.mood}; visual language is ${preset.language}.`,
-    );
-    lines.push(`Palette: ${preset.palette.join(", ")}.`);
-    lines.push(`Materials & textures: ${preset.materials.join(", ")}.`);
+    // emphasis based on style strength
+    const reps = Math.max(1, Math.round(input.styleStrength / 35));
+    for (let i = 0; i < reps; i++) parts.push(preset.promptInfluence);
   }
-
-  // 5. Mood + lighting
-  if (mood && lighting) {
-    lines.push(`Mood: ${mood.tone}. Lighting: ${lighting.desc}.`);
-  } else if (mood) {
-    lines.push(`Mood: ${mood.tone}.`);
-  } else if (lighting) {
-    lines.push(`Lighting: ${lighting.desc}.`);
+  if (input.negativePrompt?.trim()) {
+    parts.push(`Avoid: ${input.negativePrompt.trim()}.`);
   }
-
-  // 6. Motion
-  if (motion) {
-    const speed = input.motion.speed;
-    const fixed = input.output.cameraFixed ? " The camera frame is locked and stable, no shake." : "";
-    lines.push(`Camera: ${motion.camera}, ${speed} pace.${fixed}`);
-  }
-
-  // 7. Style emphasis (weighted by styleStrength)
-  if (preset) {
-    const reps = styleEmphasisCount(input.styleStrength);
-    if (reps > 0) {
-      const emphasis = Array(reps).fill(preset.promptInfluence).join(" ");
-      lines.push(
-        reps >= 4
-          ? `Style emphasis (strongly enforce): ${emphasis}`
-          : `Style emphasis: ${emphasis}`,
-      );
-    }
-  }
-
-  // 8. Output hints
-  lines.push(
-    `Output: ${input.output.aspectRatio} aspect ratio, ${input.output.duration}s duration, ${input.output.resolution} resolution.`,
-  );
-
-  // 9. Quality baseline
-  lines.push(
-    "Quality: photorealistic, premium interior cinematography, natural physics, smooth motion, consistent lighting, no flicker.",
-  );
-
-  // 10. Negative prompt — always last, on its own line
-  const userNeg = input.negativePrompt?.trim();
-  const negatives = userNeg
-    ? [userNeg, ...DEFAULT_NEGATIVES].join(", ")
-    : DEFAULT_NEGATIVES.join(", ");
-  lines.push(`Negative prompt: ${negatives}.`);
-
-  return lines.join("\n");
+  parts.push("Photorealistic, premium interior cinematography, no text overlays, no logos, no watermarks.");
+  return parts.join(" ");
 }
