@@ -16,20 +16,11 @@ import {
   buildWanPrompt, type DecorPreset, type MotionState, type MoodState, type OutputState,
 } from "@/lib/decorPresets";
 import { cn } from "@/lib/utils";
+import WanHistory, { type WanRun, type WanSetup } from "./wan/WanHistory";
 
 type FrameKind = "first" | "last";
 
-type Run = {
-  id: string;
-  created_at: string;
-  status: string;
-  user_prompt: string;
-  compiled_prompt: string;
-  preset_name: string | null;
-  first_frame_url: string | null;
-  last_frame_url: string | null;
-  video_url: string | null;
-};
+type Run = WanRun;
 
 const FramePicker = ({
   kind, file, url, onPick, onClear,
@@ -134,6 +125,7 @@ const AdminWanVideo = () => {
   const [lastFile, setLastFile] = useState<File | null>(null);
 
   const [runs, setRuns] = useState<Run[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [lastResult, setLastResult] = useState<{ id: string; compiledPrompt: string; lastFrameDescription: string | null } | null>(null);
 
@@ -149,12 +141,14 @@ const AdminWanVideo = () => {
   }), [userPrompt, presetId, motion, mood, output, negativePrompt, styleStrength]);
 
   const loadRuns = async () => {
+    setHistoryLoading(true);
     const { data } = await supabase
       .from("wan_runs")
-      .select("id, created_at, status, user_prompt, compiled_prompt, preset_name, first_frame_url, last_frame_url, video_url")
+      .select("id, created_at, status, user_prompt, compiled_prompt, preset_id, preset_name, first_frame_url, last_frame_url, last_frame_description, video_url, thumbnail_url, motion, mood, output, negative_prompt, style_strength, error_message")
       .order("created_at", { ascending: false })
-      .limit(12);
+      .limit(50);
     setRuns((data as Run[]) || []);
+    setHistoryLoading(false);
   };
 
   useEffect(() => { loadRuns(); }, []);
@@ -213,9 +207,15 @@ const AdminWanVideo = () => {
     }
   };
 
-  const restoreFromRun = (run: Run) => {
-    setUserPrompt(run.user_prompt);
-    toast.success("Настройки восстановлены");
+  const restoreSetup = (s: WanSetup) => {
+    setUserPrompt(s.userPrompt);
+    setPresetId(s.presetId);
+    setMotion(s.motion);
+    setMood(s.mood);
+    setOutput(s.output);
+    setNegativePrompt(s.negativePrompt);
+    setStyleStrength(s.styleStrength);
+    setShowAdvanced(!!(s.negativePrompt || s.styleStrength !== 60 || s.output?.cameraFixed));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
