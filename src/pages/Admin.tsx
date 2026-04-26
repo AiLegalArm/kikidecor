@@ -447,6 +447,9 @@ const Admin = () => {
 
           {/* ═══ TELEGRAM SETTINGS ═══ */}
           {section === "telegram" && <AdminTelegramSettings />}
+
+          {/* ═══ CONCIERGE AI ═══ */}
+          {section === "concierge" && <AdminConcierge />}
          </Suspense>
         </main>
       </div>
