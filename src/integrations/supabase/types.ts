@@ -175,6 +175,45 @@ export type Database = {
           },
         ]
       }
+      ai_provider_settings: {
+        Row: {
+          id: string
+          is_active: boolean
+          model_fast: string | null
+          model_image: string | null
+          model_reasoning: string | null
+          model_vision: string | null
+          notes: string | null
+          provider: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          is_active?: boolean
+          model_fast?: string | null
+          model_image?: string | null
+          model_reasoning?: string | null
+          model_vision?: string | null
+          notes?: string | null
+          provider?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          is_active?: boolean
+          model_fast?: string | null
+          model_image?: string | null
+          model_reasoning?: string | null
+          model_vision?: string | null
+          notes?: string | null
+          provider?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       blocked_dates: {
         Row: {
           blocked_date: string
