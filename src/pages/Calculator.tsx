@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useSEO } from "@/hooks/useSEO";
 
 const eventMultipliers: Record<string, number> = {
   wedding: 1.4, birthday: 1.0, corporate: 1.2, kids: 0.9, proposal: 1.1, anniversary: 1.15, other: 1.0,
@@ -28,6 +29,14 @@ const PER_GUEST = 300;
 const Calculator = () => {
   const { lang, t } = useLanguage();
   const c = t.calc;
+
+  useSEO({
+    title: lang === "ru" ? "Калькулятор стоимости декора — Ki Ki Decor" : "Decor Cost Calculator — Ki Ki Decor",
+    description: lang === "ru"
+      ? "Рассчитайте ориентировочную стоимость оформления вашего события за минуту."
+      : "Estimate your event styling cost in under a minute.",
+    canonical: "https://kiki-shop.online/calculator",
+  });
 
   const [eventType, setEventType] = useState("");
   const [guestCount, setGuestCount] = useState([30]);

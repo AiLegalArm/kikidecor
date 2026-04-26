@@ -5,6 +5,8 @@ interface SEOOptions {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  ogType?: string;
+  keywords?: string;
 }
 
 const setMeta = (selector: string, attr: string, value: string) => {
@@ -22,7 +24,10 @@ const setMeta = (selector: string, attr: string, value: string) => {
  * Update document title and key meta tags per page.
  * Keep titles < 60 chars, descriptions < 160 chars.
  */
-export const useSEO = ({ title, description, canonical, ogImage }: SEOOptions) => {
+const DEFAULT_OG_IMAGE =
+  "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c2dfccf6-d201-46d8-91ed-d05bd5169984/id-preview-836d19e2--36bc272b-d68a-4ac6-90cb-a9045214e773.lovable.app-1772831868186.png";
+
+export const useSEO = ({ title, description, canonical, ogImage, ogType, keywords }: SEOOptions) => {
   useEffect(() => {
     if (title) {
       document.title = title.length > 60 ? title.slice(0, 57) + "…" : title;
@@ -45,9 +50,14 @@ export const useSEO = ({ title, description, canonical, ogImage }: SEOOptions) =
       link.href = canonical;
       setMeta('meta[property="og:url"]', "content", canonical);
     }
-    if (ogImage) {
-      setMeta('meta[property="og:image"]', "content", ogImage);
-      setMeta('meta[name="twitter:image"]', "content", ogImage);
+    const img = ogImage || DEFAULT_OG_IMAGE;
+    setMeta('meta[property="og:image"]', "content", img);
+    setMeta('meta[name="twitter:image"]', "content", img);
+    setMeta('meta[name="twitter:card"]', "content", "summary_large_image");
+    setMeta('meta[property="og:type"]', "content", ogType || "website");
+    setMeta('meta[property="og:site_name"]', "content", "Ki Ki Decor");
+    if (keywords) {
+      setMeta('meta[name="keywords"]', "content", keywords);
     }
-  }, [title, description, canonical, ogImage]);
+  }, [title, description, canonical, ogImage, ogType, keywords]);
 };
