@@ -20,3 +20,12 @@ verify_jwt = false
 
 [functions.virtual-tryon]
 verify_jwt = false
+
+[functions.telegram-bot]
+verify_jwt = false
+
+[functions.telegram-link]
+verify_jwt = true
+
+[functions.telegram-setup-webhook]
+verify_jwt = true
