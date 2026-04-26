@@ -1,239 +1,226 @@
-import { useState, useEffect } from "react";
-import { Send, Bot, CheckCircle2, XCircle, Eye, EyeOff, Bell, BellOff, TestTube } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Bot, Send, CheckCircle2, XCircle, Loader2, Copy, Link2, Bell, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-const LS_KEY = "kiki_telegram_settings";
-
-type TelegramSettings = {
-    botToken: string;
-    chatId: string;
-    autoSend: boolean;
-    connected: boolean;
-};
-
-const DEFAULT: TelegramSettings = { botToken: "", chatId: "", autoSend: false, connected: false };
-
-export const getTelegramSettings = (): TelegramSettings => {
-    try {
-        return JSON.parse(localStorage.getItem(LS_KEY) || "null") ?? DEFAULT;
-    } catch {
-        return DEFAULT;
-    }
-};
-
-export const sendTelegramMessage = async (text: string, imageUrl?: string): Promise<boolean> => {
-    const { botToken, chatId } = getTelegramSettings();
-    if (!botToken || !chatId) return false;
-    try {
-        if (imageUrl) {
-            const res = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: chatId, photo: imageUrl, caption: text, parse_mode: "HTML" }),
-            });
-            return res.ok;
-        } else {
-            const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
-            });
-            return res.ok;
-        }
-    } catch {
-        return false;
-    }
+type LinkRow = {
+  id: string;
+  username: string | null;
+  chat_id: number | null;
+  is_active: boolean;
+  notifications_enabled: boolean;
+  link_code: string | null;
+  link_code_expires_at: string | null;
+  linked_at: string | null;
+  created_at: string;
 };
 
 const AdminTelegramSettings = () => {
-    const [settings, setSettings] = useState<TelegramSettings>(DEFAULT);
-    const [showToken, setShowToken] = useState(false);
-    const [testing, setTesting] = useState(false);
+  const [rows, setRows] = useState<LinkRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [settingWebhook, setSettingWebhook] = useState(false);
+  const [botInfo, setBotInfo] = useState<{ username?: string; first_name?: string } | null>(null);
+  const [activeCode, setActiveCode] = useState<{ code: string; expires_at: string } | null>(null);
 
-    useEffect(() => { setSettings(getTelegramSettings()); }, []);
+  const load = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("telegram_admins")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) toast.error("Ошибка загрузки: " + error.message);
+    else setRows((data as LinkRow[]) || []);
+    setLoading(false);
+  };
 
-    const save = () => {
-        localStorage.setItem(LS_KEY, JSON.stringify(settings));
-        toast.success("Настройки Telegram сохранены");
-    };
+  useEffect(() => { load(); }, []);
 
-    const testConnection = async () => {
-        if (!settings.botToken || !settings.chatId) { toast.error("Введите Bot Token и Chat ID"); return; }
-        setTesting(true);
-        const ok = await sendTelegramMessage("✅ <b>KiKi Admin</b>\n\nТест соединения прошёл успешно!\nВаш Telegram подключён к KiKi Admin Panel.");
-        setTesting(false);
-        if (ok) {
-            setSettings(prev => ({ ...prev, connected: true }));
-            localStorage.setItem(LS_KEY, JSON.stringify({ ...settings, connected: true }));
-            toast.success("✅ Сообщение отправлено! Telegram подключён.");
-        } else {
-            setSettings(prev => ({ ...prev, connected: false }));
-            toast.error("❌ Ошибка. Проверьте Bot Token и Chat ID.");
-        }
-    };
+  const generateCode = async () => {
+    setGenerating(true);
+    const { data, error } = await supabase.functions.invoke("telegram-link");
+    setGenerating(false);
+    if (error || !data?.code) {
+      toast.error("Не удалось сгенерировать код: " + (error?.message || data?.error || ""));
+      return;
+    }
+    setActiveCode({ code: data.code, expires_at: data.expires_at });
+    toast.success("Код создан. Действует 15 минут.");
+    load();
+  };
 
-    const field: React.CSSProperties = {
-        width: "100%", padding: "11px 14px", border: "1px solid #E5E5E5", borderRadius: "10px",
-        fontSize: "0.875rem", color: "#111", fontWeight: 500, outline: "none",
-        boxSizing: "border-box", background: "#fff", transition: "border-color 0.15s",
-    };
-    const label: React.CSSProperties = { fontSize: "0.8125rem", fontWeight: 600, color: "#111", display: "block", marginBottom: "6px" };
-    const hint: React.CSSProperties = { fontSize: "0.75rem", color: "#888", marginTop: "4px" };
+  const setupWebhook = async () => {
+    setSettingWebhook(true);
+    const { data, error } = await supabase.functions.invoke("telegram-setup-webhook");
+    setSettingWebhook(false);
+    if (error) {
+      toast.error("Ошибка: " + error.message);
+      return;
+    }
+    if (data?.webhook?.ok) {
+      toast.success("Webhook установлен");
+      setBotInfo(data.bot);
+    } else {
+      toast.error("Webhook не установлен: " + JSON.stringify(data?.webhook));
+    }
+  };
 
-    return (
-        <div style={{ maxWidth: "600px" }}>
-            <div style={{ marginBottom: "24px" }}>
-                <h2 style={{ fontSize: "1.375rem", fontWeight: 700, color: "#000", margin: "0 0 4px" }}>Telegram Integration</h2>
-                <p style={{ fontSize: "0.875rem", color: "#666", margin: 0 }}>
-                    Настройте Telegram-бота для получения уведомлений и AI-концепций.
-                </p>
+  const removeRow = async (id: string) => {
+    if (!confirm("Удалить эту привязку?")) return;
+    const { error } = await supabase.from("telegram_admins").delete().eq("id", id);
+    if (error) toast.error(error.message);
+    else { toast.success("Удалено"); load(); }
+  };
+
+  const toggleNotifications = async (row: LinkRow) => {
+    const { error } = await supabase
+      .from("telegram_admins")
+      .update({ notifications_enabled: !row.notifications_enabled })
+      .eq("id", row.id);
+    if (error) toast.error(error.message);
+    else load();
+  };
+
+  const copy = (txt: string) => {
+    navigator.clipboard.writeText(txt);
+    toast.success("Скопировано");
+  };
+
+  const activeAdmins = rows.filter((r) => r.is_active);
+  const pending = rows.filter((r) => !r.is_active && r.link_code);
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <Bot className="text-primary" /> Telegram-бот
+        </h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Управление генератором, статус, уведомления о лидах через Telegram
+        </p>
+      </div>
+
+      {/* Bot Setup */}
+      <div className="border border-border rounded-xl p-5 bg-card">
+        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2"><Link2 size={16} /> Настройка webhook</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Один раз нажмите, чтобы Telegram начал отправлять сообщения боту в нашу систему.
+        </p>
+        <Button onClick={setupWebhook} disabled={settingWebhook}>
+          {settingWebhook && <Loader2 className="animate-spin mr-2" size={14} />}
+          Установить webhook
+        </Button>
+        {botInfo && (
+          <div className="mt-3 text-sm text-foreground">
+            ✅ Подключено: <a href={`https://t.me/${botInfo.username}`} target="_blank" className="text-primary underline">@{botInfo.username}</a>
+          </div>
+        )}
+      </div>
+
+      {/* Link new admin */}
+      <div className="border border-border rounded-xl p-5 bg-card">
+        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2"><Send size={16} /> Привязка вашего Telegram</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          1. Сгенерируйте код. 2. Откройте бота и отправьте <code className="bg-muted px-1.5 py-0.5 rounded">/link КОД</code>
+        </p>
+        <Button onClick={generateCode} disabled={generating}>
+          {generating && <Loader2 className="animate-spin mr-2" size={14} />}
+          Сгенерировать код привязки
+        </Button>
+
+        {activeCode && (
+          <div className="mt-4 p-4 bg-primary/10 border border-primary/30 rounded-lg">
+            <p className="text-xs text-muted-foreground mb-2">Отправьте боту:</p>
+            <div className="flex items-center gap-2">
+              <code className="text-lg font-mono font-bold text-foreground bg-background px-3 py-2 rounded border border-border flex-1">
+                /link {activeCode.code}
+              </code>
+              <Button size="sm" variant="outline" onClick={() => copy(`/link ${activeCode.code}`)}>
+                <Copy size={14} />
+              </Button>
             </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Действителен до: {new Date(activeCode.expires_at).toLocaleString("ru-RU")}
+            </p>
+          </div>
+        )}
+      </div>
 
-            {/* Status */}
-            <div style={{
-                display: "flex", alignItems: "center", gap: "10px",
-                padding: "12px 16px", borderRadius: "10px", marginBottom: "24px",
-                background: settings.connected ? "#F0FDF4" : "#FFF7ED",
-                border: `1px solid ${settings.connected ? "#BBF7D0" : "#FED7AA"}`,
-            }}>
-                {settings.connected
-                    ? <CheckCircle2 size={18} style={{ color: "#16A34A" }} />
-                    : <XCircle size={18} style={{ color: "#EA580C" }} />
-                }
-                <span style={{ fontSize: "0.875rem", fontWeight: 600, color: settings.connected ? "#15803D" : "#C2410C" }}>
-                    {settings.connected ? "Telegram подключён" : "Telegram не настроен"}
-                </span>
-            </div>
-
-            {/* Settings card */}
-            <div style={{ background: "#fff", border: "1px solid #EAEAEA", borderRadius: "14px", padding: "24px", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
-                    <Bot size={18} style={{ color: "#7C3AED" }} />
-                    <span style={{ fontWeight: 700, fontSize: "1rem", color: "#000" }}>Bot Configuration</span>
+      {/* Linked admins */}
+      <div className="border border-border rounded-xl p-5 bg-card">
+        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+          <CheckCircle2 size={16} className="text-green-500" /> Привязанные администраторы ({activeAdmins.length})
+        </h3>
+        {loading ? (
+          <Loader2 className="animate-spin text-muted-foreground" />
+        ) : activeAdmins.length === 0 ? (
+          <p className="text-sm text-muted-foreground italic">Пока никто не привязан</p>
+        ) : (
+          <div className="space-y-2">
+            {activeAdmins.map((r) => (
+              <div key={r.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <div>
+                  <div className="font-medium text-foreground">{r.username ? `@${r.username}` : `chat ${r.chat_id}`}</div>
+                  <div className="text-xs text-muted-foreground">
+                    Привязан: {r.linked_at ? new Date(r.linked_at).toLocaleString("ru-RU") : "—"}
+                  </div>
                 </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    {/* Bot Token */}
-                    <div>
-                        <label style={label}>Bot Token</label>
-                        <div style={{ position: "relative" }}>
-                            <input
-                                type={showToken ? "text" : "password"}
-                                value={settings.botToken}
-                                onChange={e => setSettings(prev => ({ ...prev, botToken: e.target.value, connected: false }))}
-                                placeholder="1234567890:ABCdef..."
-                                style={{ ...field, paddingRight: "42px" }}
-                                onFocus={e => { e.target.style.borderColor = "#7C3AED"; }}
-                                onBlur={e => { e.target.style.borderColor = "#E5E5E5"; }}
-                            />
-                            <button
-                                onClick={() => setShowToken(v => !v)}
-                                style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", cursor: "pointer", color: "#888", display: "flex" }}
-                            >
-                                {showToken ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </button>
-                        </div>
-                        <p style={hint}>Получите в @BotFather → /newbot или /token</p>
-                    </div>
-
-                    {/* Chat ID */}
-                    <div>
-                        <label style={label}>Chat ID</label>
-                        <input
-                            type="text"
-                            value={settings.chatId}
-                            onChange={e => setSettings(prev => ({ ...prev, chatId: e.target.value, connected: false }))}
-                            placeholder="-1001234567890"
-                            style={field}
-                            onFocus={e => { e.target.style.borderColor = "#7C3AED"; }}
-                            onBlur={e => { e.target.style.borderColor = "#E5E5E5"; }}
-                        />
-                        <p style={hint}>ID вашего канала/группы. Узнать: @userinfobot или @getmyid_bot</p>
-                    </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={r.notifications_enabled ? "default" : "secondary"}>
+                    <Bell size={10} className="mr-1" />
+                    {r.notifications_enabled ? "Уведомления вкл" : "Выкл"}
+                  </Badge>
+                  <Button size="sm" variant="outline" onClick={() => toggleNotifications(r)}>
+                    Переключить
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => removeRow(r.id)}>
+                    <Trash2 size={14} />
+                  </Button>
                 </div>
-            </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-            {/* Auto-send toggle */}
-            <div style={{ background: "#fff", border: "1px solid #EAEAEA", borderRadius: "14px", padding: "20px", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        {settings.autoSend ? <Bell size={18} style={{ color: "#7C3AED" }} /> : <BellOff size={18} style={{ color: "#999" }} />}
-                        <div>
-                            <p style={{ margin: 0, fontWeight: 600, fontSize: "0.875rem", color: "#111" }}>Авто-отправка AI концепций</p>
-                            <p style={{ margin: "2px 0 0", fontSize: "0.75rem", color: "#888" }}>Отправлять каждую новую концепцию в Telegram</p>
-                        </div>
-                    </div>
-                    {/* Toggle */}
-                    <button
-                        onClick={() => setSettings(prev => ({ ...prev, autoSend: !prev.autoSend }))}
-                        style={{
-                            width: "48px", height: "26px", borderRadius: "13px",
-                            background: settings.autoSend ? "#7C3AED" : "#D1D5DB",
-                            border: "none", cursor: "pointer", position: "relative",
-                            transition: "background 0.2s",
-                            flexShrink: 0,
-                        }}
-                    >
-                        <span style={{
-                            position: "absolute", top: "3px",
-                            left: settings.autoSend ? "25px" : "3px",
-                            width: "20px", height: "20px", borderRadius: "50%",
-                            background: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-                            transition: "left 0.2s",
-                        }} />
-                    </button>
+      {pending.length > 0 && (
+        <div className="border border-border rounded-xl p-5 bg-card">
+          <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+            <XCircle size={16} className="text-yellow-500" /> Ожидающие привязки ({pending.length})
+          </h3>
+          <div className="space-y-2">
+            {pending.map((r) => (
+              <div key={r.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                <div>
+                  <code className="text-sm font-mono">{r.link_code}</code>
+                  <div className="text-xs text-muted-foreground">
+                    Истекает: {r.link_code_expires_at ? new Date(r.link_code_expires_at).toLocaleString("ru-RU") : "—"}
+                  </div>
                 </div>
-            </div>
-
-            {/* Action buttons */}
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                <button
-                    onClick={testConnection}
-                    disabled={testing}
-                    style={{
-                        display: "flex", alignItems: "center", gap: "7px",
-                        padding: "11px 18px", borderRadius: "10px",
-                        background: "#F3F4F6", border: "1px solid #E5E5E5",
-                        color: "#111", fontWeight: 600, fontSize: "0.875rem",
-                        cursor: testing ? "not-allowed" : "pointer",
-                        opacity: testing ? 0.7 : 1,
-                        transition: "all 0.15s",
-                    }}
-                >
-                    <TestTube size={15} />
-                    {testing ? "Тестирую..." : "Тест соединения"}
-                </button>
-
-                <button
-                    onClick={save}
-                    style={{
-                        display: "flex", alignItems: "center", gap: "7px",
-                        padding: "11px 20px", borderRadius: "10px",
-                        background: "#000", border: "none",
-                        color: "#fff", fontWeight: 600, fontSize: "0.875rem",
-                        cursor: "pointer", transition: "all 0.15s",
-                    }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#222"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#000"; }}
-                >
-                    <Send size={15} />
-                    Сохранить настройки
-                </button>
-            </div>
-
-            {/* How to get */}
-            <div style={{ background: "#F8F7FF", border: "1px solid #E9D5FF", borderRadius: "12px", padding: "16px", marginTop: "24px" }}>
-                <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: "0.875rem", color: "#5B21B6" }}>Как настроить?</p>
-                <ol style={{ margin: 0, paddingLeft: "20px", fontSize: "0.8125rem", color: "#6B21A8", lineHeight: 1.7 }}>
-                    <li>Найдите <b>@BotFather</b> в Telegram и создайте нового бота</li>
-                    <li>Скопируйте Bot Token и вставьте выше</li>
-                    <li>Добавьте бота в ваш канал/группу как администратора</li>
-                    <li>Напишите сообщение в группу, затем получите Chat ID через <b>@getmyid_bot</b></li>
-                    <li>Нажмите «Тест соединения»</li>
-                </ol>
-            </div>
+                <Button size="sm" variant="outline" className="text-destructive" onClick={() => removeRow(r.id)}>
+                  <Trash2 size={14} />
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      )}
+
+      {/* Commands cheatsheet */}
+      <div className="border border-border rounded-xl p-5 bg-muted/30">
+        <h3 className="font-semibold text-foreground mb-3">Команды бота</h3>
+        <div className="space-y-1.5 text-sm font-mono">
+          <div><code className="text-primary">/status</code> — статус системы и последние запуски</div>
+          <div><code className="text-primary">/start_gen &lt;тип&gt;</code> — запустить генератор (decor, facade, video, moodboard)</div>
+          <div><code className="text-primary">/stop_gen</code> — остановить активные запуски</div>
+          <div><code className="text-primary">/restart_gen</code> — перезапустить</div>
+          <div><code className="text-primary">/help</code> — справка</div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AdminTelegramSettings;
