@@ -17,9 +17,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 5%;
 
-    /* Lavender accent */
-    --primary: 270 30% 58%;
-    --primary-foreground: 0 0% 100%;
+    /* Deep Sage / Olive accent — Soft Editorial */
+    --primary: 90 12% 32%;
+    --primary-foreground: 40 30% 97%;
 
     /* Champagne Beige */
     --secondary: 38 35% 92%;
@@ -29,23 +29,23 @@
     --muted: 35 20% 95%;
     --muted-foreground: 0 0% 28%;
 
-    /* Accent */
-    --accent: 270 25% 88%;
-    --accent-foreground: 270 30% 25%;
+    /* Accent — warm sage tint */
+    --accent: 80 18% 88%;
+    --accent-foreground: 90 15% 22%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 270 30% 58%;
+    --ring: 90 12% 32%;
 
     --radius: 0.625rem;
 
-    /* Extended palette */
-    --lavender: 270 30% 58%;
-    --lavender-light: 270 35% 88%;
-    --lavender-deep: 270 25% 45%;
+    /* Extended palette — sage replaces lavender, kept names for compat */
+    --lavender: 90 12% 32%;
+    --lavender-light: 80 18% 88%;
+    --lavender-deep: 95 14% 22%;
     --champagne: 38 45% 82%;
     --champagne-light: 38 35% 92%;
     --cream: 40 30% 97%;
@@ -56,7 +56,7 @@
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
     --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
     --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --shadow-lavender: 0 8px 32px hsl(270 30% 58% / 0.2);
+    --shadow-lavender: 0 8px 32px hsl(90 12% 32% / 0.18);
 
     --sidebar-background: 0 0% 99%;
     --sidebar-foreground: 0 0% 12%;
@@ -65,7 +65,7 @@
     --sidebar-accent: 0 0% 95%;
     --sidebar-accent-foreground: 0 0% 5%;
     --sidebar-border: 0 0% 92%;
-    --sidebar-ring: 270 30% 58%;
+    --sidebar-ring: 90 12% 32%;
   }
 
   .dark {
@@ -75,19 +75,19 @@
     --card-foreground: 35 20% 92%;
     --popover: 0 0% 8%;
     --popover-foreground: 35 20% 92%;
-    --primary: 270 30% 68%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 80 16% 62%;
+    --primary-foreground: 0 0% 8%;
     --secondary: 0 0% 14%;
     --secondary-foreground: 35 20% 92%;
     --muted: 0 0% 14%;
     --muted-foreground: 0 0% 55%;
-    --accent: 270 20% 30%;
-    --accent-foreground: 270 30% 90%;
+    --accent: 90 10% 22%;
+    --accent-foreground: 80 18% 88%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 16%;
     --input: 0 0% 16%;
-    --ring: 270 30% 68%;
+    --ring: 80 16% 62%;
   }
 }
 
