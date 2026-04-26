@@ -34,6 +34,7 @@ type Body = {
   styleStrength?: number;
   firstFrameUrl?: string | null;
   lastFrameUrl?: string | null;
+  model?: "wan2.2-plus" | "wan2.5-preview";
 };
 
 async function describeLastFrame(imageUrl: string): Promise<string | null> {
@@ -135,9 +136,15 @@ async function generateViaDashScope(opts: {
   prompt: string; negative: string;
   aspectRatio: string; resolution: string; duration: number;
   firstFrameUrl: string | null;
+  modelChoice: "wan2.2-plus" | "wan2.5-preview";
 }): Promise<string> {
   const useImage = !!opts.firstFrameUrl;
-  const model = useImage ? "wan2.2-i2v-plus" : "wan2.2-t2v-plus";
+  const modelMap: Record<string, { t2v: string; i2v: string }> = {
+    "wan2.2-plus":    { t2v: "wan2.2-t2v-plus",     i2v: "wan2.2-i2v-plus" },
+    "wan2.5-preview": { t2v: "wan2.5-t2v-preview",  i2v: "wan2.5-i2v-preview" },
+  };
+  const choice = modelMap[opts.modelChoice] ?? modelMap["wan2.2-plus"];
+  const model = useImage ? choice.i2v : choice.t2v;
 
   // DashScope expects "size" as WxH. Map common aspect ratios at 720p/1080p.
   const sizeMap: Record<string, { "720p": string; "1080p": string; "480p": string }> = {
@@ -239,6 +246,7 @@ async function runGeneration(
         negative: body.negativePrompt || "",
         aspectRatio, resolution, duration,
         firstFrameUrl: body.firstFrameUrl || null,
+        modelChoice: body.model || "wan2.2-plus",
       });
     } else if (WAN_API_URL && WAN_API_KEY) {
       videoUrl = await generateViaWanApi({
@@ -355,7 +363,7 @@ Deno.serve(async (req) => {
         last_frame_description: lastFrameDescription,
         motion: body.motion ?? {},
         mood: body.mood ?? {},
-        output: { ...(body.output ?? {}), backend },
+        output: { ...(body.output ?? {}), backend, model: body.model || "wan2.2-plus" },
         negative_prompt: body.negativePrompt ?? null,
         style_strength: body.styleStrength ?? 60,
       })
