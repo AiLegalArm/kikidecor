@@ -363,7 +363,7 @@ Deno.serve(async (req) => {
         last_frame_description: lastFrameDescription,
         motion: body.motion ?? {},
         mood: body.mood ?? {},
-        output: { ...(body.output ?? {}), backend },
+        output: { ...(body.output ?? {}), backend, model: body.model || "wan2.2-plus" },
         negative_prompt: body.negativePrompt ?? null,
         style_strength: body.styleStrength ?? 60,
       })
