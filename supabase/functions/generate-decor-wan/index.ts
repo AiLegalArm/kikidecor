@@ -83,39 +83,44 @@ async function generateViaWanApi(opts: {
   return url as string;
 }
 
-// ---------- BACKEND 2: Lovable AI Gateway videogen ----------
-// Uses the videos endpoint of the Lovable AI Gateway.
-async function generateViaLovable(opts: {
-  prompt: string;
+// ---------- BACKEND 2: fal.ai Wan 2.2 (image-to-video) ----------
+// Used when FAL_API_KEY is set. Endpoint: https://fal.run/fal-ai/wan/v2.2-5b/image-to-video
+// or text-to-video when no first frame is supplied.
+async function generateViaFal(opts: {
+  prompt: string; negative: string;
   aspectRatio: string; resolution: string; duration: number;
   firstFrameUrl: string | null; cameraFixed: boolean;
 }): Promise<string> {
-  if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is missing — enable AI for this project");
+  const FAL_API_KEY = Deno.env.get("FAL_API_KEY");
+  if (!FAL_API_KEY) throw new Error("FAL_API_KEY missing");
+
+  const useImage = !!opts.firstFrameUrl;
+  const endpoint = useImage
+    ? "https://fal.run/fal-ai/wan/v2.2-5b/image-to-video"
+    : "https://fal.run/fal-ai/wan/v2.2-5b/text-to-video";
 
   const payload: Record<string, unknown> = {
-    model: "wan-2.5",
     prompt: opts.prompt,
-    duration: opts.duration === 10 ? 10 : 5,
-    resolution: opts.resolution === "480p" ? "480p" : "1080p",
+    negative_prompt: opts.negative || undefined,
     aspect_ratio: opts.aspectRatio,
-    camera_fixed: opts.cameraFixed,
+    resolution: opts.resolution === "480p" ? "480p" : "720p",
+    num_frames: opts.duration === 10 ? 161 : 81,
+    enable_safety_checker: true,
   };
-  if (opts.firstFrameUrl) payload.starting_frame = opts.firstFrameUrl;
+  if (useImage) payload.image_url = opts.firstFrameUrl;
 
-  const r = await fetch("https://ai.gateway.lovable.dev/v1/videos/generations", {
+  const r = await fetch(endpoint, {
     method: "POST",
-    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Key ${FAL_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   if (!r.ok) {
     const text = await r.text();
-    if (r.status === 429) throw new Error("Rate limit reached. Try again shortly.");
-    if (r.status === 402) throw new Error("AI credits exhausted. Add credits in Settings → Workspace → Usage.");
-    throw new Error(`Lovable videogen ${r.status}: ${text.slice(0, 300)}`);
+    throw new Error(`fal.ai Wan ${r.status}: ${text.slice(0, 300)}`);
   }
   const data = await r.json();
-  const url = data.data?.[0]?.url || data.url || data.video_url;
-  if (!url) throw new Error(`Lovable videogen: no URL in response: ${JSON.stringify(data).slice(0, 200)}`);
+  const url = data.video?.url || data.url || data.video_url;
+  if (!url) throw new Error(`fal.ai: no video URL in response: ${JSON.stringify(data).slice(0, 200)}`);
   return url as string;
 }
 
@@ -159,13 +164,18 @@ async function runGeneration(
         lastFrameUrl: body.lastFrameUrl || null,
         cameraFixed,
       });
-    } else {
-      videoUrl = await generateViaLovable({
+    } else if (Deno.env.get("FAL_API_KEY")) {
+      videoUrl = await generateViaFal({
         prompt: finalPrompt,
+        negative: body.negativePrompt || "",
         aspectRatio, resolution, duration,
         firstFrameUrl: body.firstFrameUrl || null,
         cameraFixed,
       });
+    } else {
+      throw new Error(
+        "Не настроен видео-бэкенд. Добавьте FAL_API_KEY (рекомендуется, fal.ai → Wan 2.2) или WAN_API_URL + WAN_API_KEY для собственного эндпоинта.",
+      );
     }
 
     const hosted = await rehost(admin, videoUrl, runId);
@@ -238,7 +248,11 @@ Deno.serve(async (req) => {
       }
     }
 
-    const backend = WAN_API_URL && WAN_API_KEY ? "wan-api" : "lovable-videogen";
+    const backend = WAN_API_URL && WAN_API_KEY
+      ? "wan-api"
+      : Deno.env.get("FAL_API_KEY")
+        ? "fal-wan-2.2"
+        : "unconfigured";
 
     const { data: run, error: insErr } = await admin
       .from("wan_runs")
