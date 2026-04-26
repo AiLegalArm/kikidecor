@@ -31,6 +31,7 @@ const AdminMediaManager = lazy(() => import("@/components/admin/AdminMediaManage
 const AdminEventPlannerPipeline = lazy(() => import("@/components/admin/AdminEventPlannerPipeline"));
 const AdminFacadeGenerator = lazy(() => import("@/components/admin/AdminFacadeGenerator"));
 const AdminVideoGenerator = lazy(() => import("@/components/admin/AdminVideoGenerator"));
+const AdminWorks = lazy(() => import("@/components/admin/AdminWorks"));
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
@@ -54,10 +55,11 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
+type Section = "leads" | "works" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
+  { key: "works", label: "Работы", icon: FolderOpen, group: "CRM" },
   { key: "calendar", label: "Календарь", icon: CalendarDays, group: "CRM" },
   { key: "ig-analytics", label: "IG Аналитика", icon: BarChart3, group: "Маркетинг" },
   { key: "analytics", label: "Аналитика", icon: BarChart3, group: "Маркетинг" },
@@ -400,6 +402,9 @@ const Admin = () => {
 
           {/* ═══ INSTAGRAM ANALYTICS ═══ */}
           {section === "ig-analytics" && <AdminInstagramAnalytics />}
+
+          {/* ═══ WORKS / PORTFOLIO ═══ */}
+          {section === "works" && <AdminWorks />}
 
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && <AdminAIGenerator />}
