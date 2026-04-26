@@ -12,7 +12,7 @@ import {
   LogOut, LayoutGrid, List,
   Phone as PhoneIcon, MessageSquare, Mail as MailIcon,
   ShoppingBag, Users, CalendarDays, BarChart3, Palette, Sparkles, Loader2, Menu, X, Camera,
-  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2, Film,
+  Send, Image as ImageIcon, Settings, BookOpen, FolderOpen, Workflow, Building2, Film, Package,
 } from "lucide-react";
 import AdminLogin from "@/components/AdminLogin";
 import type { Session } from "@supabase/supabase-js";
@@ -32,6 +32,7 @@ const AdminEventPlannerPipeline = lazy(() => import("@/components/admin/AdminEve
 const AdminFacadeGenerator = lazy(() => import("@/components/admin/AdminFacadeGenerator"));
 const AdminVideoGenerator = lazy(() => import("@/components/admin/AdminVideoGenerator"));
 const AdminWorks = lazy(() => import("@/components/admin/AdminWorks"));
+const AdminPackages = lazy(() => import("@/components/admin/AdminPackages"));
 
 type Lead = {
   id: string; name: string; phone: string; email: string; event_type: string;
@@ -55,11 +56,12 @@ const getStatusBadge = (status: string) => {
   return s ? <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${s.color}`}>{s.label}</span> : <Badge variant="outline">{status}</Badge>;
 };
 
-type Section = "leads" | "works" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
+type Section = "leads" | "works" | "packages" | "calendar" | "ig-analytics" | "ai" | "ai-facade" | "ai-video" | "venue" | "ai-insights" | "analytics" | "telegram" | "brand" | "media" | "event-pipeline";
 
 const NAV_ITEMS: { key: Section; label: string; icon: any; group?: string }[] = [
   { key: "leads", label: "Лиды", icon: Users, group: "CRM" },
   { key: "works", label: "Работы", icon: FolderOpen, group: "CRM" },
+  { key: "packages", label: "Пакеты", icon: Package, group: "CRM" },
   { key: "calendar", label: "Календарь", icon: CalendarDays, group: "CRM" },
   { key: "ig-analytics", label: "IG Аналитика", icon: BarChart3, group: "Маркетинг" },
   { key: "analytics", label: "Аналитика", icon: BarChart3, group: "Маркетинг" },
@@ -405,6 +407,9 @@ const Admin = () => {
 
           {/* ═══ WORKS / PORTFOLIO ═══ */}
           {section === "works" && <AdminWorks />}
+
+          {/* ═══ PACKAGES ═══ */}
+          {section === "packages" && <AdminPackages />}
 
           {/* ═══ AI GENERATOR ═══ */}
           {section === "ai" && <AdminAIGenerator />}
