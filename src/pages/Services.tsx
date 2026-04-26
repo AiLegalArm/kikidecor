@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSEO } from "@/hooks/useSEO";
+import DecorWorksSection from "@/components/DecorWorksSection";
 import { cn } from "@/lib/utils";
 import weddingImg from "@/assets/portfolio-wedding.jpg";
 import birthdayImg from "@/assets/portfolio-birthday.jpg";
@@ -129,6 +130,7 @@ const Services = () => {
 
       {/* CTA */}
       <section className="border-t border-border/50 px-6 md:px-10 py-24 md:py-32">
+      </section>
         <div className="container mx-auto text-center max-w-2xl">
           <ScrollReveal>
             <h2 className="font-display text-2xl sm:text-3xl md:text-5xl font-light mb-5">{s.customTitle[lang]}</h2>
