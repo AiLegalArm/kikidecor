@@ -32,3 +32,9 @@ verify_jwt = true
 
 [functions.concierge-telegram-webhook]
 verify_jwt = false
+
+[functions.ai-provider-status]
+verify_jwt = true
+
+[functions.ai-provider-test]
+verify_jwt = true

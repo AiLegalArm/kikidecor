@@ -261,11 +261,11 @@ const AdminWanVideo = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Film size={20} className="text-primary" />
-            <h2 className="font-display text-2xl font-light">AI Video — Decor (Wan)</h2>
+            <h2 className="font-display text-2xl font-light">AI Видео</h2>
             <span className="text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 bg-primary/10 text-primary rounded">Beta</span>
           </div>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Премиум-генератор декор-видео. First Frame задаёт начало ролика, Last Frame используется как смысловой ориентир конечной композиции.
+            Премиум-генератор декор-видео (на движке DashScope WAN). First Frame задаёт начало ролика, Last Frame используется как смысловой ориентир конечной композиции.
           </p>
         </div>
       </div>

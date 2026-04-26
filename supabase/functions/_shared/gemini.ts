@@ -1,24 +1,161 @@
 /**
- * _shared/gemini.ts  (v3 — Lovable AI Gateway)
+ * _shared/gemini.ts  (v4 — Multi-provider AI layer)
  *
- * Multi-model AI service layer for KiKi Edge Functions.
- * All calls routed through Lovable AI Gateway.
- *
- * Model strategy:
- *   REASONING   → google/gemini-2.5-pro          (complex styling, venue analysis)
- *   FAST        → google/gemini-3-flash-preview   (search, outfit gen, quick tasks)
- *   IMAGE_GEN   → google/gemini-2.5-flash-image   (image generation, try-on)
- *   VISION      → google/gemini-2.5-flash         (vision analysis, cost-effective)
+ * Routes AI calls through the active provider configured in `ai_provider_settings`.
+ * Default = Lovable AI Gateway. Falls back to Lovable if any error occurs reading config.
  */
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const LOVABLE_GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
 
-export const AI_MODELS = {
-  REASONING: "google/gemini-3.1-pro-preview",
-  FAST: "google/gemini-3-flash-preview",
-  IMAGE_GEN: "google/gemini-3.1-flash-image-preview",
-  VISION: "google/gemini-2.5-flash",
-} as const;
+type ProviderId = "lovable" | "openai" | "gemini" | "anthropic";
+
+interface ProviderConfig {
+  provider: ProviderId;
+  baseUrl: string;
+  apiKey: string;
+  apiKeyEnvName: string;
+  models: { reasoning: string; fast: string; vision: string; image: string };
+  supportsImageGen: boolean;
+}
+
+const DEFAULTS_BY_PROVIDER: Record<ProviderId, { baseUrl: string; envName: string; models: ProviderConfig["models"]; supportsImageGen: boolean }> = {
+  lovable: {
+    baseUrl: LOVABLE_GATEWAY,
+    envName: "LOVABLE_API_KEY",
+    models: {
+      reasoning: "google/gemini-3.1-pro-preview",
+      fast: "google/gemini-3-flash-preview",
+      vision: "google/gemini-2.5-flash",
+      image: "google/gemini-3.1-flash-image-preview",
+    },
+    supportsImageGen: true,
+  },
+  openai: {
+    baseUrl: "https://api.openai.com/v1/chat/completions",
+    envName: "OPENAI_API_KEY",
+    models: { reasoning: "gpt-5", fast: "gpt-5-mini", vision: "gpt-5-mini", image: "" },
+    supportsImageGen: false,
+  },
+  gemini: {
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+    envName: "GEMINI_API_KEY",
+    models: {
+      reasoning: "gemini-2.5-pro",
+      fast: "gemini-2.5-flash",
+      vision: "gemini-2.5-flash",
+      image: "gemini-2.5-flash-image-preview",
+    },
+    supportsImageGen: true,
+  },
+  anthropic: {
+    baseUrl: "https://api.anthropic.com/v1/chat/completions",
+    envName: "ANTHROPIC_API_KEY",
+    models: { reasoning: "claude-opus-4", fast: "claude-sonnet-4", vision: "claude-sonnet-4", image: "" },
+    supportsImageGen: false,
+  },
+};
+
+let _cachedConfig: ProviderConfig | null = null;
+let _cacheExpiresAt = 0;
+const CONFIG_TTL_MS = 30_000;
+
+async function loadActiveConfig(): Promise<ProviderConfig> {
+  const now = Date.now();
+  if (_cachedConfig && now < _cacheExpiresAt) return _cachedConfig;
+
+  let provider: ProviderId = "lovable";
+  let custom: { reasoning?: string; fast?: string; vision?: string; image?: string } = {};
+
+  try {
+    const url = Deno.env.get("SUPABASE_URL");
+    const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (url && key) {
+      const sb = createClient(url, key);
+      const { data } = await sb
+        .from("ai_provider_settings")
+        .select("provider, model_reasoning, model_fast, model_vision, model_image")
+        .eq("is_active", true)
+        .maybeSingle();
+      if (data?.provider) {
+        provider = data.provider as ProviderId;
+        custom = {
+          reasoning: data.model_reasoning ?? undefined,
+          fast: data.model_fast ?? undefined,
+          vision: data.model_vision ?? undefined,
+          image: data.model_image ?? undefined,
+        };
+      }
+    }
+  } catch (e) {
+    console.warn("[ai:config] Failed to read ai_provider_settings, falling back to Lovable:", e);
+  }
+
+  const def = DEFAULTS_BY_PROVIDER[provider];
+  const apiKey = Deno.env.get(def.envName);
+  if (!apiKey) {
+    if (provider !== "lovable") {
+      console.warn(`[ai:config] ${def.envName} missing for provider ${provider}; falling back to Lovable`);
+      const fallback = DEFAULTS_BY_PROVIDER.lovable;
+      const fbKey = Deno.env.get(fallback.envName);
+      if (!fbKey) throw new GeminiError("MISSING_API_KEY", "AI service is not configured");
+      _cachedConfig = {
+        provider: "lovable", baseUrl: fallback.baseUrl, apiKey: fbKey, apiKeyEnvName: fallback.envName,
+        models: fallback.models, supportsImageGen: true,
+      };
+      _cacheExpiresAt = now + CONFIG_TTL_MS;
+      return _cachedConfig;
+    }
+    throw new GeminiError("MISSING_API_KEY", "AI service is not configured");
+  }
+
+  _cachedConfig = {
+    provider,
+    baseUrl: def.baseUrl,
+    apiKey,
+    apiKeyEnvName: def.envName,
+    models: {
+      reasoning: custom.reasoning || def.models.reasoning,
+      fast: custom.fast || def.models.fast,
+      vision: custom.vision || def.models.vision,
+      image: custom.image || def.models.image,
+    },
+    supportsImageGen: def.supportsImageGen,
+  };
+  _cacheExpiresAt = now + CONFIG_TTL_MS;
+  return _cachedConfig;
+}
+
+/** Force config reload on next call. */
+export function invalidateAIConfigCache() { _cachedConfig = null; _cacheExpiresAt = 0; }
+
+/** Get current active AI configuration (provider, models, gateway URL). */
+export async function getAIConfig(): Promise<ProviderConfig> { return loadActiveConfig(); }
+
+/**
+ * AI_MODELS is a Proxy that returns model names from the currently active provider.
+ * Reads are synchronous — they use the last cached config or provider defaults.
+ * For first-call correctness, edge functions should call `await getAIConfig()` once on startup.
+ */
+export const AI_MODELS = new Proxy(
+  {} as { REASONING: string; FAST: string; VISION: string; IMAGE_GEN: string },
+  {
+    get(_t, prop: string) {
+      const cfg = _cachedConfig ?? {
+        models: DEFAULTS_BY_PROVIDER.lovable.models,
+      } as Partial<ProviderConfig>;
+      const m = cfg.models!;
+      switch (prop) {
+        case "REASONING": return m.reasoning;
+        case "FAST": return m.fast;
+        case "VISION": return m.vision;
+        case "IMAGE_GEN": return m.image;
+      }
+      return undefined;
+    },
+  }
+);
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
 
@@ -53,13 +190,26 @@ export class GeminiError extends Error {
 
 // ─── API key ─────────────────────────────────────────────────────────────────
 
+/**
+ * Returns API key for the currently active provider.
+ * Side effect: warms up the config cache so AI_MODELS proxy returns provider-specific models.
+ */
 export function requireApiKey(): string {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) {
-    console.error("[ai] LOVABLE_API_KEY not set");
+  // Best-effort sync wrapper. If cache is cold, kick off async load (next call will use it).
+  if (_cachedConfig) return _cachedConfig.apiKey;
+  const lovKey = Deno.env.get("LOVABLE_API_KEY");
+  // Fire-and-forget warm-up
+  loadActiveConfig().catch(() => {});
+  if (!lovKey) {
     throw new GeminiError("MISSING_API_KEY", "AI service is not configured");
   }
-  return key;
+  return lovKey;
+}
+
+/** Async version: always returns the active provider's API key after loading config. */
+export async function requireApiKeyAsync(): Promise<string> {
+  const cfg = await loadActiveConfig();
+  return cfg.apiKey;
 }
 
 // ─── JSON helpers ────────────────────────────────────────────────────────────
@@ -158,18 +308,19 @@ export interface AIChatOptions {
 }
 
 export async function aiChat(opts: AIChatOptions): Promise<any> {
-  const model = opts.model ?? AI_MODELS.FAST;
-  console.log(`[ai:chat] model=${model} msgs=${opts.messages.length}`);
+  const cfg = await loadActiveConfig();
+  const model = opts.model ?? cfg.models.fast;
+  console.log(`[ai:chat] provider=${cfg.provider} model=${model} msgs=${opts.messages.length}`);
 
   return withRetry(async () => {
     let response: Response;
     try {
       response = await fetchWithTimeout(
-        LOVABLE_GATEWAY,
+        cfg.baseUrl,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${opts.apiKey}`,
+            Authorization: `Bearer ${cfg.apiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -183,19 +334,19 @@ export async function aiChat(opts: AIChatOptions): Promise<any> {
       );
     } catch (e: any) {
       if (e?.name === "AbortError") throw new GeminiError("TIMEOUT", "AI request timed out");
-      throw new GeminiError("PROVIDER_REQUEST_FAILED", `Gateway unreachable: ${e?.message}`);
+      throw new GeminiError("PROVIDER_REQUEST_FAILED", `${cfg.provider} gateway unreachable: ${e?.message}`);
     }
 
     if (!response.ok) {
       const body = await response.text().catch(() => "");
-      console.error(`[ai:chat] HTTP ${response.status}:`, body.slice(0, 300));
+      console.error(`[ai:chat] provider=${cfg.provider} HTTP ${response.status}:`, body.slice(0, 300));
       if (response.status === 429) throw new GeminiError("RATE_LIMIT", "Rate limit exceeded. Try again later.");
       if (response.status === 402) throw new GeminiError("PAYMENT_REQUIRED", "AI credits exhausted.");
-      throw new GeminiError("PROVIDER_REQUEST_FAILED", `AI gateway error ${response.status}`);
+      throw new GeminiError("PROVIDER_REQUEST_FAILED", `AI provider error ${response.status}`);
     }
 
     const data = await response.json();
-    console.log(`[ai:chat] ✅ model=${model}`);
+    console.log(`[ai:chat] ✅ provider=${cfg.provider} model=${model}`);
     return data;
   }, opts.maxRetries ?? 2);
 }
@@ -211,18 +362,29 @@ export interface AIImageGenOptions {
 }
 
 export async function aiImageGen(opts: AIImageGenOptions): Promise<any> {
-  const model = opts.model ?? AI_MODELS.IMAGE_GEN;
-  console.log(`[ai:image-gen] model=${model}`);
+  const activeCfg = await loadActiveConfig();
+  // Image generation requires Lovable or Gemini; fall back to Lovable otherwise.
+  const cfg = activeCfg.supportsImageGen
+    ? activeCfg
+    : await (async () => {
+        const lovKey = Deno.env.get("LOVABLE_API_KEY");
+        if (!lovKey) throw new GeminiError("MISSING_API_KEY", "Image generation requires Lovable Gateway (LOVABLE_API_KEY missing)");
+        console.warn(`[ai:image-gen] provider ${activeCfg.provider} does not support image gen, falling back to Lovable`);
+        return { ...DEFAULTS_BY_PROVIDER.lovable, provider: "lovable" as ProviderId, apiKey: lovKey, apiKeyEnvName: "LOVABLE_API_KEY", supportsImageGen: true };
+      })();
+
+  const model = opts.model ?? cfg.models.image;
+  console.log(`[ai:image-gen] provider=${cfg.provider} model=${model}`);
 
   return withRetry(async () => {
     let response: Response;
     try {
       response = await fetchWithTimeout(
-        LOVABLE_GATEWAY,
+        cfg.baseUrl,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${opts.apiKey}`,
+            Authorization: `Bearer ${cfg.apiKey}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -235,7 +397,7 @@ export async function aiImageGen(opts: AIImageGenOptions): Promise<any> {
       );
     } catch (e: any) {
       if (e?.name === "AbortError") throw new GeminiError("TIMEOUT", "Image generation timed out");
-      throw new GeminiError("PROVIDER_REQUEST_FAILED", `Gateway unreachable: ${e?.message}`);
+      throw new GeminiError("PROVIDER_REQUEST_FAILED", `${cfg.provider} unreachable: ${e?.message}`);
     }
 
     if (!response.ok) {
