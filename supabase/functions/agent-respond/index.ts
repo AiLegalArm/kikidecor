@@ -19,7 +19,8 @@ const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
 const GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL_GUARD = "google/gemini-2.5-flash-lite";
-const MODEL_MAIN = "google/gemini-3-flash-preview";
+// Бюджетный пресет: основной чат тоже на flash-lite (~6× дешевле, для коротких ответов разница незаметна)
+const MODEL_MAIN = "google/gemini-2.5-flash-lite";
 
 type ScopeClass = "business" | "off_topic" | "abusive" | "handoff_request" | "small_talk";
 
