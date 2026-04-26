@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { X, ChevronLeft, ChevronRight, ArrowRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +11,7 @@ import heroImg from "@/assets/hero-decoration.jpg";
 
 type WorkItem = {
   id: string;
+  slug: string;
   title: string;
   title_en: string | null;
   description: string | null;
@@ -19,27 +21,36 @@ type WorkItem = {
   tags: string[];
   materials: string[];
   event_date: string | null;
+  category_id: string | null;
   category?: { name: string; name_en: string | null } | null;
 };
+
+type Category = { id: string; name: string; name_en: string | null };
 
 const Portfolio = () => {
   const { lang, t } = useLanguage();
   const p = t.portfolio;
 
   const [works, setWorks] = useState<WorkItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCat, setActiveCat] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalIndex, setModalIndex] = useState<number | null>(null);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
   useEffect(() => {
     const load = async () => {
-      const { data, error } = await supabase
-        .from("works")
-        .select("id, title, title_en, description, description_en, cover_image_url, gallery, tags, materials, event_date, category:categories(name, name_en)")
-        .eq("status", "published")
-        .order("featured", { ascending: false })
-        .order("sort_order", { ascending: true })
-        .order("created_at", { ascending: false });
+      const [worksRes, catsRes] = await Promise.all([
+        supabase
+          .from("works")
+          .select("id, slug, title, title_en, description, description_en, cover_image_url, gallery, tags, materials, event_date, category_id, category:categories(name, name_en)")
+          .eq("status", "published")
+          .order("featured", { ascending: false })
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: false }),
+        supabase.from("categories").select("id, name, name_en").order("sort_order", { ascending: true }),
+      ]);
+      const { data, error } = worksRes;
       if (!error && data) {
         setWorks(
           data.map((w: any) => ({
@@ -48,10 +59,16 @@ const Portfolio = () => {
           }))
         );
       }
+      if (catsRes.data) setCategories(catsRes.data as Category[]);
       setLoading(false);
     };
     load();
   }, []);
+
+  const filteredWorks = useMemo(() => {
+    if (!activeCat) return works;
+    return works.filter((w) => w.category_id === activeCat);
+  }, [works, activeCat]);
 
   const openModal = (index: number) => { setModalIndex(index); setGalleryIndex(0); };
   const closeModal = () => setModalIndex(null);
