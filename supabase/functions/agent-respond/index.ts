@@ -183,14 +183,26 @@ const FORBIDDEN_PATTERNS = [
   /\bguarante\w*/i, /\bгарантир/i,
   /\bдефинитивн/i, /\bточ?но\s+будет/i,
   /\b(скидк[аи]|sale|discount)\s*(?:\d|%)/i,
+  /\b(?:бесплатн\w+|free of charge)\b/i,
+  /\b(?:обещ\w+|promise|promis\w+)\b/i,
 ];
 
-function validatePolicy(reply: string, structured: any): { ok: boolean; reason?: string } {
+// Detect invented contacts (phones / emails) — agent must never fabricate these.
+const PHONE_RE = /(?:\+?\d[\d\-\s().]{7,}\d)/;
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+
+function validatePolicy(reply: string, structured: any, kbChunks: any[]): { ok: boolean; reason?: string } {
   for (const re of FORBIDDEN_PATTERNS) if (re.test(reply)) return { ok: false, reason: "forbidden_phrase" };
   // Hallucinated date promise check
   for (const d of structured.blockedDates || []) {
     if (reply.includes(d)) return { ok: false, reason: "blocked_date_promised" };
   }
+  // Contact fabrication: any phone/email in reply must appear in approved KB chunks.
+  const kbText = (kbChunks || []).map((c: any) => c.chunk_text).join("\n");
+  const phoneMatch = reply.match(PHONE_RE);
+  if (phoneMatch && !kbText.includes(phoneMatch[0])) return { ok: false, reason: "invented_phone" };
+  const emailMatch = reply.match(EMAIL_RE);
+  if (emailMatch && !kbText.toLowerCase().includes(emailMatch[0].toLowerCase())) return { ok: false, reason: "invented_email" };
   return { ok: true };
 }
 
@@ -240,10 +252,16 @@ Deno.serve(async (req) => {
     if (scope === "handoff_request" || scope === "abusive") escalate = true;
     if (confidence < Number(policies.confidence_threshold || 0.55)) escalate = true;
 
-    // For off_topic — skip KB/composer, return refusal directly
+    // Short-circuit: off_topic → strict refusal; abusive/handoff_request → handoff template.
     if (scope === "off_topic") {
       const refusal = language === "en" ? policies.refusal_template_en : policies.refusal_template_ru;
       const result = { reply: refusal, scope, confidence, retrievedChunks: [], escalate: false, policyPassed: true };
+      await persistIfConversation(admin, body, result);
+      return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (scope === "abusive" || scope === "handoff_request") {
+      const handoff = language === "en" ? policies.handoff_template_en : policies.handoff_template_ru;
+      const result = { reply: handoff, scope, confidence, retrievedChunks: [], escalate: true, policyPassed: true };
       await persistIfConversation(admin, body, result);
       return new Response(JSON.stringify(result), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -288,7 +306,7 @@ Deno.serve(async (req) => {
     }
 
     // 5. Policy validator
-    const policyCheck = validatePolicy(reply, structured);
+    const policyCheck = validatePolicy(reply, structured, kbChunks);
     if (!policyCheck.ok) {
       console.warn("[agent-respond] policy violation", policyCheck.reason, reply);
       reply = language === "en" ? policies.handoff_template_en : policies.handoff_template_ru;
