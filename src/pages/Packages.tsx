@@ -28,10 +28,10 @@ const Packages = () => {
       <section className="section-padding pb-8 md:pb-12">
         <div className="container mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="text-xs uppercase tracking-[0.3em] text-primary font-body mb-4">{p.overline[lang]}</p>
-            <h1 className="font-display text-4xl md:text-6xl font-light mb-5">{p.title[lang]}</h1>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-primary font-semibold mb-5">{p.overline[lang]}</p>
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-light mb-5 leading-[1] tracking-tight">{p.title[lang]}</h1>
             <div className="gold-divider" />
-            <p className="text-muted-foreground font-light text-sm md:text-base mt-6 max-w-xl mx-auto">
+            <p className="text-muted-foreground font-normal text-sm md:text-base mt-6 max-w-xl mx-auto leading-relaxed">
               {p.subtitle[lang]}
             </p>
           </ScrollReveal>
@@ -43,21 +43,26 @@ const Packages = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {packages.map((pkg, i) => {
               const featured = i === 1;
+              const number = String(i + 1).padStart(2, "0");
               return (
                 <ScrollReveal key={i} delay={i * 120}>
                   <div className={cn(
-                    "rounded-2xl p-7 md:p-9 h-full flex flex-col transition-shadow duration-500 relative",
+                    "p-7 md:p-9 h-full flex flex-col transition-all duration-500 relative",
                     featured
-                      ? "bg-card shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.25)] border-2 border-primary"
-                      : "bg-card shadow-[0_4px_30px_-8px_hsl(var(--foreground)/0.07)] border border-border hover:shadow-[0_8px_35px_-8px_hsl(var(--foreground)/0.12)]"
+                      ? "bg-card border border-primary/60 shadow-[0_12px_50px_-12px_hsl(var(--primary)/0.30)]"
+                      : "bg-card border border-border/70 hover:border-foreground/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--foreground)/0.15)]"
                   )}>
                     {featured && (
-                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-5 py-1.5 rounded-full font-medium">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.3em] px-5 py-1.5 font-semibold">
                         {p.popular[lang]}
                       </span>
                     )}
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-primary mb-2">{pkg.subtitle[lang]}</p>
-                    <h2 className="font-display text-2xl md:text-3xl font-medium mb-1">{pkg.name[lang]}</h2>
+                    <div className="flex items-start justify-between mb-1">
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-semibold">{pkg.subtitle[lang]}</p>
+                      <span className="font-display text-3xl font-light text-border leading-none">{number}</span>
+                    </div>
+                    <h2 className="font-display text-3xl md:text-4xl font-light tracking-tight mb-1">{pkg.name[lang]}</h2>
+                    <div className="w-10 h-px bg-primary/40 my-4" />
                     <div className="flex items-baseline gap-1 mb-7">
                       <span className="font-display text-3xl md:text-4xl text-primary">{pkg.price[lang]}</span>
                       <span className="text-xs text-muted-foreground font-light">{p.from[lang]}</span>
@@ -89,14 +94,14 @@ const Packages = () => {
                     <div className="space-y-3">
                       <Link to="/booking" className="block">
                         <Button className={cn(
-                          "w-full rounded-xl text-xs uppercase tracking-[0.12em] py-5",
+                          "w-full rounded-none text-[11px] uppercase tracking-[0.25em] py-5 font-semibold",
                           featured ? "bg-primary hover:bg-primary/90 text-primary-foreground" : "bg-foreground hover:bg-foreground/90 text-background"
                         )}>
                           {p.orderPackage[lang]}
                         </Button>
                       </Link>
                       <Link to="/contact" className="block">
-                        <Button variant="outline" className="w-full rounded-xl text-xs uppercase tracking-[0.12em] py-5 border-border hover:bg-secondary">
+                        <Button variant="outline" className="w-full rounded-none text-[11px] uppercase tracking-[0.25em] py-5 border-border hover:bg-secondary font-semibold">
                           {p.contactDecorator[lang]}
                         </Button>
                       </Link>
