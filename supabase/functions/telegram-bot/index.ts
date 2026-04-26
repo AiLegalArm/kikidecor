@@ -113,6 +113,97 @@ async function restartGenerators(chatId: number) {
   await logAction("generator_restart", {});
 }
 
+function fmtDate(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleString("ru-RU", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+async function handleLeads(chatId: number, limit = 10) {
+  const { data, error } = await supabase
+    .from("event_leads")
+    .select("id, name, phone, event_type, event_date, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) {
+    await reply(chatId, `❌ Ошибка: ${error.message}`);
+    return;
+  }
+  if (!data || data.length === 0) {
+    await reply(chatId, "Лидов пока нет.");
+    return;
+  }
+  const lines = [`📋 <b>Последние ${data.length} лидов</b>\n`];
+  for (const l of data) {
+    const status = l.status === "new" ? "🆕" : l.status === "contacted" ? "📞" : l.status === "won" ? "✅" : l.status === "lost" ? "❌" : "•";
+    lines.push(`${status} <b>${escapeHtml(l.name || "—")}</b> — ${escapeHtml(l.event_type || "")}`);
+    lines.push(`   📞 ${escapeHtml(l.phone || "—")}${l.event_date ? ` · 📅 ${l.event_date}` : ""}`);
+    lines.push(`   <i>${fmtDate(l.created_at)}</i>\n`);
+  }
+  await reply(chatId, lines.join("\n"));
+}
+
+async function handleToday(chatId: number) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+
+  const [{ count: leadsToday }, { data: leads }, { count: weekLeads }] = await Promise.all([
+    supabase.from("event_leads").select("id", { count: "exact", head: true })
+      .gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
+    supabase.from("event_leads").select("name, phone, event_type, created_at")
+      .gte("created_at", start.toISOString()).lte("created_at", end.toISOString())
+      .order("created_at", { ascending: false }).limit(20),
+    supabase.from("event_leads").select("id", { count: "exact", head: true })
+      .gte("created_at", new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString()),
+  ]);
+
+  const lines: string[] = ["📅 <b>Сегодня</b>", ""];
+  lines.push(`Лидов сегодня: <b>${leadsToday ?? 0}</b>`);
+  lines.push(`За 7 дней: <b>${weekLeads ?? 0}</b>`);
+  if (leads && leads.length > 0) {
+    lines.push("", "<b>Заявки за день:</b>");
+    for (const l of leads) {
+      lines.push(`• ${escapeHtml(l.name || "—")} — ${escapeHtml(l.event_type || "")} (${escapeHtml(l.phone || "—")})`);
+    }
+  }
+  await reply(chatId, lines.join("\n"));
+}
+
+async function handlePublish(chatId: number, slug: string) {
+  if (!slug) {
+    await reply(chatId, "Использование: /publish &lt;slug-работы&gt;");
+    return;
+  }
+  const { data: work, error } = await supabase
+    .from("works")
+    .select("id, slug, title, status")
+    .eq("slug", slug.trim())
+    .maybeSingle();
+  if (error || !work) {
+    await reply(chatId, `❌ Работа со slug <code>${escapeHtml(slug)}</code> не найдена.`);
+    return;
+  }
+  if (work.status === "published") {
+    await reply(chatId, `ℹ️ Работа «${escapeHtml(work.title)}» уже опубликована.`);
+    return;
+  }
+  const { error: upErr } = await supabase
+    .from("works")
+    .update({ status: "published" })
+    .eq("id", work.id);
+  if (upErr) {
+    await reply(chatId, `❌ Ошибка публикации: ${upErr.message}`);
+    return;
+  }
+  await logAction("work_published", { work_id: work.id, slug: work.slug });
+  await reply(chatId, `✅ Опубликовано: <b>${escapeHtml(work.title)}</b>\nhttps://kiki-shop.online/portfolio/${work.slug}`);
+}
+
 async function handleLink(chatId: number, code: string, username?: string) {
   const now = new Date().toISOString();
   const { data: row, error } = await supabase
@@ -153,6 +244,9 @@ async function handleLink(chatId: number, code: string, username?: string) {
 const HELP_TEXT = `🤖 <b>Ki Ki Decor — Admin Bot</b>
 
 <b>Команды:</b>
+/leads — последние 10 лидов
+/today — сводка за сегодня
+/publish &lt;slug&gt; — опубликовать работу
 /status — статус системы
 /start_gen &lt;тип&gt; — запустить генератор (decor|facade|video|moodboard)
 /stop_gen — остановить все запуски
@@ -198,6 +292,13 @@ Deno.serve(async (req) => {
 
     if (text === "/status") {
       await handleStatus(chatId);
+    } else if (text === "/leads") {
+      await handleLeads(chatId);
+    } else if (text === "/today") {
+      await handleToday(chatId);
+    } else if (text.startsWith("/publish")) {
+      const slug = text.split(/\s+/)[1] || "";
+      await handlePublish(chatId, slug);
     } else if (text.startsWith("/start_gen")) {
       const type = text.split(/\s+/)[1] || "decor";
       await startGenerator(chatId, type);
