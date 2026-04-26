@@ -520,6 +520,7 @@ export type Database = {
           embedding: string | null
           id: string
           language: string
+          search_tsv: unknown
           token_count: number | null
         }
         Insert: {
@@ -530,6 +531,7 @@ export type Database = {
           embedding?: string | null
           id?: string
           language?: string
+          search_tsv?: unknown
           token_count?: number | null
         }
         Update: {
@@ -540,6 +542,7 @@ export type Database = {
           embedding?: string | null
           id?: string
           language?: string
+          search_tsv?: unknown
           token_count?: number | null
         }
         Relationships: [
@@ -1023,12 +1026,11 @@ export type Database = {
         }
         Returns: boolean
       }
-      kb_match_chunks: {
+      kb_search_chunks: {
         Args: {
           filter_language?: string
           match_count?: number
-          query_embedding: string
-          similarity_threshold?: number
+          query_text: string
         }
         Returns: {
           chunk_id: string
@@ -1036,7 +1038,7 @@ export type Database = {
           document_id: string
           document_source: string
           document_title: string
-          similarity: number
+          rank: number
         }[]
       }
     }
