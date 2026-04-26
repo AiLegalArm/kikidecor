@@ -77,9 +77,9 @@ const Portfolio = () => {
     (dir: 1 | -1) => {
       if (modalIndex === null) return;
       const next = modalIndex + dir;
-      if (next >= 0 && next < works.length) { setModalIndex(next); setGalleryIndex(0); }
+      if (next >= 0 && next < filteredWorks.length) { setModalIndex(next); setGalleryIndex(0); }
     },
-    [modalIndex, works.length]
+    [modalIndex, filteredWorks.length]
   );
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const Portfolio = () => {
     };
   }, [modalIndex, navigate]);
 
-  const current = modalIndex !== null ? works[modalIndex] : null;
+  const current = modalIndex !== null ? filteredWorks[modalIndex] : null;
   const currentImages = current ? [current.cover_image_url, ...(current.gallery || [])] : [];
 
   const titleOf = (w: WorkItem) => (lang === "en" && w.title_en ? w.title_en : w.title);
