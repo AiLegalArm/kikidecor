@@ -136,20 +136,41 @@ const Portfolio = () => {
         </div>
       </section>
 
+      {/* Category Filter */}
+      {categories.length > 0 && !loading && works.length > 0 && (
+        <div className="sticky top-16 md:top-20 z-30 bg-background/95 backdrop-blur-md border-b border-border/50">
+          <div className="container mx-auto px-4 md:px-12 lg:px-20 py-4 overflow-x-auto">
+            <div className="flex items-center gap-2 md:gap-3 min-w-max">
+              <button onClick={() => setActiveCat(null)} className={cn("text-[10px] uppercase tracking-[0.25em] font-semibold px-4 py-2 transition-colors duration-300 whitespace-nowrap", activeCat === null ? "text-foreground border-b border-foreground" : "text-foreground/50 hover:text-foreground")}>
+                {lang === "ru" ? "Все" : "All"}
+              </button>
+              {categories.map((c) => {
+                const name = lang === "en" && c.name_en ? c.name_en : c.name;
+                return (
+                  <button key={c.id} onClick={() => setActiveCat(c.id)} className={cn("text-[10px] uppercase tracking-[0.25em] font-semibold px-4 py-2 transition-colors duration-300 whitespace-nowrap", activeCat === c.id ? "text-foreground border-b border-foreground" : "text-foreground/50 hover:text-foreground")}>
+                    {name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Editorial Projects */}
       <div className="bg-background">
         {loading ? (
           <div className="container mx-auto py-32 flex justify-center">
             <Loader2 className="animate-spin text-primary" size={32} />
           </div>
-        ) : works.length === 0 ? (
+        ) : filteredWorks.length === 0 ? (
           <div className="container mx-auto py-32 text-center max-w-xl px-6">
             <p className="font-display text-2xl md:text-3xl font-light text-foreground/70 italic">
               {lang === "ru" ? "Скоро здесь появятся избранные проекты студии." : "Featured projects coming soon."}
             </p>
           </div>
         ) : (
-          works.map((work, index) => (
+          filteredWorks.map((work, index) => (
             <EditorialSection
               key={work.id}
               work={work}
