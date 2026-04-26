@@ -71,6 +71,13 @@ const WorkDetail = () => {
   const category = work?.category ? (lang === "en" && work.category.name_en ? work.category.name_en : work.category.name) : "";
   const images = work ? [work.cover_image_url, ...(work.gallery || [])] : [];
 
+  useSEO({
+    title: title ? `${title} — Ki Ki Decor` : undefined,
+    description: desc || undefined,
+    canonical: slug ? `https://kiki-shop.online/portfolio/${slug}` : undefined,
+    ogImage: work?.cover_image_url,
+  });
+
   const navLightbox = useCallback((dir: 1 | -1) => {
     setLightbox((cur) => {
       if (cur === null) return cur;
