@@ -119,7 +119,7 @@ const AdminWanVideo = () => {
   const [output, setOutput] = useState<OutputState>({ resolution: "1080p", aspectRatio: "16:9", duration: 5, cameraFixed: false });
   const [negativePrompt, setNegativePrompt] = useState("");
   const [styleStrength, setStyleStrength] = useState(60);
-  const [model, setModel] = useState<"wan2.2-plus" | "wan2.5-preview">("wan2.2-plus");
+  const [model, setModel] = useState<"wan2.2-plus" | "wan2.5-preview" | "veo-3.0" | "veo-3.0-fast">("wan2.2-plus");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [firstFile, setFirstFile] = useState<File | null>(null);
@@ -189,6 +189,7 @@ const AdminWanVideo = () => {
           negativePrompt, styleStrength,
           firstFrameUrl: firstUrl, lastFrameUrl: lastUrl,
           model,
+          provider: (model === "veo-3.0" || model === "veo-3.0-fast") ? "veo" : "dashscope",
         },
       });
 
