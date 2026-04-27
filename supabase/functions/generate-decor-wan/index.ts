@@ -21,6 +21,7 @@ const WAN_API_KEY = Deno.env.get("WAN_API_KEY");
 const DASHSCOPE_API_KEY = Deno.env.get("DASHSCOPE_API_KEY");
 // International endpoint (Singapore). For mainland accounts switch host to dashscope.aliyuncs.com.
 const DASHSCOPE_HOST = Deno.env.get("DASHSCOPE_HOST") || "https://dashscope-intl.aliyuncs.com";
+const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
 
 type Body = {
   userPrompt: string;
@@ -34,7 +35,8 @@ type Body = {
   styleStrength?: number;
   firstFrameUrl?: string | null;
   lastFrameUrl?: string | null;
-  model?: "wan2.2-plus" | "wan2.5-preview";
+  model?: "wan2.2-plus" | "wan2.5-preview" | "veo-3.0" | "veo-3.0-fast";
+  provider?: "dashscope" | "veo";
 };
 
 async function describeLastFrame(imageUrl: string): Promise<string | null> {
@@ -209,6 +211,98 @@ async function generateViaDashScope(opts: {
   throw new Error("DashScope task timed out after 10 minutes");
 }
 
+// ---------- BACKEND 4: Google Veo 3 (Gemini API) ----------
+// Async API: predict creates an LRO, then poll operation until done=true.
+// Models: veo-3.0-generate-preview (high quality), veo-3.0-fast-generate-preview (fast).
+// Docs: https://ai.google.dev/gemini-api/docs/video
+async function fetchImageAsBase64(url: string): Promise<{ data: string; mime: string } | null> {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const mime = r.headers.get("content-type") || "image/jpeg";
+    const buf = new Uint8Array(await r.arrayBuffer());
+    let bin = "";
+    for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+    return { data: btoa(bin), mime };
+  } catch { return null; }
+}
+
+async function generateViaVeo(opts: {
+  prompt: string; negative: string;
+  aspectRatio: string; duration: number;
+  firstFrameUrl: string | null;
+  modelChoice: "veo-3.0" | "veo-3.0-fast";
+}): Promise<string> {
+  if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
+
+  const model = opts.modelChoice === "veo-3.0-fast"
+    ? "veo-3.0-fast-generate-preview"
+    : "veo-3.0-generate-preview";
+
+  // Veo currently supports 16:9 and 9:16 reliably.
+  const ar = opts.aspectRatio === "9:16" ? "9:16" : "16:9";
+
+  const instances: Record<string, unknown>[] = [{ prompt: opts.prompt }];
+  if (opts.firstFrameUrl) {
+    const img = await fetchImageAsBase64(opts.firstFrameUrl);
+    if (img) {
+      (instances[0] as any).image = { bytesBase64Encoded: img.data, mimeType: img.mime };
+    }
+  }
+
+  const parameters: Record<string, unknown> = {
+    aspectRatio: ar,
+    personGeneration: "allow_all",
+    numberOfVideos: 1,
+    durationSeconds: opts.duration === 10 ? 8 : Math.min(8, Math.max(4, opts.duration)),
+  };
+  if (opts.negative) parameters.negativePrompt = opts.negative;
+
+  // 1) Submit predict (LRO)
+  const submitUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning?key=${GEMINI_API_KEY}`;
+  const submit = await fetch(submitUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ instances, parameters }),
+  });
+  if (!submit.ok) {
+    const text = await submit.text();
+    throw new Error(`Veo submit ${submit.status}: ${text.slice(0, 400)}`);
+  }
+  const submitData = await submit.json();
+  const opName = submitData?.name;
+  if (!opName) throw new Error(`Veo: no operation name in response: ${JSON.stringify(submitData).slice(0, 300)}`);
+
+  // 2) Poll operation up to 10 minutes
+  const deadline = Date.now() + 10 * 60 * 1000;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, 8000));
+    const pollUrl = `https://generativelanguage.googleapis.com/v1beta/${opName}?key=${GEMINI_API_KEY}`;
+    const poll = await fetch(pollUrl);
+    if (!poll.ok) continue;
+    const pd = await poll.json();
+    if (pd?.error) {
+      throw new Error(`Veo error: ${pd.error.message || JSON.stringify(pd.error).slice(0, 300)}`);
+    }
+    if (pd?.done) {
+      const videos = pd?.response?.generateVideoResponse?.generatedSamples
+        || pd?.response?.generatedVideos
+        || pd?.response?.videos;
+      const first = Array.isArray(videos) ? videos[0] : null;
+      const fileUri =
+        first?.video?.uri ||
+        first?.video?.fileUri ||
+        first?.uri ||
+        pd?.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
+      if (!fileUri) throw new Error(`Veo done but no video URI: ${JSON.stringify(pd).slice(0, 400)}`);
+      // Files API URI requires API key to download
+      const sep = fileUri.includes("?") ? "&" : "?";
+      return `${fileUri}${sep}key=${GEMINI_API_KEY}`;
+    }
+  }
+  throw new Error("Veo task timed out after 10 minutes");
+}
+
 // Download video and re-host in our public bucket so it survives provider URLs expiring.
 async function rehost(admin: ReturnType<typeof createClient>, sourceUrl: string, runId: string): Promise<string> {
   try {
@@ -240,13 +334,22 @@ async function runGeneration(
     const cameraFixed = !!out.cameraFixed;
 
     let videoUrl: string;
-    if (DASHSCOPE_API_KEY) {
+    const wantVeo = body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast";
+    if (wantVeo && GEMINI_API_KEY) {
+      videoUrl = await generateViaVeo({
+        prompt: finalPrompt,
+        negative: body.negativePrompt || "",
+        aspectRatio, duration,
+        firstFrameUrl: body.firstFrameUrl || null,
+        modelChoice: (body.model === "veo-3.0-fast" ? "veo-3.0-fast" : "veo-3.0"),
+      });
+    } else if (DASHSCOPE_API_KEY) {
       videoUrl = await generateViaDashScope({
         prompt: finalPrompt,
         negative: body.negativePrompt || "",
         aspectRatio, resolution, duration,
         firstFrameUrl: body.firstFrameUrl || null,
-        modelChoice: body.model || "wan2.2-plus",
+        modelChoice: (body.model === "wan2.5-preview" ? "wan2.5-preview" : "wan2.2-plus"),
       });
     } else if (WAN_API_URL && WAN_API_KEY) {
       videoUrl = await generateViaWanApi({
@@ -348,6 +451,9 @@ Deno.serve(async (req) => {
         : Deno.env.get("FAL_API_KEY")
           ? "fal-wan-2.2"
           : "unconfigured";
+    const effectiveBackend = (body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast")
+      ? (GEMINI_API_KEY ? "google-veo-3" : "unconfigured-veo")
+      : backend;
 
     const { data: run, error: insErr } = await admin
       .from("wan_runs")
@@ -363,7 +469,7 @@ Deno.serve(async (req) => {
         last_frame_description: lastFrameDescription,
         motion: body.motion ?? {},
         mood: body.mood ?? {},
-        output: { ...(body.output ?? {}), backend, model: body.model || "wan2.2-plus" },
+        output: { ...(body.output ?? {}), backend: effectiveBackend, model: body.model || "wan2.2-plus" },
         negative_prompt: body.negativePrompt ?? null,
         style_strength: body.styleStrength ?? 60,
       })
