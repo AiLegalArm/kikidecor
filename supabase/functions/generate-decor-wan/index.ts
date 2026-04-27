@@ -334,13 +334,22 @@ async function runGeneration(
     const cameraFixed = !!out.cameraFixed;
 
     let videoUrl: string;
-    if (DASHSCOPE_API_KEY) {
+    const wantVeo = body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast";
+    if (wantVeo && GEMINI_API_KEY) {
+      videoUrl = await generateViaVeo({
+        prompt: finalPrompt,
+        negative: body.negativePrompt || "",
+        aspectRatio, duration,
+        firstFrameUrl: body.firstFrameUrl || null,
+        modelChoice: (body.model === "veo-3.0-fast" ? "veo-3.0-fast" : "veo-3.0"),
+      });
+    } else if (DASHSCOPE_API_KEY) {
       videoUrl = await generateViaDashScope({
         prompt: finalPrompt,
         negative: body.negativePrompt || "",
         aspectRatio, resolution, duration,
         firstFrameUrl: body.firstFrameUrl || null,
-        modelChoice: body.model || "wan2.2-plus",
+        modelChoice: (body.model === "wan2.5-preview" ? "wan2.5-preview" : "wan2.2-plus"),
       });
     } else if (WAN_API_URL && WAN_API_KEY) {
       videoUrl = await generateViaWanApi({
@@ -442,6 +451,9 @@ Deno.serve(async (req) => {
         : Deno.env.get("FAL_API_KEY")
           ? "fal-wan-2.2"
           : "unconfigured";
+    const effectiveBackend = (body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast")
+      ? (GEMINI_API_KEY ? "google-veo-3" : "unconfigured-veo")
+      : backend;
 
     const { data: run, error: insErr } = await admin
       .from("wan_runs")
@@ -457,7 +469,7 @@ Deno.serve(async (req) => {
         last_frame_description: lastFrameDescription,
         motion: body.motion ?? {},
         mood: body.mood ?? {},
-        output: { ...(body.output ?? {}), backend, model: body.model || "wan2.2-plus" },
+        output: { ...(body.output ?? {}), backend: effectiveBackend, model: body.model || "wan2.2-plus" },
         negative_prompt: body.negativePrompt ?? null,
         style_strength: body.styleStrength ?? 60,
       })
