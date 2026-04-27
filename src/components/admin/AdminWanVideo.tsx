@@ -346,12 +346,14 @@ const AdminWanVideo = () => {
             <Select value={model} onValueChange={(v: any) => setModel(v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
+                <SelectItem value="veo-3.0">Google Veo 3 · top quality</SelectItem>
+                <SelectItem value="veo-3.0-fast">Google Veo 3 Fast · быстрее</SelectItem>
                 <SelectItem value="wan2.2-plus">Wan 2.2 plus · stable</SelectItem>
                 <SelectItem value="wan2.5-preview">Wan 2.5 preview · newer</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-[10px] text-muted-foreground mt-1">
-              2.5 preview доступна не на всех аккаунтах DashScope — при ошибке переключитесь на 2.2.
+              Veo 3 (Google Gemini API) — премиум-качество, реальное видео из текста или первого кадра. Wan модели работают через DashScope.
             </p>
           </div>
 
