@@ -21,6 +21,7 @@ const WAN_API_KEY = Deno.env.get("WAN_API_KEY");
 const DASHSCOPE_API_KEY = Deno.env.get("DASHSCOPE_API_KEY");
 // International endpoint (Singapore). For mainland accounts switch host to dashscope.aliyuncs.com.
 const DASHSCOPE_HOST = Deno.env.get("DASHSCOPE_HOST") || "https://dashscope-intl.aliyuncs.com";
+const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
 
 type Body = {
   userPrompt: string;
@@ -34,7 +35,8 @@ type Body = {
   styleStrength?: number;
   firstFrameUrl?: string | null;
   lastFrameUrl?: string | null;
-  model?: "wan2.2-plus" | "wan2.5-preview";
+  model?: "wan2.2-plus" | "wan2.5-preview" | "veo-3.0" | "veo-3.0-fast";
+  provider?: "dashscope" | "veo";
 };
 
 async function describeLastFrame(imageUrl: string): Promise<string | null> {
