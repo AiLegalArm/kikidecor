@@ -112,13 +112,13 @@ const RunCard = ({
               {run.first_frame_url
                 ? <img src={run.first_frame_url} className="absolute inset-0 w-full h-full object-cover" alt="first" />
                 : <ImageIcon size={20} className="text-emerald-600/40" />}
-              <span className="absolute top-1 left-1 text-[9px] font-bold uppercase tracking-wider bg-emerald-600/90 text-white px-1.5 py-0.5 rounded">Start</span>
+              <span className="absolute top-1 left-1 text-[9px] font-bold uppercase tracking-wider bg-emerald-600/90 text-white px-1.5 py-0.5 rounded">Начало</span>
             </div>
             <div className="relative bg-amber-500/10 flex items-center justify-center">
               {run.last_frame_url
                 ? <img src={run.last_frame_url} className="absolute inset-0 w-full h-full object-cover" alt="last" />
                 : <ImageIcon size={20} className="text-amber-600/40" />}
-              <span className="absolute top-1 right-1 text-[9px] font-bold uppercase tracking-wider bg-amber-600/90 text-white px-1.5 py-0.5 rounded">End</span>
+              <span className="absolute top-1 right-1 text-[9px] font-bold uppercase tracking-wider bg-amber-600/90 text-white px-1.5 py-0.5 rounded">Конец</span>
             </div>
           </div>
         )}
@@ -184,7 +184,7 @@ const RunCard = ({
               <Eye size={11} className="mr-1" />Детали
             </Button>
             <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => onRerun(run)}>
-              <RefreshCw size={11} className="mr-1" />Re-run
+              <RefreshCw size={11} className="mr-1" />Повторить
             </Button>
           </div>
         </div>
@@ -249,7 +249,7 @@ const WanHistory = ({
         <div>
           <h3 className="font-display text-xl font-light flex items-center gap-2">
             <Clock size={18} className="text-primary" />
-            Generation History
+            История генераций
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             {runs.length} {runs.length === 1 ? "генерация" : "генераций"} · повторите любой сетап в один клик
@@ -286,7 +286,7 @@ const WanHistory = ({
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Поиск по промпту или пресету"
+            placeholder="Поиск по промпту или стилю"
             className="pl-8 h-9 text-xs"
           />
         </div>
@@ -412,13 +412,13 @@ const WanHistory = ({
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">First Frame</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Первый кадр</p>
                     {detail.first_frame_url
                       ? <img src={detail.first_frame_url} className="aspect-video w-full object-cover rounded border" alt="" />
                       : <div className="aspect-video w-full bg-muted rounded border flex items-center justify-center text-[10px] text-muted-foreground">Нет</div>}
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Last Frame</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Последний кадр</p>
                     {detail.last_frame_url
                       ? <img src={detail.last_frame_url} className="aspect-video w-full object-cover rounded border" alt="" />
                       : <div className="aspect-video w-full bg-muted rounded border flex items-center justify-center text-[10px] text-muted-foreground">Нет</div>}
@@ -427,26 +427,26 @@ const WanHistory = ({
 
                 {detail.last_frame_description && (
                   <div>
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Vision Analysis</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Vision-анализ</p>
                     <p className="text-xs leading-relaxed bg-muted/40 p-3 rounded">{detail.last_frame_description}</p>
                   </div>
                 )}
 
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">User Prompt</p>
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Промпт пользователя</p>
                   <p className="text-sm bg-muted/40 p-3 rounded">{detail.user_prompt}</p>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-                  <div className="p-2 border rounded"><div className="text-muted-foreground">Preset</div><div className="font-semibold truncate">{detail.preset_name || "—"}</div></div>
-                  <div className="p-2 border rounded"><div className="text-muted-foreground">Camera</div><div className="font-semibold truncate">{detail.motion?.cameraId || "—"}</div></div>
-                  <div className="p-2 border rounded"><div className="text-muted-foreground">Mood</div><div className="font-semibold truncate">{detail.mood?.toneId || "—"}</div></div>
-                  <div className="p-2 border rounded"><div className="text-muted-foreground">Output</div><div className="font-semibold truncate">{detail.output?.duration}s · {detail.output?.aspectRatio}</div></div>
+                  <div className="p-2 border rounded"><div className="text-muted-foreground">Стиль</div><div className="font-semibold truncate">{detail.preset_name || "—"}</div></div>
+                  <div className="p-2 border rounded"><div className="text-muted-foreground">Камера</div><div className="font-semibold truncate">{detail.motion?.cameraId || "—"}</div></div>
+                  <div className="p-2 border rounded"><div className="text-muted-foreground">Настроение</div><div className="font-semibold truncate">{detail.mood?.toneId || "—"}</div></div>
+                  <div className="p-2 border rounded"><div className="text-muted-foreground">Вывод</div><div className="font-semibold truncate">{detail.output?.duration}с · {detail.output?.aspectRatio}</div></div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Compiled Prompt</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Собранный промпт</p>
                     <button
                       onClick={() => { navigator.clipboard.writeText(detail.compiled_prompt); toast.success("Скопировано"); }}
                       className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1"
@@ -461,7 +461,7 @@ const WanHistory = ({
 
                 <div className="flex gap-2 pt-2 border-t">
                   <Button onClick={() => { handleRerun(detail); setDetail(null); }} className="flex-1">
-                    <RefreshCw size={13} className="mr-2" />Restore setup & edit
+                    <RefreshCw size={13} className="mr-2" />Восстановить и редактировать
                   </Button>
                   <Button variant="outline" onClick={() => setDetail(null)}>
                     <X size={13} className="mr-1" />Закрыть
