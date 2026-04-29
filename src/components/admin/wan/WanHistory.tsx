@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import {
   Clock, RefreshCw, Copy, Check, X, Loader2, AlertCircle, Eye, Film,
   Calendar, Sparkles, Camera, Sun, Image as ImageIcon, Search,
+  Play, Download, ExternalLink, Link2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -86,18 +87,22 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const RunCard = ({
-  run, onRerun, onView,
+  run, onRerun, onView, onPlay,
 }: {
   run: WanRun;
   onRerun: (r: WanRun) => void;
   onView: (r: WanRun) => void;
+  onPlay: (r: WanRun) => void;
 }) => {
   const motionLabel = run.motion?.cameraId || "—";
   const moodLabel = run.mood?.toneId || "—";
   return (
     <div className="group relative rounded-xl border bg-card hover:border-primary/40 transition overflow-hidden">
       {/* Frames strip */}
-      <div className="relative aspect-video bg-muted overflow-hidden">
+      <div
+        className="relative aspect-video bg-muted overflow-hidden cursor-pointer"
+        onClick={() => run.video_url && onPlay(run)}
+      >
         {run.video_url ? (
           <video src={run.video_url} className="w-full h-full object-cover" muted loop playsInline
             onMouseEnter={(e) => e.currentTarget.play()} onMouseLeave={(e) => e.currentTarget.pause()} />
@@ -119,9 +124,36 @@ const RunCard = ({
         )}
         <div className="absolute top-2 right-2"><StatusBadge status={run.status} /></div>
         {run.video_url && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition">
-            <Film size={28} className="text-white drop-shadow" />
-          </div>
+          <>
+            {/* Always-visible Play button */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-14 h-14 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                <Play size={26} className="text-white ml-1" fill="currentColor" />
+              </div>
+            </div>
+            {/* Quick action buttons (top-left) */}
+            <div className="absolute top-2 left-2 flex gap-1">
+              <a
+                href={run.video_url}
+                download={`kiki-video-${run.id}.mp4`}
+                onClick={(e) => e.stopPropagation()}
+                title="Скачать MP4"
+                className="w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition"
+              >
+                <Download size={13} />
+              </a>
+              <a
+                href={run.video_url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                title="Открыть в новой вкладке"
+                className="w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition"
+              >
+                <ExternalLink size={12} />
+              </a>
+            </div>
+          </>
         )}
       </div>
 
@@ -143,10 +175,15 @@ const RunCard = ({
             <Clock size={10} />{formatRelative(run.created_at)}
           </span>
           <div className="flex gap-1">
+            {run.video_url && (
+              <Button size="sm" variant="default" className="h-7 px-2 text-[10px]" onClick={() => onPlay(run)}>
+                <Play size={11} className="mr-1" fill="currentColor" />Смотреть
+              </Button>
+            )}
             <Button size="sm" variant="ghost" className="h-7 px-2 text-[10px]" onClick={() => onView(run)}>
               <Eye size={11} className="mr-1" />Детали
             </Button>
-            <Button size="sm" variant="default" className="h-7 px-2 text-[10px]" onClick={() => onRerun(run)}>
+            <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => onRerun(run)}>
               <RefreshCw size={11} className="mr-1" />Re-run
             </Button>
           </div>
@@ -167,6 +204,7 @@ const WanHistory = ({
   const [filter, setFilter] = useState<string>("all");
   const [query, setQuery] = useState("");
   const [detail, setDetail] = useState<WanRun | null>(null);
+  const [playing, setPlaying] = useState<WanRun | null>(null);
 
   const filtered = useMemo(() => {
     return runs.filter((r) => {
@@ -277,12 +315,58 @@ const WanHistory = ({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {items.map((run) => (
-                <RunCard key={run.id} run={run} onRerun={handleRerun} onView={setDetail} />
+                <RunCard key={run.id} run={run} onRerun={handleRerun} onView={setDetail} onPlay={setPlaying} />
               ))}
             </div>
           </div>
         ))}
       </div>
+
+      {/* Player dialog */}
+      <Dialog open={!!playing} onOpenChange={(o) => !o && setPlaying(null)}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-black border-0">
+          {playing?.video_url && (
+            <div className="space-y-0">
+              <video
+                src={playing.video_url}
+                controls
+                autoPlay
+                playsInline
+                className="w-full max-h-[75vh] bg-black"
+              />
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-background border-t">
+                <p className="text-xs text-muted-foreground line-clamp-1 flex-1 min-w-0">
+                  {playing.user_prompt || "—"}
+                </p>
+                <div className="flex gap-2">
+                  <a
+                    href={playing.video_url}
+                    download={`kiki-video-${playing.id}.mp4`}
+                    className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
+                  >
+                    <Download size={13} />Скачать MP4
+                  </a>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(playing.video_url!);
+                      toast.success("Ссылка скопирована");
+                    }}
+                    className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border text-xs font-medium hover:bg-muted transition"
+                  >
+                    <Link2 size={13} />Копировать ссылку
+                  </button>
+                  <button
+                    onClick={() => setPlaying(null)}
+                    className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border text-xs font-medium hover:bg-muted transition"
+                  >
+                    <X size={13} />Закрыть
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Detail dialog */}
       <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
@@ -304,6 +388,25 @@ const WanHistory = ({
                 {detail.error_message && (
                   <div className="p-3 bg-destructive/10 border border-destructive/30 rounded text-xs text-destructive">
                     <strong>Ошибка:</strong> {detail.error_message}
+                  </div>
+                )}
+
+                {detail.video_url && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Видео</p>
+                    <video
+                      src={detail.video_url}
+                      controls
+                      playsInline
+                      className="w-full rounded border bg-black aspect-video"
+                    />
+                    <a
+                      href={detail.video_url}
+                      download={`kiki-video-${detail.id}.mp4`}
+                      className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
+                    >
+                      <Download size={13} />Скачать MP4
+                    </a>
                   </div>
                 )}
 
