@@ -38,3 +38,6 @@ verify_jwt = true
 
 [functions.ai-provider-test]
 verify_jwt = true
+
+[functions.concierge-send]
+verify_jwt = true
