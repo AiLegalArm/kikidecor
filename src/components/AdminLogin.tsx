@@ -7,7 +7,6 @@ const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState<"login" | "signup">("login");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,25 +16,10 @@ const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
     }
 
     setLoading(true);
-    if (mode === "login") {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      setLoading(false);
-      if (error) toast.error("Неверный email или пароль");
-      else onLogin();
-    } else {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/admin` },
-      });
-      setLoading(false);
-      if (error) {
-        toast.error(error.message);
-      } else {
-        toast.success("Аккаунт создан. Проверьте почту для подтверждения email.");
-        setMode("login");
-      }
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) toast.error("Неверный email или пароль");
+    else onLogin();
   };
 
   return (
@@ -168,27 +152,9 @@ const AdminLogin = ({ onLogin }: {onLogin: () => void;}) => {
             onMouseLeave={(e) => { if (!loading) { (e.target as HTMLElement).style.background = "#000000"; (e.target as HTMLElement).style.transform = "translateY(0)"; } }}
           >
             <LogIn size={16} />
-            {loading ? (mode === "login" ? "Вхожу..." : "Создаю...") : (mode === "login" ? "Войти" : "Создать аккаунт")}
+            {loading ? "Вхожу..." : "Войти"}
           </button>
         </form>
-
-        <button
-          type="button"
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          style={{
-            marginTop: "16px",
-            width: "100%",
-            background: "transparent",
-            border: "none",
-            color: "#7C3AED",
-            fontSize: "0.8125rem",
-            fontWeight: 500,
-            cursor: "pointer",
-            padding: "8px",
-          }}
-        >
-          {mode === "login" ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти"}
-        </button>
 
         <p style={{ marginTop: "24px", textAlign: "center", fontSize: "0.75rem", color: "#999999", fontWeight: 400 }}>
           Ki Ki Decor · Панель управления
