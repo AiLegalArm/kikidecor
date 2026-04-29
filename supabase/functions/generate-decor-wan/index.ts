@@ -332,7 +332,8 @@ async function runGeneration(
     const out = body.output || {};
     const aspectRatio = (out.aspectRatio as string) || "16:9";
     const resolution = (out.resolution as string) || "1080p";
-    const duration = Number(out.duration) === 10 ? 10 : 5;
+    const rawDur = Number(out.duration) || 5;
+    const duration = Math.min(8, Math.max(5, Math.round(rawDur)));
     const cameraFixed = !!out.cameraFixed;
 
     let videoUrl: string;
