@@ -101,12 +101,12 @@ const AdminPackages = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="min-w-0">
           <h2 className="text-2xl font-display">Пакеты услуг</h2>
           <p className="text-sm text-muted-foreground">Цены, состав и порядок отображения на странице /packages.</p>
         </div>
-        <Button onClick={create}><Plus size={16} className="mr-2" /> Добавить пакет</Button>
+        <Button onClick={create} className="w-full sm:w-auto shrink-0"><Plus size={16} className="mr-2" /> Добавить пакет</Button>
       </div>
 
       {items.length === 0 && (

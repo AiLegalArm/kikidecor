@@ -216,12 +216,12 @@ export default function AdminWorks() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div className="min-w-0">
           <h2 className="text-2xl font-bold text-foreground">Работы</h2>
           <p className="text-sm text-muted-foreground mt-1">Управление портфолио — обложки, галерея, категории, теги</p>
         </div>
-        <Button onClick={openCreate} className="gap-2">
+        <Button onClick={openCreate} className="gap-2 w-full sm:w-auto shrink-0">
           <Plus size={16} /> Добавить работу
         </Button>
       </div>

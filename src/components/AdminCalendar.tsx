@@ -222,12 +222,12 @@ const AdminCalendar = ({ onLeadUpdated }: AdminCalendarProps) => {
 
   return (
     <div className="bg-background border border-border p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div className="flex items-center gap-3 min-w-0">
           <CalendarDays size={22} strokeWidth={1.5} className="text-primary" />
-          <h2 className="font-display text-xl font-light">Календарь мероприятий</h2>
+          <h2 className="font-display text-xl font-light truncate">Календарь мероприятий</h2>
         </div>
-        <div className="flex items-center gap-0 border border-border">
+        <div className="flex items-center gap-0 border border-border overflow-x-auto self-start sm:self-auto">
           {([
             { value: "all", label: "Все" },
             { value: "decor", label: "Декор" },
