@@ -164,9 +164,11 @@ async function generateViaDashScope(opts: {
   if (opts.negative) input.negative_prompt = opts.negative;
   if (useImage) input.img_url = opts.firstFrameUrl;
 
+  // DashScope Wan supports 5s natively; clamp others to 5 (closest supported value).
+  const clampedDuration = Math.min(8, Math.max(5, Math.round(opts.duration || 5)));
   const parameters: Record<string, unknown> = {
     size,
-    duration: opts.duration === 10 ? 10 : 5,
+    duration: clampedDuration,
     prompt_extend: true,
   };
 
