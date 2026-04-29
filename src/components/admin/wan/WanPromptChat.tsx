@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Bot, Send, Sparkles, User, Copy, Wand2, Loader2, X, Lightbulb, Film, Image as ImageIcon } from "lucide-react";
+import { Bot, Send, Sparkles, User, Copy, Wand2, Loader2, X, Lightbulb, Film, Image as ImageIcon, MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -75,6 +75,7 @@ const WanPromptChat = ({
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [refineBase, setRefineBase] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -87,12 +88,14 @@ const WanPromptChat = ({
     setMessages([{ role: "assistant", content: MODE_META[next].greeting }]);
   };
 
-  const send = async (text: string) => {
+  const send = async (text: string, opts?: { refineOf?: string }) => {
     if (!text.trim() || loading) return;
     const userMsg: Msg = { role: "user", content: text.trim() };
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setLoading(true);
+    const isRefine = !!opts?.refineOf || !!refineBase;
+    const baseForRefine = opts?.refineOf || refineBase;
 
     let assistantSoFar = "";
     const upsert = (chunk: string) => {
@@ -113,6 +116,16 @@ const WanPromptChat = ({
       if (!token) throw new Error("Нет сессии — войдите заново");
 
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wan-prompt-assistant`;
+      const outboundMessages = isRefine && baseForRefine
+        ? [
+            {
+              role: "system" as const,
+              content: `Исходный промпт, который нужно усилить, не меняя сцену:\n\`\`\`prompt\n${baseForRefine}\n\`\`\``,
+            },
+            ...[...messages, userMsg].map((m) => ({ role: m.role, content: m.content })),
+          ]
+        : [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
+
       const resp = await fetch(url, {
         method: "POST",
         headers: {
@@ -120,9 +133,9 @@ const WanPromptChat = ({
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          messages: [...messages, userMsg].map((m) => ({ role: m.role, content: m.content })),
+          messages: outboundMessages,
           context,
-          mode,
+          mode: isRefine ? "refine" : mode,
         }),
       });
 
@@ -163,7 +176,32 @@ const WanPromptChat = ({
       setMessages((m) => [...m, { role: "assistant", content: `❌ ${e.message || "Ошибка"}` }]);
     } finally {
       setLoading(false);
+      // если ответ содержал новый промпт-блок — выходим из режима refine
+      if (isRefine) {
+        setTimeout(() => {
+          setMessages((curr) => {
+            const last = curr[curr.length - 1];
+            if (last?.role === "assistant" && /```(?:prompt)?/i.test(last.content)) {
+              setRefineBase(null);
+            }
+            return curr;
+          });
+        }, 0);
+      }
     }
+  };
+
+  const startRefine = (basePrompt: string) => {
+    setRefineBase(basePrompt);
+    setMessages((m) => [
+      ...m,
+      {
+        role: "assistant",
+        content: "🔍 Уточняем сцену. Задам один короткий вопрос — ответь, и я усилю промпт, не меняя локацию.",
+      },
+    ]);
+    // отправим триггер ассистенту чтобы он задал 1 вопрос
+    void send("Задай мне один короткий уточняющий вопрос по этой сцене.", { refineOf: basePrompt });
   };
 
   if (!open) {
@@ -276,6 +314,18 @@ const WanPromptChat = ({
                         {mode === "video" ? "" : "Копировать"}
                       </Button>
                     </div>
+                    {mode === "video" && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className="h-7 text-[10px] w-full"
+                        disabled={loading || refineBase === promptBlock}
+                        onClick={() => startRefine(promptBlock)}
+                      >
+                        <MessageCircleQuestion size={11} className="mr-1" />
+                        Уточнить сцену
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
