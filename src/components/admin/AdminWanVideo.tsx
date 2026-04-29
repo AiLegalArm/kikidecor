@@ -17,6 +17,7 @@ import {
 } from "@/lib/decorPresets";
 import { cn } from "@/lib/utils";
 import WanHistory, { type WanRun, type WanSetup } from "./wan/WanHistory";
+import WanPromptChat from "./wan/WanPromptChat";
 
 type FrameKind = "first" | "last";
 
@@ -505,6 +506,22 @@ const AdminWanVideo = () => {
           onRerun={(setup) => restoreSetup(setup)}
         />
       </div>
+
+      {/* Floating AI prompt assistant */}
+      <WanPromptChat
+        onApplyPrompt={(p) => {
+          setUserPrompt(p);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        context={{
+          presetId,
+          motion,
+          mood,
+          output,
+          model,
+          currentPrompt: userPrompt,
+        }}
+      />
     </div>
   );
 };
