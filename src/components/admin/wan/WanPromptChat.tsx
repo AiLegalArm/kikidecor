@@ -1,22 +1,64 @@
 import { useEffect, useRef, useState } from "react";
-import { Bot, Send, Sparkles, User, Copy, Wand2, Loader2, X } from "lucide-react";
+import { Bot, Send, Sparkles, User, Copy, Wand2, Loader2, X, Lightbulb, Film, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type Msg = { role: "user" | "assistant"; content: string };
+type Mode = "ideas" | "video" | "image";
 
-const QUICK_IDEAS = [
-  "Свадебная арка из белых пионов в солнечном зале",
-  "Камерный ужин при свечах, тёплое золото",
-  "Минималистичная инсталляция на восходе",
-  "Цветочный потолок над банкетным столом",
-];
+const MODE_META: Record<Mode, { label: string; icon: any; hint: string; greeting: string; quick: string[] }> = {
+  ideas: {
+    label: "Идеи",
+    icon: Lightbulb,
+    hint: "Креативные концепции для съёмок и проектов",
+    greeting:
+      "💡 Режим **Идеи**. Опиши контекст (свадьба / съёмка / Instagram-серия / инсталляция), а я выдам 3–5 свежих editorial-концепций с локацией, декором и палитрой.",
+    quick: [
+      "5 идей для зимней свадьбы в стиле quiet luxury",
+      "Идеи Instagram-серии о цветочных арках",
+      "Концепции для премиум welcome-зоны",
+    ],
+  },
+  video: {
+    label: "Видео",
+    icon: Film,
+    hint: "Кинематографичные промпты для Veo / Wan",
+    greeting:
+      "🎬 Режим **Видео-промпты**. Опиши сцену на русском — я соберу готовый английский промпт для Veo 3 / Wan 2.5 (5–8 сек, движение камеры, свет, атмосфера).",
+    quick: [
+      "Свадебная арка из белых пионов в солнечном зале",
+      "Камерный ужин при свечах, тёплое золото",
+      "Цветочный потолок над банкетным столом",
+    ],
+  },
+  image: {
+    label: "Изображения",
+    icon: ImageIcon,
+    hint: "Фотореалистичные интерьерные промпты (5–8 вариаций)",
+    greeting:
+      "🖼 Режим **Изображения**. Назови интерьер/сцену — я задам 3 коротких вопроса (стиль / свет / назначение) и выдам 5–8 премиум вариаций промптов в стиле Architectural Digest.",
+    quick: [
+      "luxury bedroom",
+      "minimalist kitchen",
+      "modern living room",
+      "contemporary office lounge",
+    ],
+  },
+};
 
 const extractPromptBlock = (text: string): string | null => {
   const m = text.match(/```(?:prompt)?\s*\n([\s\S]*?)```/i);
   return m ? m[1].trim() : null;
+};
+
+const extractAllPromptBlocks = (text: string): string[] => {
+  const out: string[] = [];
+  const re = /```(?:prompt)?\s*\n([\s\S]*?)```/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) out.push(m[1].trim());
+  return out;
 };
 
 const WanPromptChat = ({
@@ -27,12 +69,9 @@ const WanPromptChat = ({
   context?: Record<string, unknown>;
 }) => {
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<Mode>("video");
   const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "assistant",
-      content:
-        "Привет 👋 Я помогу собрать кинематографичный промпт для видео-генератора. Опиши идею на русском — я выдам готовый английский промпт + объясню решение. Можно начать с одной из кнопок ниже.",
-    },
+    { role: "assistant", content: MODE_META.video.greeting },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,6 +80,12 @@ const WanPromptChat = ({
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
+
+  const switchMode = (next: Mode) => {
+    if (next === mode) return;
+    setMode(next);
+    setMessages([{ role: "assistant", content: MODE_META[next].greeting }]);
+  };
 
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
@@ -77,6 +122,7 @@ const WanPromptChat = ({
         body: JSON.stringify({
           messages: [...messages, userMsg].map((m) => ({ role: m.role, content: m.content })),
           context,
+          mode,
         }),
       });
 
@@ -134,6 +180,8 @@ const WanPromptChat = ({
     );
   }
 
+  const meta = MODE_META[mode];
+
   return (
     <div className="fixed bottom-6 right-6 z-40 w-[min(420px,calc(100vw-2rem))] h-[min(620px,calc(100vh-3rem))] bg-card border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
       {/* Header */}
@@ -143,8 +191,8 @@ const WanPromptChat = ({
             <Sparkles size={15} />
           </div>
           <div>
-            <p className="text-sm font-semibold leading-tight">AI Помощник по промптам</p>
-            <p className="text-[10px] text-muted-foreground">Вео · Wan · Editorial Luxury</p>
+            <p className="text-sm font-semibold leading-tight">AI Помощник KiKi</p>
+            <p className="text-[10px] text-muted-foreground">{meta.hint}</p>
           </div>
         </div>
         <button onClick={() => setOpen(false)} className="w-7 h-7 rounded hover:bg-muted flex items-center justify-center">
@@ -152,11 +200,37 @@ const WanPromptChat = ({
         </button>
       </div>
 
+      {/* Mode switcher */}
+      <div className="flex gap-1 p-2 border-b bg-muted/30">
+        {(Object.keys(MODE_META) as Mode[]).map((k) => {
+          const M = MODE_META[k];
+          const Icon = M.icon;
+          const active = k === mode;
+          return (
+            <button
+              key={k}
+              onClick={() => switchMode(k)}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-1.5 h-8 rounded-md text-[11px] font-semibold transition",
+                active
+                  ? "bg-primary text-primary-foreground shadow"
+                  : "bg-background text-muted-foreground hover:text-foreground border"
+              )}
+            >
+              <Icon size={12} />
+              {M.label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3">
         {messages.map((m, i) => {
-          const promptBlock = m.role === "assistant" ? extractPromptBlock(m.content) : null;
-          const visibleText = promptBlock ? m.content.replace(/```(?:prompt)?\s*\n[\s\S]*?```/i, "").trim() : m.content;
+          const blocks = m.role === "assistant" ? extractAllPromptBlocks(m.content) : [];
+          const visibleText = blocks.length
+            ? m.content.replace(/```(?:prompt)?\s*\n[\s\S]*?```/gi, "").trim()
+            : m.content;
           return (
             <div key={i} className={cn("flex gap-2", m.role === "user" && "flex-row-reverse")}>
               <div className={cn(
@@ -174,33 +248,36 @@ const WanPromptChat = ({
                     {visibleText}
                   </div>
                 )}
-                {promptBlock && (
-                  <div className="border border-primary/40 rounded-xl bg-primary/5 p-2.5 space-y-2">
+                {blocks.map((promptBlock, bi) => (
+                  <div key={bi} className="border border-primary/40 rounded-xl bg-primary/5 p-2.5 space-y-2">
                     <p className="text-[9px] uppercase tracking-wider font-bold text-primary flex items-center gap-1">
-                      <Sparkles size={10} /> Готовый промпт
+                      <Sparkles size={10} /> Промпт {blocks.length > 1 ? `#${bi + 1}` : ""}
                     </p>
                     <p className="text-[11px] font-mono leading-relaxed text-foreground/90 whitespace-pre-wrap">
                       {promptBlock}
                     </p>
                     <div className="flex gap-1">
+                      {mode === "video" && (
+                        <Button
+                          size="sm"
+                          className="h-7 text-[10px] flex-1"
+                          onClick={() => { onApplyPrompt(promptBlock); toast.success("Промпт вставлен в форму"); }}
+                        >
+                          <Wand2 size={11} className="mr-1" />Использовать
+                        </Button>
+                      )}
                       <Button
                         size="sm"
-                        className="h-7 text-[10px] flex-1"
-                        onClick={() => { onApplyPrompt(promptBlock); toast.success("Промпт вставлен в форму"); }}
-                      >
-                        <Wand2 size={11} className="mr-1" />Использовать
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-7 text-[10px]"
+                        variant={mode === "video" ? "outline" : "default"}
+                        className={cn("h-7 text-[10px]", mode !== "video" && "flex-1")}
                         onClick={() => { navigator.clipboard.writeText(promptBlock); toast.success("Скопировано"); }}
                       >
-                        <Copy size={11} />
+                        <Copy size={11} className="mr-1" />
+                        {mode === "video" ? "" : "Копировать"}
                       </Button>
                     </div>
                   </div>
-                )}
+                ))}
               </div>
             </div>
           );
@@ -221,7 +298,7 @@ const WanPromptChat = ({
       {/* Quick ideas */}
       {messages.length <= 1 && (
         <div className="px-3 pb-2 flex flex-wrap gap-1.5">
-          {QUICK_IDEAS.map((q) => (
+          {meta.quick.map((q) => (
             <button
               key={q}
               onClick={() => send(q)}
@@ -244,7 +321,11 @@ const WanPromptChat = ({
               send(input);
             }
           }}
-          placeholder="Опиши сцену или попроси улучшить промпт…"
+          placeholder={
+            mode === "ideas" ? "Опиши контекст для идей…" :
+            mode === "image" ? "Назови интерьер (например: luxury bedroom)…" :
+            "Опиши сцену или попроси улучшить промпт…"
+          }
           rows={1}
           className="resize-none min-h-[40px] max-h-32 text-xs"
         />
