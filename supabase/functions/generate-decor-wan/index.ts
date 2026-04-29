@@ -256,7 +256,7 @@ async function generateViaVeo(opts: {
     aspectRatio: ar,
     personGeneration: "allow_all",
     numberOfVideos: 1,
-    durationSeconds: opts.duration === 10 ? 8 : Math.min(8, Math.max(4, opts.duration)),
+    durationSeconds: Math.min(8, Math.max(5, opts.duration || 5)),
   };
   if (opts.negative) parameters.negativePrompt = opts.negative;
 
