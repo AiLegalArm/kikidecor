@@ -11,6 +11,26 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
+const downloadVideo = async (url: string, filename: string) => {
+  try {
+    toast.loading("Скачиваю…", { id: `dl-${filename}` });
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const blob = await resp.blob();
+    const objUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(objUrl), 1000);
+    toast.success("Файл скачан", { id: `dl-${filename}` });
+  } catch (e: any) {
+    toast.error(`Не удалось скачать: ${e.message || "ошибка"}`, { id: `dl-${filename}` });
+  }
+};
+
 export type WanRun = {
   id: string;
   created_at: string;
