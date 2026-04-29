@@ -165,9 +165,9 @@ const AdminAnalytics = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h2 className="font-display text-2xl font-light">Аналитика</h2>
-        <div className="flex items-center gap-0 border border-border">
+        <div className="flex items-center gap-0 border border-border overflow-x-auto self-start sm:self-auto">
           {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
             <button
               key={p}

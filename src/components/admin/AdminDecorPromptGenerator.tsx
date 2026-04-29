@@ -21,15 +21,15 @@ import { CLIENT_PRESETS, type ClientPreset } from "@/data/decorPresets";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const PRESET_HINTS = [
-  "1 — Modern luxury",
-  "2 — Quiet luxury",
-  "5 — Japandi",
-  "19 — Ivory & champagne",
-  "82 — Christmas premium",
-  "88 — Wedding white floral",
-  "92 — Floral arch premium",
-  "117 — Couture brand event",
-  "184 — Candlelight romance",
+  "1 — Современная роскошь",
+  "2 — Тихая роскошь",
+  "5 — Джапанди",
+  "19 — Слоновая кость и шампань",
+  "82 — Рождество премиум",
+  "88 — Свадебный белый флор",
+  "92 — Цветочная арка премиум",
+  "117 — Кутюрное брендовое событие",
+  "184 — Свечная романтика",
 ];
 
 export default function AdminDecorPromptGenerator() {
