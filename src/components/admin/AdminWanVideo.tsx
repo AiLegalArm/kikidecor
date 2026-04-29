@@ -379,13 +379,23 @@ const AdminWanVideo = () => {
             </div>
             <div>
               <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Duration</Label>
-              <Select value={String(output.duration)} onValueChange={(v) => setOutput({ ...output, duration: Number(v) as 5 | 10 })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="5">5s</SelectItem>
-                  <SelectItem value="10">10s</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-4 gap-1">
+                {([5, 6, 7, 8] as const).map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => setOutput({ ...output, duration: d })}
+                    className={cn(
+                      "h-9 rounded-md border text-xs font-medium transition",
+                      output.duration === d
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background hover:border-foreground/40"
+                    )}
+                  >
+                    {d}s
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
