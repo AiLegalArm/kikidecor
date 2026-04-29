@@ -164,9 +164,11 @@ async function generateViaDashScope(opts: {
   if (opts.negative) input.negative_prompt = opts.negative;
   if (useImage) input.img_url = opts.firstFrameUrl;
 
+  // DashScope Wan supports 5s natively; clamp others to 5 (closest supported value).
+  const clampedDuration = Math.min(8, Math.max(5, Math.round(opts.duration || 5)));
   const parameters: Record<string, unknown> = {
     size,
-    duration: opts.duration === 10 ? 10 : 5,
+    duration: clampedDuration,
     prompt_extend: true,
   };
 
@@ -254,7 +256,7 @@ async function generateViaVeo(opts: {
     aspectRatio: ar,
     personGeneration: "allow_all",
     numberOfVideos: 1,
-    durationSeconds: opts.duration === 10 ? 8 : Math.min(8, Math.max(4, opts.duration)),
+    durationSeconds: Math.min(8, Math.max(5, opts.duration || 5)),
   };
   if (opts.negative) parameters.negativePrompt = opts.negative;
 
@@ -330,7 +332,8 @@ async function runGeneration(
     const out = body.output || {};
     const aspectRatio = (out.aspectRatio as string) || "16:9";
     const resolution = (out.resolution as string) || "1080p";
-    const duration = Number(out.duration) === 10 ? 10 : 5;
+    const rawDur = Number(out.duration) || 5;
+    const duration = Math.min(8, Math.max(5, Math.round(rawDur)));
     const cameraFixed = !!out.cameraFixed;
 
     let videoUrl: string;

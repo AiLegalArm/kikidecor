@@ -256,7 +256,7 @@ export type MoodState = {
 export type OutputState = {
   resolution: "480p" | "1080p";
   aspectRatio: "16:9" | "9:16" | "1:1" | "4:3" | "3:4" | "21:9";
-  duration: 5 | 10;
+  duration: 5 | 6 | 7 | 8;
   cameraFixed: boolean;
 };
 
