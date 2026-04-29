@@ -40,11 +40,11 @@ const FramePicker = ({
       <div className="flex items-center justify-between">
         <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold flex items-center gap-2">
           <span className={cn("w-2 h-2 rounded-full", isFirst ? "bg-emerald-500" : "bg-amber-500")} />
-          {isFirst ? "First Frame · START" : "Last Frame · END"}
+          {isFirst ? "Первый кадр · НАЧАЛО" : "Последний кадр · КОНЕЦ"}
         </Label>
         {(file || url) && (
           <button onClick={onClear} className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1">
-            <X size={12} /> Remove
+            <X size={12} /> Удалить
           </button>
         )}
       </div>
@@ -66,15 +66,15 @@ const FramePicker = ({
             <img src={preview} alt={kind} className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition flex items-end justify-end p-2 gap-2">
               <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}>
-                <RefreshCw size={12} className="mr-1" /> Replace
+                <RefreshCw size={12} className="mr-1" /> Заменить
               </Button>
             </div>
           </>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-muted-foreground">
             <Upload size={20} />
-            <span className="text-xs">Click or drop image</span>
-            <span className="text-[10px] opacity-70">{isFirst ? "Where the video begins" : "Target ending composition"}</span>
+            <span className="text-xs">Нажмите или перетащите изображение</span>
+            <span className="text-[10px] opacity-70">{isFirst ? "Начало видео" : "Целевая финальная композиция"}</span>
           </div>
         )}
       </div>
@@ -263,10 +263,10 @@ const AdminWanVideo = () => {
           <div className="flex items-center gap-2 mb-1">
             <Film size={20} className="text-primary" />
             <h2 className="font-display text-2xl font-light">AI Видео</h2>
-            <span className="text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 bg-primary/10 text-primary rounded">Beta</span>
+            <span className="text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 bg-primary/10 text-primary rounded">Бета</span>
           </div>
           <p className="text-sm text-muted-foreground max-w-xl">
-            Премиум-генератор декор-видео (на движке DashScope WAN). First Frame задаёт начало ролика, Last Frame используется как смысловой ориентир конечной композиции.
+            Премиум-генератор декор-видео (на движках DashScope WAN и Google Veo 3). Первый кадр задаёт начало ролика, Последний кадр используется как смысловой ориентир конечной композиции.
           </p>
         </div>
       </div>
@@ -276,19 +276,19 @@ const AdminWanVideo = () => {
         <div className="lg:col-span-2 space-y-5">
           {/* Prompt */}
           <div className="space-y-2">
-            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Main Prompt</Label>
+            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Основной промпт</Label>
             <Textarea
               rows={4}
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
-              placeholder="e.g. Wedding ceremony arch in a sunlit hall with cascading florals…"
+              placeholder="напр. Свадебная арка в солнечном зале с каскадом цветов…"
               className="resize-none"
             />
           </div>
 
           {/* Preset carousel */}
           <div className="space-y-2">
-            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Decor Preset · 20</Label>
+            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Стиль декора · 20</Label>
             <div className="flex gap-3 overflow-x-auto pb-3 snap-x -mx-1 px-1">
               {DECOR_PRESETS.map((p) => (
                 <PresetCard key={p.id} preset={p} active={p.id === presetId} onClick={() => setPresetId(p.id)} />
@@ -299,7 +299,7 @@ const AdminWanVideo = () => {
           {/* Motion */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Camera</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Камера</Label>
               <Select value={motion.cameraId} onValueChange={(v) => setMotion({ ...motion, cameraId: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -308,7 +308,7 @@ const AdminWanVideo = () => {
               </Select>
             </div>
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Speed</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Скорость</Label>
               <Select value={motion.speed} onValueChange={(v: any) => setMotion({ ...motion, speed: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -321,7 +321,7 @@ const AdminWanVideo = () => {
           {/* Mood */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Mood</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Настроение</Label>
               <Select value={mood.toneId} onValueChange={(v) => setMood({ ...mood, toneId: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -330,7 +330,7 @@ const AdminWanVideo = () => {
               </Select>
             </div>
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Lighting</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Освещение</Label>
               <Select value={mood.lightingId} onValueChange={(v) => setMood({ ...mood, lightingId: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -342,24 +342,24 @@ const AdminWanVideo = () => {
 
           {/* Output */}
           <div>
-            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Model</Label>
+            <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Модель</Label>
             <Select value={model} onValueChange={(v: any) => setModel(v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="veo-3.0">Google Veo 3 · top quality</SelectItem>
+                <SelectItem value="veo-3.0">Google Veo 3 · максимум качества</SelectItem>
                 <SelectItem value="veo-3.0-fast">Google Veo 3 Fast · быстрее</SelectItem>
-                <SelectItem value="wan2.2-plus">Wan 2.2 plus · stable</SelectItem>
-                <SelectItem value="wan2.5-preview">Wan 2.5 preview · newer</SelectItem>
+                <SelectItem value="wan2.2-plus">Wan 2.2 plus · стабильная</SelectItem>
+                <SelectItem value="wan2.5-preview">Wan 2.5 preview · новейшая</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-[10px] text-muted-foreground mt-1">
-              Veo 3 (Google Gemini API) — премиум-качество, реальное видео из текста или первого кадра. Wan модели работают через DashScope.
+              Veo 3 (Google Gemini API) — премиум-качество, реальное видео из текста или первого кадра. Модели Wan работают через DashScope.
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Resolution</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Разрешение</Label>
               <Select value={output.resolution} onValueChange={(v: any) => setOutput({ ...output, resolution: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -369,7 +369,7 @@ const AdminWanVideo = () => {
               </Select>
             </div>
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Aspect</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Формат</Label>
               <Select value={output.aspectRatio} onValueChange={(v: any) => setOutput({ ...output, aspectRatio: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -378,7 +378,7 @@ const AdminWanVideo = () => {
               </Select>
             </div>
             <div>
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Duration</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Длительность</Label>
               <div className="grid grid-cols-4 gap-1">
                 {([5, 6, 7, 8] as const).map((d) => (
                   <button
@@ -392,7 +392,7 @@ const AdminWanVideo = () => {
                         : "border-border bg-background hover:border-foreground/40"
                     )}
                   >
-                    {d}s
+                    {d}с
                   </button>
                 ))}
               </div>
@@ -405,28 +405,28 @@ const AdminWanVideo = () => {
             className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
           >
             <ChevronDown size={14} className={cn("transition", showAdvanced && "rotate-180")} />
-            Advanced controls
+            Расширенные настройки
           </button>
           {showAdvanced && (
             <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <Label className="text-xs">Style strength</Label>
+                  <Label className="text-xs">Сила стиля</Label>
                   <span className="text-xs text-muted-foreground">{styleStrength}%</span>
                 </div>
                 <Slider value={[styleStrength]} onValueChange={(v) => setStyleStrength(v[0])} min={0} max={100} step={5} />
               </div>
               <div>
-                <Label className="text-xs">Negative prompt</Label>
+                <Label className="text-xs">Негативный промпт</Label>
                 <Textarea
                   rows={2}
                   value={negativePrompt}
                   onChange={(e) => setNegativePrompt(e.target.value)}
-                  placeholder="text, logos, watermark, distorted faces…"
+                  placeholder="текст, логотипы, водяные знаки, искажённые лица…"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <Label className="text-xs">Camera fixed</Label>
+                <Label className="text-xs">Фиксированная камера</Label>
                 <Switch checked={output.cameraFixed} onCheckedChange={(v) => setOutput({ ...output, cameraFixed: v })} />
               </div>
             </div>
@@ -440,7 +440,7 @@ const AdminWanVideo = () => {
             className="w-full text-[11px] uppercase tracking-[0.25em]"
           >
             {generating ? <Loader2 size={16} className="animate-spin mr-2" /> : <Wand2 size={16} className="mr-2" />}
-            Generate Video Brief
+            Сгенерировать видео
           </Button>
         </div>
 
@@ -449,23 +449,23 @@ const AdminWanVideo = () => {
           <div className="border rounded-lg p-4 bg-card">
             <div className="flex items-center gap-2 mb-3">
               <ImageIcon size={14} className="text-primary" />
-              <h3 className="font-semibold text-sm uppercase tracking-[0.2em]">Frame Lab</h3>
+              <h3 className="font-semibold text-sm uppercase tracking-[0.2em]">Кадры</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FramePicker kind="first" file={firstFile} url={null} onPick={setFirstFile} onClear={() => setFirstFile(null)} />
               <FramePicker kind="last" file={lastFile} url={null} onPick={setLastFile} onClear={() => setLastFile(null)} />
             </div>
             <p className="text-[11px] text-muted-foreground mt-3 leading-relaxed">
-              <strong>First Frame</strong> анимируется напрямую (image→video). <strong>Last Frame</strong> анализируется vision-моделью и встраивается в промпт как смысловой ориентир конечной композиции.
+              <strong>Первый кадр</strong> анимируется напрямую (изображение → видео). <strong>Последний кадр</strong> анализируется vision-моделью и встраивается в промпт как смысловой ориентир финальной композиции.
             </p>
           </div>
 
           {/* Compiled preview */}
           <div className="border rounded-lg p-4 bg-muted/20">
             <div className="flex items-center justify-between mb-2">
-              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Compiled Prompt</Label>
+              <Label className="text-[11px] uppercase tracking-[0.2em] font-semibold">Собранный промпт</Label>
               <button onClick={() => copyPrompt(compiledPreview)} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
-                <Copy size={12} /> Copy
+                <Copy size={12} /> Копировать
               </button>
             </div>
             <pre className="text-xs leading-relaxed whitespace-pre-wrap font-mono text-foreground/80 max-h-48 overflow-y-auto">
@@ -482,7 +482,7 @@ const AdminWanVideo = () => {
               </div>
               {lastResult.lastFrameDescription && (
                 <p className="text-xs text-muted-foreground mb-3">
-                  <strong>Vision анализ Last Frame:</strong> {lastResult.lastFrameDescription}
+                  <strong>Vision-анализ последнего кадра:</strong> {lastResult.lastFrameDescription}
                 </p>
               )}
               <pre className="text-xs leading-relaxed whitespace-pre-wrap font-mono text-foreground/80 max-h-48 overflow-y-auto bg-background/60 p-3 rounded">
