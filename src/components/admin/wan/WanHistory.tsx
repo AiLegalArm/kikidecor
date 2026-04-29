@@ -153,15 +153,13 @@ const RunCard = ({
             </div>
             {/* Quick action buttons (top-left) */}
             <div className="absolute top-2 left-2 flex gap-1">
-              <a
-                href={run.video_url}
-                download={`kiki-video-${run.id}.mp4`}
-                onClick={(e) => e.stopPropagation()}
+              <button
+                onClick={(e) => { e.stopPropagation(); downloadVideo(run.video_url!, `kiki-video-${run.id}.mp4`); }}
                 title="Скачать MP4"
                 className="w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition"
               >
                 <Download size={13} />
-              </a>
+              </button>
               <a
                 href={run.video_url}
                 target="_blank"
@@ -359,13 +357,12 @@ const WanHistory = ({
                   {playing.user_prompt || "—"}
                 </p>
                 <div className="flex gap-2">
-                  <a
-                    href={playing.video_url}
-                    download={`kiki-video-${playing.id}.mp4`}
+                  <button
+                    onClick={() => downloadVideo(playing.video_url!, `kiki-video-${playing.id}.mp4`)}
                     className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
                   >
                     <Download size={13} />Скачать MP4
-                  </a>
+                  </button>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(playing.video_url!);
@@ -420,13 +417,12 @@ const WanHistory = ({
                       playsInline
                       className="w-full rounded border bg-black aspect-video"
                     />
-                    <a
-                      href={detail.video_url}
-                      download={`kiki-video-${detail.id}.mp4`}
+                    <button
+                      onClick={() => downloadVideo(detail.video_url!, `kiki-video-${detail.id}.mp4`)}
                       className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
                     >
                       <Download size={13} />Скачать MP4
-                    </a>
+                    </button>
                   </div>
                 )}
 
