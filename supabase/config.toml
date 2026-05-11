@@ -41,6 +41,3 @@ verify_jwt = true
 
 [functions.concierge-send]
 verify_jwt = true
-
-[functions.reset-admin-access]
-verify_jwt = false
