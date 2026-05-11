@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import {
   Clock, RefreshCw, Copy, Check, X, Loader2, AlertCircle, Eye, Film,
   Calendar, Sparkles, Camera, Sun, Image as ImageIcon, Search,
-  Play, Download, ExternalLink, Link2,
+  Play, Download, ExternalLink, Link2, Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -107,12 +107,13 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const RunCard = ({
-  run, onRerun, onView, onPlay,
+  run, onRerun, onView, onPlay, onDelete,
 }: {
   run: WanRun;
   onRerun: (r: WanRun) => void;
   onView: (r: WanRun) => void;
   onPlay: (r: WanRun) => void;
+  onDelete: (r: WanRun) => void;
 }) => {
   const motionLabel = run.motion?.cameraId || "—";
   const moodLabel = run.mood?.toneId || "—";
@@ -204,6 +205,15 @@ const RunCard = ({
             <Button size="sm" variant="outline" className="h-7 px-2 text-[10px]" onClick={() => onRerun(run)}>
               <RefreshCw size={11} className="mr-1" />Повторить
             </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 px-2 text-[10px] text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={() => onDelete(run)}
+              title="Удалить"
+            >
+              <Trash2 size={11} className="mr-1" />Удалить
+            </Button>
           </div>
         </div>
       </div>
@@ -212,12 +222,13 @@ const RunCard = ({
 };
 
 const WanHistory = ({
-  runs, loading, onRerun, onRefresh,
+  runs, loading, onRerun, onRefresh, onDelete,
 }: {
   runs: WanRun[];
   loading?: boolean;
   onRerun: (setup: WanSetup, run: WanRun) => void;
   onRefresh: () => void;
+  onDelete?: (run: WanRun) => Promise<void> | void;
 }) => {
   const [filter, setFilter] = useState<string>("all");
   const [query, setQuery] = useState("");
@@ -250,6 +261,13 @@ const WanHistory = ({
       styleStrength: run.style_strength ?? 60,
     }, run);
     toast.success("Сетап восстановлен в форме выше");
+  };
+
+  const handleDelete = async (run: WanRun) => {
+    if (!confirm("Удалить эту генерацию? Действие необратимо.")) return;
+    if (onDelete) {
+      await onDelete(run);
+    }
   };
 
   const filterTabs: Array<{ id: string; label: string }> = [
@@ -333,7 +351,7 @@ const WanHistory = ({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
               {items.map((run) => (
-                <RunCard key={run.id} run={run} onRerun={handleRerun} onView={setDetail} onPlay={setPlaying} />
+                <RunCard key={run.id} run={run} onRerun={handleRerun} onView={setDetail} onPlay={setPlaying} onDelete={handleDelete} />
               ))}
             </div>
           </div>
