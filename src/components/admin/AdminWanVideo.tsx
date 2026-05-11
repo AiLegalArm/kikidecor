@@ -504,6 +504,15 @@ const AdminWanVideo = () => {
           loading={historyLoading}
           onRefresh={loadRuns}
           onRerun={(setup) => restoreSetup(setup)}
+          onDelete={async (run) => {
+            const { error } = await supabase.from("wan_runs").delete().eq("id", run.id);
+            if (error) {
+              toast.error(`Не удалось удалить: ${error.message}`);
+              return;
+            }
+            setRuns((prev) => prev.filter((r) => r.id !== run.id));
+            toast.success("Генерация удалена");
+          }}
         />
       </div>
 
