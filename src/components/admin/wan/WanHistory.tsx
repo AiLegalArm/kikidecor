@@ -188,11 +188,11 @@ const RunCard = ({
           {run.output?.duration && <Badge variant="outline" className="text-[9px] font-normal px-1.5 py-0 h-4">{run.output.duration}s · {run.output.aspectRatio}</Badge>}
         </div>
 
-        <div className="flex items-center justify-between pt-1">
-          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+          <span className="text-[10px] text-muted-foreground flex items-center gap-1 shrink-0">
             <Clock size={10} />{formatRelative(run.created_at)}
           </span>
-          <div className="flex gap-1">
+          <div className="flex flex-wrap gap-1 justify-end">
             {run.video_url && (
               <Button size="sm" variant="default" className="h-7 px-2 text-[10px]" onClick={() => onPlay(run)}>
                 <Play size={11} className="mr-1" fill="currentColor" />Смотреть
