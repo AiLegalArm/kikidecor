@@ -120,7 +120,7 @@ const AdminWanVideo = () => {
   const [output, setOutput] = useState<OutputState>({ resolution: "1080p", aspectRatio: "16:9", duration: 5, cameraFixed: false });
   const [negativePrompt, setNegativePrompt] = useState("");
   const [styleStrength, setStyleStrength] = useState(60);
-  const [model, setModel] = useState<"wan2.2-plus" | "wan2.5-preview" | "veo-3.0" | "veo-3.0-fast">("wan2.2-plus");
+  const [model, setModel] = useState<"wan2.2-plus" | "wan2.5-preview" | "veo-3.1-lite" | "veo-3.0" | "veo-3.0-fast">("veo-3.1-lite");
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [firstFile, setFirstFile] = useState<File | null>(null);
@@ -190,7 +190,7 @@ const AdminWanVideo = () => {
           negativePrompt, styleStrength,
           firstFrameUrl: firstUrl, lastFrameUrl: lastUrl,
           model,
-          provider: (model === "veo-3.0" || model === "veo-3.0-fast") ? "veo" : "dashscope",
+          provider: (model === "veo-3.1-lite" || model === "veo-3.0" || model === "veo-3.0-fast") ? "veo" : "dashscope",
         },
       });
 
@@ -347,14 +347,15 @@ const AdminWanVideo = () => {
             <Select value={model} onValueChange={(v: any) => setModel(v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="veo-3.0">Google Veo 3 · максимум качества</SelectItem>
-                <SelectItem value="veo-3.0-fast">Google Veo 3 Fast · быстрее</SelectItem>
+                <SelectItem value="veo-3.1-lite">Google Veo 3.1 Lite · быстро и экономно</SelectItem>
+                <SelectItem value="veo-3.0">Google Veo 3.1 · максимум качества</SelectItem>
+                <SelectItem value="veo-3.0-fast">Google Veo 3.1 Fast · быстрее</SelectItem>
                 <SelectItem value="wan2.2-plus">Wan 2.2 plus · стабильная</SelectItem>
                 <SelectItem value="wan2.5-preview">Wan 2.5 preview · новейшая</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-[10px] text-muted-foreground mt-1">
-              Veo 3 (Google Gemini API) — премиум-качество, реальное видео из текста или первого кадра. Модели Wan работают через DashScope.
+              Veo 3.1 (Google Gemini API) — реальное видео из текста или первого кадра. Lite — самый экономный вариант. Модели Wan работают через DashScope.
             </p>
           </div>
 
