@@ -233,13 +233,15 @@ async function generateViaVeo(opts: {
   prompt: string; negative: string;
   aspectRatio: string; duration: number;
   firstFrameUrl: string | null;
-  modelChoice: "veo-3.0" | "veo-3.0-fast";
+  modelChoice: "veo-3.0" | "veo-3.0-fast" | "veo-3.1-lite";
 }): Promise<string> {
   if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY missing");
 
-  const model = opts.modelChoice === "veo-3.0-fast"
-    ? "veo-3.0-fast-generate-preview"
-    : "veo-3.0-generate-preview";
+  const model = opts.modelChoice === "veo-3.1-lite"
+    ? "veo-3.1-lite-generate-preview"
+    : opts.modelChoice === "veo-3.0-fast"
+      ? "veo-3.1-fast-generate-preview"
+      : "veo-3.1-generate-preview";
 
   // Veo currently supports 16:9 and 9:16 reliably.
   const ar = opts.aspectRatio === "9:16" ? "9:16" : "16:9";
