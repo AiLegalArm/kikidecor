@@ -42,7 +42,7 @@ serve(async (req) => {
       return errorResponse("INVALID_INPUT", "Required: eventType, venueType, colorPalette, guestCount OR textDescription (min 10 chars)", 400);
     }
 
-    const API_KEY = requireApiKey();
+    const API_KEY = await requireApiKeyAsync();
     console.log(`[generate-decor-concept] reasoning=${AI_MODELS.REASONING} img=${AI_MODELS.IMAGE_GEN}`);
 
     // Optional: fetch venue photo
