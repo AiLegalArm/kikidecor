@@ -163,7 +163,7 @@ Think like a creative director planning exterior/facade decorations for a luxury
         try {
           const editData = await aiImageGen({
             apiKey: API_KEY,
-            model: "google/gemini-3.1-flash-image-preview",
+            model: "google/gemini-3.1-flash-image",
             messages: [{
               role: "user",
               content: [
