@@ -6,7 +6,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import {
-  CORS_HEADERS, AI_MODELS, requireApiKey, aiChat, aiGenerateImage,
+  CORS_HEADERS, AI_MODELS, requireApiKeyAsync, aiChat, aiGenerateImage,
   extractToolCall, fetchImageAsBase64,
   okResponse, handleError, GeminiError, errorResponse,
 } from "../_shared/gemini.ts";
