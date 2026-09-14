@@ -177,7 +177,7 @@ export async function exportEventPipelineToPDF(data: Record<string, unknown>, br
   for (let p = 1; p <= pageCount; p++) {
     doc.setPage(p);
     doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.setTextColor("#BBB");
-    doc.text("KiKi Decor Studio • kikidecor.ru", M, 290);
+    doc.text("KiKi Decor Studio • kiki-shop.online", M, 290);
     doc.text(`${p} / ${pageCount}`, W - M, 290, { align: "right" });
   }
 

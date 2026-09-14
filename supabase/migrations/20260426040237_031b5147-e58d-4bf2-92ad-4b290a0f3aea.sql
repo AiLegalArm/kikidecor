@@ -7,7 +7,7 @@ SECURITY DEFINER
 SET search_path = public, extensions
 AS $$
 DECLARE
-  webhook_url text := 'https://niaxchwajovdlnralysa.supabase.co/functions/v1/notify-new-lead';
+  webhook_url text := 'https://ffxlohauqtklstulsjug.supabase.co/functions/v1/notify-new-lead';
 BEGIN
   PERFORM extensions.http_post(
     url := webhook_url,

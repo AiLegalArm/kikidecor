@@ -337,7 +337,7 @@ export async function exportConceptToPDF(
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7);
     doc.setTextColor("#BBBBBB");
-    doc.text("KiKi Decor Studio • kikidecor.ru", margin, 290);
+    doc.text("KiKi Decor Studio • kiki-shop.online", margin, 290);
     doc.text(`${p} / ${pageCount}`, W - margin, 290, { align: "right" });
   }
 
