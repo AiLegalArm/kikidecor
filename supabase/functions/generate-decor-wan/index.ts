@@ -35,7 +35,7 @@ type Body = {
   styleStrength?: number;
   firstFrameUrl?: string | null;
   lastFrameUrl?: string | null;
-  model?: "wan2.2-plus" | "wan2.5-preview" | "veo-3.0" | "veo-3.0-fast";
+  model?: "wan2.2-plus" | "wan2.5-preview" | "veo-3.0" | "veo-3.0-fast" | "veo-3.1-lite";
   provider?: "dashscope" | "veo";
 };
 
@@ -339,14 +339,14 @@ async function runGeneration(
     const cameraFixed = !!out.cameraFixed;
 
     let videoUrl: string;
-    const wantVeo = body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast";
+    const wantVeo = body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast" || body.model === "veo-3.1-lite";
     if (wantVeo && GEMINI_API_KEY) {
       videoUrl = await generateViaVeo({
         prompt: finalPrompt,
         negative: body.negativePrompt || "",
         aspectRatio, duration,
         firstFrameUrl: body.firstFrameUrl || null,
-        modelChoice: (body.model === "veo-3.0-fast" ? "veo-3.0-fast" : "veo-3.0"),
+        modelChoice: (body.model === "veo-3.0-fast" ? "veo-3.0-fast" : body.model === "veo-3.1-lite" ? "veo-3.1-lite" : "veo-3.0"),
       });
     } else if (DASHSCOPE_API_KEY) {
       videoUrl = await generateViaDashScope({
@@ -456,7 +456,7 @@ Deno.serve(async (req) => {
         : Deno.env.get("FAL_API_KEY")
           ? "fal-wan-2.2"
           : "unconfigured";
-    const effectiveBackend = (body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast")
+    const effectiveBackend = (body.provider === "veo" || body.model === "veo-3.0" || body.model === "veo-3.0-fast" || body.model === "veo-3.1-lite")
       ? (GEMINI_API_KEY ? "google-veo-3" : "unconfigured-veo")
       : backend;
 
